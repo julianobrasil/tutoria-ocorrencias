@@ -1,0 +1,49 @@
+<mat-toolbar color="primary"
+             class="fixed-header mat-elevation-z6">
+  <mat-toolbar-row>
+    <div fxLayout="row"
+         fxLayoutAlign="space-between center"
+         class="full-width">
+      <div fxFlex="nogrow">
+        <ul class="nav">
+          <li class="nav-item">
+            <a routerLinkActive="active"
+               class="nav-item nav-link"
+               [routerLinkActiveOptions]="{ exact: true }"
+               routerLink='/tutoria'>HOME</a>
+          </li>
+          <li class="nav-item"
+              *ngIf="permissaoVerAtividades">
+            <a routerLinkActive="active"
+               class="nav-item nav-link"
+               routerLink='/tutoria/atividades'>ATIVIDADES</a>
+          </li>
+          <li class="nav-item"
+              *ngIf="permissaoVerRelatorios">
+            <a routerLinkActive="active"
+               class="nav-item nav-link"
+               routerLink='/tutoria/relatorios'>RELATÓRIOS</a>
+          </li>
+          <li class="nav-item"
+              *ngIf="permissaoVerAdministracao">
+            <a routerLinkActive="active"
+               class="nav-item nav-link"
+               routerLink='/tutoria/administracao'>ADMINISTRAÇÃO</a>
+          </li>
+        </ul>
+      </div>
+
+      <div fxFlex="nogrow">
+        <span class="text-capitalize"
+              [style.color]="'white'"
+              [style.font-size]="'14px'">
+          <strong>{{saudacao}}</strong>
+        </span>
+        <button mat-button
+                [style.color]="'white'"
+                type="button"
+                (click)="logout()">SAIR</button>
+      </div>
+    </div>
+  </mat-toolbar-row>
+</mat-toolbar>

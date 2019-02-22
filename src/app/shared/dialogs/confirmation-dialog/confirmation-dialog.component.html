@@ -1,0 +1,11 @@
+<div mat-dialog-title>
+  {{titulo}}
+</div>
+<div mat-dialog-content>
+  <div [innerHTML]="mensagem"></div>
+</div>
+<div mat-dialog-actions>
+  <button mat-button
+          (click)="dialogRef.close()"
+          color="primary">Fechar</button>
+</div>
