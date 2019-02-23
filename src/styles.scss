@@ -1,0 +1,92 @@
+// Import theming functions
+@import '~@angular/material/theming';
+// My custom theme
+@import 'src/theme.scss';
+// Use mat-color to extract individual colors from a palette as necessary.
+.full-width {
+  width: 100%;
+}
+
+body {
+  margin-top: 5px;
+  background-color: #fafafa;
+  height: 100%;
+  width: 100%;
+}
+
+.mat-input-underline {
+  height: 2px !important;
+}
+
+.mat-select-underline {
+  height: 2px !important;
+}
+
+.app-autocomplete-content-wrapper>span {
+  width: 100%;
+}
+
+.app-autocomplete-content {
+  font-size: 0.75rem;
+}
+
+mat-option.app-option-autocomplete-wrapper {
+  line-height: normal;
+  height: auto;
+}
+
+.app-option-autocomplete-title {
+  font-size: 0.85rem;
+  font-weight: normal;
+  margin-bottom: 5px;
+  margin-top: 5px;
+}
+
+.app-option-autocomplete-subtitle {
+  font-size: 0.75rem;
+  font-weight: normal;
+  color: rgba(0, 0, 0, 0.5);
+  margin-bottom: 10px;
+}
+
+.app-colorize-search-spinner {
+  font-size: 14px;
+  color: black;
+  margin-right: 5px;
+}
+
+.app-button-acessando-banco-spinner {
+  font-size: 14px;
+  color: black;
+}
+
+mat-accordion.app-accordion-style {
+  mat-expansion-panel.mat-expanded {
+    .mat-expansion-panel-content {
+      .mat-expansion-panel-body {
+        padding-top: 10px;
+      }
+    }
+  }
+}
+
+mat-accordion.app-accordion-style.areas-atuantes {
+  mat-expansion-panel.mat-expanded {
+    .mat-expansion-panel-content {
+      .mat-expansion-panel-body {
+        padding: 10px 0px !important;
+      }
+    }
+  }
+}
+
+.app-option-popover-style .mat-option-text {
+  width: 100%;
+}
+
+.mat-dialog-title {
+  background-color: mat-color($app-primary);
+  color: white;
+  margin: -24px -24px 8px !important;
+  padding: 12px 24px;
+}

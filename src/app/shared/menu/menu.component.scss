@@ -1,0 +1,24 @@
+a.nav-item {
+  font-family: Roboto, Helvetica Neue, sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+a.nav-item.nav-link {
+  color: hsla(0, 0%, 100%, .5);
+}
+
+a.nav-item.nav-link:hover {
+  color: hsla(0, 0%, 100%, .8);
+}
+
+a.nav-item.nav-link.active {
+  color: white;
+}
+
+.fixed-header {
+  top: 0;
+  position: fixed;
+  z-index: 999;
+  overflow: hidden;
+}
