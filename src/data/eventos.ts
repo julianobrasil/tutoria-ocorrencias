@@ -2,7 +2,7 @@
 // tslint:disable:max-line-length
 import {Evento} from '../app/model/transport-objects/to';
 
-export const eventos: Evento[] = [
+export const EVENTOS_EXISTENTES: Evento[] = [
   {
     id: '58ba0005a239fe2eb9d220ac',
     _class: 'br.alfa.tutoria.entity.Evento',

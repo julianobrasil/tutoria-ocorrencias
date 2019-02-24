@@ -21,6 +21,7 @@ import {
   MatIconModule,
   MatInputModule,
   MatNativeDateModule,
+  MatPaginatorModule,
   MatProgressSpinnerModule,
   MatRadioModule,
   MatSelectModule,
@@ -29,7 +30,6 @@ import {
   MatTabsModule,
   MatToolbarModule,
   MatTooltipModule,
-  NativeDateAdapter,
 } from '@angular/material';
 import {SatPopoverModule} from '@ncstate/sat-popover';
 import {CustomDateAdapter} from './core/date-time/custom-date-adapter';
@@ -48,6 +48,7 @@ import {CustomDateAdapter} from './core/date-time/custom-date-adapter';
     MatIconModule,
     MatInputModule,
     MatNativeDateModule,
+    MatPaginatorModule,
     MatProgressSpinnerModule,
     MatRadioModule,
     MatSelectModule,

@@ -9,11 +9,11 @@ const appRoutes: Routes = [
     loadChildren: './ocorrencias/ocorrencias.module#OcorrenciasModule',
     canLoad: [AuthGuard],
   },
-  // {path: '', redirectTo: 'ocorrencia', pathMatch: 'full'},
+  {path: '', redirectTo: 'ocorrencia', pathMatch: 'full'},
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(appRoutes, {enableTracing: true})],
+  imports: [RouterModule.forRoot(appRoutes, {enableTracing: false})],
   exports: [RouterModule],
   declarations: [],
   providers: [],

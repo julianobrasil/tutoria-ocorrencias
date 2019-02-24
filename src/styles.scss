@@ -1,17 +1,22 @@
-// Import theming functions
 @import '~@angular/material/theming';
-// My custom theme
 @import 'src/theme.scss';
-// Use mat-color to extract individual colors from a palette as necessary.
+
 .full-width {
   width: 100%;
 }
 
 body {
+  margin: 0px;
   margin-top: 5px;
   background-color: #fafafa;
   height: 100%;
   width: 100%;
+
+  font-family: Roboto, 'Courier New', Courier, monospace
+}
+
+button {
+  text-transform: uppercase;
 }
 
 .mat-input-underline {

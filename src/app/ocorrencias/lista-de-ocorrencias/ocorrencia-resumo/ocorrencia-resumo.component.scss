@@ -1,0 +1,77 @@
+@import '~@angular/material/theming';
+@import 'src/theme.scss';
+
+$barra-de-titulo-padding: 16px !default;
+$barra-de-titulo-border-radius: 4px !default;
+$barra-de-titulo-header-size: 40px !default;
+
+.ocorrencia-container {
+  display: flex;
+  box-sizing: border-box;
+
+  border-bottom: 0.5px solid rgba(0,0,0,0.1);
+  border-left: 0.5px solid rgba(0,0,0,0.1);
+  border-right: 0.5px solid rgba(0,0,0,0.1);
+
+  &.ocorrencia-container-border-top {
+    border-top: 0.5px solid rgba(0,0,0,0.1);
+  }
+
+  div {
+    box-sizing: border-box;
+  }
+
+  padding: $barra-de-titulo-padding;
+
+  &>div:first-child {
+    width: 34px;
+  }
+
+  &>div:nth-child(3) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    min-width: 34px;
+    margin-left: 15px;
+
+    font-size: 12px;
+
+    .mat-icon {
+      height: 16px;
+      width: 16px;
+      font-size: 16px;
+    }
+  }
+
+  &>div:nth-child(2) {
+    flex: 1;
+  }
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+  }
+
+  .mat-icon.icon-ocorrencia-finalizada {
+    color: rgb(106, 245, 106);
+  }
+
+  .mat-icon.icon-ocorrencia-nao-finalizada {
+    color: mat-color($app-warn);
+  }
+}
+
+.ocorrencia-resumo-texto-container {
+  display: flex;
+  flex-direction: column;
+
+  &>div:first-child {
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  &>div:nth-child(2) {
+    font-size: 0.8rem;
+    color: rgba(0, 0, 0, 0.4);
+  }
+}

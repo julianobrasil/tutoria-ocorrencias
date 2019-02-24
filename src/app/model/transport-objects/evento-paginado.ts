@@ -1,18 +1,13 @@
 import {Evento} from './evento';
-export class EventoPaginado {
-  public content: Evento[];
-  public totalPages: number;
-  public totalElements: number;
-  public last: boolean;
-  public size: number;
-  public number: number;
-  public sort: string;
-  public numberOfElements: number;
-  public first: boolean;
 
-  constructor() {
-    this.content = [];
-  }
+export interface EventoPaginado {
+  content?: Evento[];
+  totalPages?: number;
+  totalElements?: number;
+  last?: boolean;
+  size?: number;
+  number?: number;
+  sort?: string;
+  numberOfElements?: number;
+  first?: boolean;
 }
-
-EventoPaginado['__class'] = 'EventoPaginado';

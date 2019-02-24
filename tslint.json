@@ -8,6 +8,7 @@
     "deprecation": {
       "severity": "warn"
     },
+    "interface-name": false,
     "forin": true,
     "import-blacklist": [true, "rxjs/Rx"],
     "interface-over-type-literal": true,

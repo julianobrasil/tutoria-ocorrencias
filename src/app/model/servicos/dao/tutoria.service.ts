@@ -20,6 +20,9 @@ import {
 
 import {URL} from '../../helper-objects/constantes';
 
+import {EVENTOS_EXISTENTES} from '../../../../data/eventos';
+import {Comentario} from '../../transport-objects';
+
 @Injectable()
 export class TutoriaService {
   constructor(private _authService: AuthService, private _http: HttpClient) {}
@@ -530,5 +533,102 @@ export class TutoriaService {
           return observableOf(null);
         }),
       );
+  }
+
+  /** A PARTIR DAQUI SÃO FUNÇÕES NOVAS DO SISTEMA */
+
+  /**
+   * Encontra uma dada página de eventos em que o usuário logado deva ter acesso
+   *
+   * @param {string} [termToFilter]
+   * @param {number} [page]
+   * @param {number} [pageSize]
+   * @returns {Observable<EventoPaginado>}
+   * @memberof TutoriaService
+   */
+  findEventosByUsuarioLogado(
+    termToFilter?: string,
+    page?: number,
+    pageSize?: number,
+  ): Observable<EventoPaginado> {
+    let eventos: Evento[] = this._filtraEventos(termToFilter);
+
+    eventos.sort((a, b) => new Date(b.dataRegistro).getTime() - new Date(a.dataRegistro).getTime());
+
+    const totalElements = eventos.length;
+
+    const startIndex = page * pageSize;
+    const endIndex = page * pageSize + pageSize;
+    eventos = eventos.slice(startIndex, endIndex > eventos.length ? eventos.length : endIndex);
+
+    const pagina: EventoPaginado = {
+      content: eventos,
+      totalElements,
+    };
+
+    return observableOf(pagina);
+  }
+
+  private _filtraEventos(termToFilter: string): Evento[] {
+    if (!termToFilter) {
+      return EVENTOS_EXISTENTES;
+    }
+
+    return EVENTOS_EXISTENTES.filter(
+      (evt: Evento) =>
+        this._tutorContem(evt, termToFilter) ||
+        this._responsavelContem(evt, termToFilter) ||
+        this._observacaoContem(evt, termToFilter) ||
+        this._ocorrenciaContem(evt, termToFilter) ||
+        this._comentarioContem(evt, termToFilter),
+    );
+  }
+
+  _observacaoContem(evt: Evento, termToFilter: string): boolean {
+    return evt.observacao && evt.observacao.toUpperCase().includes(termToFilter.toUpperCase());
+  }
+  _ocorrenciaContem(evt: Evento, termToFilter: string): boolean {
+    return evt.parecer && evt.parecer.toUpperCase().includes(termToFilter.toUpperCase());
+  }
+  _comentarioContem(evt: Evento, termToFilter: string): boolean {
+    if (!evt.comentarios || !evt.comentarios.length) {
+      return false;
+    }
+
+    return evt.comentarios.some((c: Comentario) => {
+      termToFilter = termToFilter.toUpperCase();
+
+      c.historicoComentario.sort((a, b) => new Date(a.data).getTime() - new Date(b.data).getTime());
+      return c.historicoComentario[0].texto.toUpperCase().includes(termToFilter);
+    });
+  }
+  _responsavelContem(evt: Evento, termToFilter: string): boolean {
+    termToFilter = termToFilter.toUpperCase();
+
+    return evt.responsaveis.some(
+      (r) =>
+        !!r &&
+        (r.email.toUpperCase().includes(termToFilter) ||
+          (!!r.nomeResponsavel && r.nomeResponsavel.toUpperCase().includes(termToFilter))),
+    );
+  }
+
+  _tutorContem(evt: Evento, termToFilter: string): boolean {
+    if (!evt.tutoria.historicoTutores && !evt.tutoria.historicoTutores.length) {
+      return false;
+    }
+
+    const tutor = evt.tutoria.historicoTutores.filter((t) => !t.dataFim);
+
+    if (!tutor || !tutor.length) {
+      return false;
+    }
+
+    termToFilter = termToFilter.toUpperCase();
+
+    return (
+      tutor[0].email.toUpperCase().includes(termToFilter) ||
+      (!!tutor[0].nomeTutor && tutor[0].nomeTutor.toUpperCase().includes(termToFilter))
+    );
   }
 }

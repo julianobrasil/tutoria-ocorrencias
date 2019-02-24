@@ -1,0 +1,28 @@
+<div class="lista-de-ocorrencias-container">
+  <div [fxLayout]="_isVerySmallScreen ? 'column' : 'row'"
+       [fxLayoutAlign]="_isVerySmallScreen ? 'start end' : 'space-between center'"
+       [fxLayoutGap]="_isVerySmallScreen ? '1px' : '10px'">
+    <div class="lista-de-ocorrencias-filtro-container"
+         fxFlex>
+      <app-filtro-de-ocorrencias (termoDeBusca)="_termoDeBuscaAlterado($event)"></app-filtro-de-ocorrencias>
+    </div>
+
+    <div class="lista-de-ocorrencias-botao-nova-ocorrencia">
+      <button color="primary"
+              mat-raised-button>Nova Ocorrência</button>
+    </div>
+  </div>
+
+  <ng-container *ngFor="let evento of eventos; first as isFirst">
+    <app-ocorrencia-resumo [evento]="evento"
+                           [showBorderTop]="isFirst">
+    </app-ocorrencia-resumo>
+  </ng-container>
+
+  <mat-paginator *ngIf="_showPaginator"
+                 (page)="_paginaTrocada($event)"
+                 [length]="paginacao?.totalElements"
+                 [pageSize]="paginacao?.pageSize"
+                 [pageSizeOptions]="paginacao?.pageSizeOptions">
+  </mat-paginator>
+</div>

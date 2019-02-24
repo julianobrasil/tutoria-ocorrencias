@@ -1,3 +1,5 @@
-<p>
-  ocorrencias works!
-</p>
+<app-lista-de-ocorrencias (paginacaoChange)="_atualizaPaginacao($event)"
+                          (termoDeBuscaChange)="_filtraEventos($event)"
+                          [eventos]="_eventos$ | async"
+                          [paginacao]="_paginacao$ | async">
+</app-lista-de-ocorrencias>

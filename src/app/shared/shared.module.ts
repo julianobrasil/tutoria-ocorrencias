@@ -1,5 +1,6 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
+import {ReactiveFormsModule} from '@angular/forms';
 import {RouterModule} from '@angular/router';
 
 import {CustomMaterialModule} from '../custom-material.module';
@@ -15,7 +16,7 @@ import {SobrenomeAmigavelPipe} from './pipes/sobrenome-amigavel.pipe';
 import {TutoriasComTurmasPipe} from './pipes/tutorias-com-turmas.pipe';
 
 @NgModule({
-  imports: [CommonModule, RouterModule, CustomMaterialModule],
+  imports: [ReactiveFormsModule, CommonModule, RouterModule, CustomMaterialModule],
   declarations: [
     /** components */
     ConfirmationDialogComponent,
@@ -34,7 +35,9 @@ import {TutoriasComTurmasPipe} from './pipes/tutorias-com-turmas.pipe';
   entryComponents: [ConfirmationDialogComponent],
   exports: [
     CommonModule,
+    ReactiveFormsModule,
     RouterModule,
+    CustomMaterialModule,
 
     /** components */
     ConfirmationDialogComponent,
