@@ -1,0 +1,49 @@
+@import '~@angular/material/theming';
+@import '../../../../../theme.scss';
+
+.ocorrencia-detalhes-configuracoes-responsaveis-container {
+  display: flex;
+  flex-direction: column;
+
+  margin-top: 15px;
+  padding-bottom: 10px;
+
+  .ocorrencia-detalhes-configuracoes-responsaveis-cabecalho {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 10px;
+
+    &.active-link {
+      &:hover {
+        color: mat-color($app-primary);
+        cursor: pointer;
+
+        .mat-icon {
+          color: mat-color($app-primary);
+          cursor: pointer;
+        }
+      }
+    }
+
+    .mat-icon {
+      height: 18px;
+      width: 18px;
+
+      font-size: 18px;
+      color: rgba(0, 0, 0, 0.3);
+    }
+  }
+
+  .ocorrencia-detalhes-configuracoes-responsaveis-avatares {
+    display: flex;
+    flex-wrap: wrap;
+
+    &>span {
+      font-size: 0.8rem;
+    }
+  }
+}

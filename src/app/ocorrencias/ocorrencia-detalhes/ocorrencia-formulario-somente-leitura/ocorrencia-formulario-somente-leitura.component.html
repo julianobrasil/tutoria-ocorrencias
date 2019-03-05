@@ -1,0 +1,33 @@
+<section *ngIf="ocorrencia"
+         class="formulario-somente-leitura-container">
+  <section class="formulario-somente-leitura-avatar">
+    <app-ocorrencia-avatar [corDoAvatar]="corDoAvatar"
+                           [identificacaoTooltip]="ocorrencia?.autorEvento?.description"
+                           [isTextoDoAvatarBranco]="isTextoDoAvatarBranco"
+                           [label]="ocorrencia?.autorEvento?.description[0]">
+    </app-ocorrencia-avatar>
+  </section>
+
+  <section class="formulario-somente-leitura-resumo  mat-elevation-z4">
+    <section class="formulario-somente-leitura-titulo">
+      <section class="formulario-somente-leitura-tipo-subtipo">
+        <strong>{{ocorrencia?.descricaoTipoEvento}}:</strong> {{ocorrencia?.descricaoSubTipoEvento}}
+      </section>
+
+      <section class="formulario-somente-leitura-data">
+        <strong>Data da ocorrência:</strong> {{ocorrencia?.data | date: 'dd/MM/y'}}
+      </section>
+
+      <section class="formulario-somente-leitura-acoes">
+        <app-ocorrencia-menu></app-ocorrencia-menu>
+      </section>
+    </section>
+
+    <section class="formulario-somente-leitura-corpo">
+      <div [innerHTML]="ocorrencia?.tutoria | tutoriaTurmas"></div>
+
+      <div [innerHTML]="ocorrencia?.textoFormatado?.html | localEUnidade: ocorrencia">
+      </div>
+    </section>
+  </section>
+</section>

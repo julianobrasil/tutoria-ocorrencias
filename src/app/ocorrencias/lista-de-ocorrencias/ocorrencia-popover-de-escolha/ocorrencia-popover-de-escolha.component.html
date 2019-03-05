@@ -1,0 +1,26 @@
+<button (click)="_novaOcorrencia(popover)"
+        [satPopoverAnchorFor]="popover"
+        color="primary"
+        mat-raised-button>
+  Nova Ocorrência
+</button>
+
+<sat-popover #popover
+             hasBackdrop
+             horizontalAlign="end"
+             verticalAlign="below">
+  <div class="ocorrencia-popover-de-escolha-container mat-elevation-z8">
+    <button (click)="_novaOcorrenciaTutoria(popover)"
+            cdkFocusInitial
+            class="ocorrencia-tutoria"
+            mat-raised-button>
+      Tutoria
+    </button>
+
+    <button (click)="_novaOcorrenciaComum(popover)"
+            class="ocorrencia-comum"
+            mat-raised-button>
+      Ocorrência Comum
+    </button>
+  </div>
+</sat-popover>

@@ -9,6 +9,7 @@
       "severity": "warn"
     },
     "interface-name": false,
+    "max-classes-per-file": false,
     "forin": true,
     "import-blacklist": [true, "rxjs/Rx"],
     "interface-over-type-literal": true,

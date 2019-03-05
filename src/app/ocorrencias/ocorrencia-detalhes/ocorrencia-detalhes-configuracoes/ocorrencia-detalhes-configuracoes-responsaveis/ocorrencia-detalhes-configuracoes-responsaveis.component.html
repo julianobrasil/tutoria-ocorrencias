@@ -1,0 +1,18 @@
+<section class="ocorrencia-detalhes-configuracoes-responsaveis-container">
+  <section [ngClass]="_classesDoCabecalho">
+    <span>Responsáveis</span>
+
+    <mat-icon>settings</mat-icon>
+  </section>
+
+  <section class="ocorrencia-detalhes-configuracoes-responsaveis-avatares">
+    <span *ngIf="!responsaveis?.length">Ninguém</span>
+    <app-ocorrencia-avatar *ngFor="let responsavel of responsaveis"
+                           [corDoAvatar]="responsavel?.usuarioRef?.code | obtemCorDoAvatar: coresDosParticipantes"
+                           [identificacaoTooltip]="responsavel?.usuarioRef?.description"
+                           [isTextoDoAvatarBranco]="responsavel?.usuarioRef?.code | isTextoDoAvatarBranco: coresDosParticipantes"
+                           [label]="responsavel?.usuarioRef?.description[0]"
+                           size="small">
+    </app-ocorrencia-avatar>
+  </section>
+</section>

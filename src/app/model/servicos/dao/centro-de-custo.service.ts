@@ -6,7 +6,7 @@ import {catchError, map} from 'rxjs/operators';
 
 import {AuthService} from '../../../auth/auth.service';
 
-import {CentroDeCusto} from '../../transport-objects/to';
+import {CentroDeCusto} from '../../transport-objects/';
 
 import {URL} from '../../helper-objects/constantes';
 

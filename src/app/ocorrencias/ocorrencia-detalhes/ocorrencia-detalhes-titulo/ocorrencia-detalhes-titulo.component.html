@@ -1,0 +1,36 @@
+<section *ngIf="ocorrencia"
+         class="ocorrencia-detalhes-titulo-container">
+  <section class="ocorrencia-detalhes-titulo-principal">{{ocorrencia?.titulo}}</section>
+
+  <section class="ocorrencia-detalhes-titulo-subtitulo">
+
+    <!-- ÍCONE (COLUNA DA ESQUERDA-->
+    <div [ngClass]="_iconClass">
+      <div>
+        <mat-icon *ngIf="ocorrencia?.isResolvido">
+          check_circle_outline
+        </mat-icon>
+
+        <mat-icon *ngIf="!ocorrencia?.isResolvido">
+          error_outline
+        </mat-icon>
+      </div>
+      <div>
+        <span *ngIf="ocorrencia?.isResolvido; else ocorrenciaFechada">
+          Resolvida
+        </span>
+        <ng-template #ocorrenciaFechada>
+          <span>
+            Pendente
+          </span>
+        </ng-template>
+      </div>
+    </div>
+
+    <!-- AUTOR E DATA (À DIREITA DO BOTÃO NO TÍTULO)-->
+    <div>
+      <strong>{{ocorrencia?.autorEvento?.description}}</strong>
+      criou esta ocorrência {{ocorrencia?.dataRegistro | tempoDecorrido}}
+    </div>
+  </section>
+</section>

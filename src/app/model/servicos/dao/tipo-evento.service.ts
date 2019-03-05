@@ -9,6 +9,7 @@ import {AuthService} from '../../../auth/auth.service';
 import {TipoEvento} from '../../transport-objects/tipo-evento';
 
 import {URL} from '../../helper-objects/constantes';
+import {TIPOS_EVENTOS_DISPONIVEIS} from 'src/data/tipos_eventos';
 
 @Injectable()
 export class TipoEventoService {
@@ -69,5 +70,12 @@ export class TipoEventoService {
         }),
         catchError((err) => observableOf(false)),
       );
+  }
+
+  /** MÉTODOS ACRESCENTADOS */
+
+  /** Obtém todos os tipos de eventos disponíveis */
+  findAllTipoEventos(): Observable<TipoEvento[]> {
+    return observableOf(TIPOS_EVENTOS_DISPONIVEIS);
   }
 }

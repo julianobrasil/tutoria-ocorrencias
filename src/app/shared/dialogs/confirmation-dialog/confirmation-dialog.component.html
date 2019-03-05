@@ -4,8 +4,22 @@
 <div mat-dialog-content>
   <div [innerHTML]="mensagem"></div>
 </div>
-<div mat-dialog-actions>
-  <button mat-button
-          (click)="dialogRef.close()"
-          color="primary">Fechar</button>
+<div mat-dialog-actions
+     align="end">
+  <button *ngIf="botaoFalseVisible"
+          mat-button
+          (click)="_dialogRef.close(false)"
+          color="warn"
+          [disabled]="botaoFalseDisabled">{{botaoFalseText}}</button>
+  <button *ngIf="!botaoFalseVisible && botaoTrueVisible"
+          mat-button
+          (click)="_dialogRef.close(true)"
+          color="primary"
+          [disabled]="botaoTrueDisabled">{{botaoTrueText}}</button>
+  <button *ngIf="botaoFalseVisible  && botaoTrueVisible"
+          mat-button
+          (click)="_dialogRef.close(true)"
+          color="primary"
+          [disabled]="botaoTrueDisabled"
+          tabindex="-1">{{botaoTrueText}}</button>
 </div>

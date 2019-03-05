@@ -1,4 +1,4 @@
-import {Evento} from './to';
+import {Evento} from './';
 export class Solicitacao {
   public emailSolicitante = '';
   public nomeSolicitante = '';

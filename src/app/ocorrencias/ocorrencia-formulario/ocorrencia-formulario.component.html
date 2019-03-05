@@ -1,0 +1,242 @@
+<form [formGroup]="_form"
+      novalidate>
+  <mat-card>
+    <mat-card-content>
+      <section class="ocorrencia-formulario-titulo">
+        <mat-form-field class="full-width">
+          <mat-label>
+            Título
+          </mat-label>
+          <input formControlName="titulo"
+                 matInput
+                 placeholder="DIGITE UM TÍTULO"
+                 required>
+        </mat-form-field>
+      </section>
+      <section class="ocorrencia-formulario-container"
+               fxLayout="row"
+               fxLayout.xs="column"
+               fxLayoutAlign="space-between center">
+        <section class="ocorrencia-formulario-painel-da-esquerda"
+                 fxFlex="45%"
+                 fxFlex.xs="100%"
+                 [style.width]="'100%'">
+          <div fxLayout="column"
+               fxLayoutGap="20px">
+
+            <!-- TURMA DE TUTORIA OU UNIDADE -->
+            <section @enterForm
+                     *ngIf="_turmaDeTutoriaOuUnidadeVisible"
+                     class="ocorrencia-formulario-tutoria-ou-unidade"
+                     fxFlex="noshrink">
+              <mat-form-field *ngIf="tipoFormulario === _tiposFormularioDisponiveis.TUTORIA; else formUnidades"
+                              appearance="standard"
+                              class="full-width">
+                <mat-label>Turma</mat-label>
+                <mat-select (openedChange)="_closeOpenedPopovers($event, tutoriaPopover)"
+                            class="app-tutorias-select-style"
+                            formControlName="tutoria"
+                            required>
+                  <ng-container *ngFor="let t of (_tutoriasNomes$ | async | tutoriasComTurmas)">
+                    <mat-option (click)="tutoriaPopover.close()"
+                                (mouseenter)="tutoriaPopover.open()"
+                                (mouseleave)="tutoriaPopover.close()"
+                                [satPopoverAnchorFor]="tutoriaPopover"
+                                [value]="t.tutoria"
+                                class="app-option-popover-style"
+                                satDisableClick>
+                      {{t?.tutoria | nomeDeTurma}}
+                    </mat-option>
+                    <sat-popover #tutoriaPopover
+                                 horizontalAlign="after">
+                      <div class="popover-class">
+                        <div *ngFor="let turma of t.tutoria.turmas">
+                          {{turma.periodo}}°{{turma.grade}} {{turma.cursoNome | uppercase}}
+                        </div>
+                      </div>
+                    </sat-popover>
+                  </ng-container>
+                </mat-select>
+              </mat-form-field>
+
+              <!-- UNIDADES -->
+              <ng-template #formUnidades>
+                <mat-form-field appearance="standard"
+                                class="full-width">
+                  <mat-label>Unidade (OPCIONAL)</mat-label>
+                  <mat-select (selectionChange)="_trataOpcaoNenhuma($event)"
+                              class="app-tutorias-select-style"
+                              formControlName="unidade"
+                              placeholder="OPCIONAL">
+                    <mat-option *ngIf="_form?.get('unidade')?.value"
+                                [value]="null">SEM UNIDADE</mat-option>
+                    <ng-container *ngFor="let u of unidades">
+                      <mat-option [value]="u"
+                                  class="app-option-popover-style"
+                                  satDisableClick>
+                        {{u?.cidade}}:{{u.unidade}}
+                      </mat-option>
+                    </ng-container>
+                  </mat-select>
+                </mat-form-field>
+              </ng-template>
+            </section>
+
+            <!-- TIPO -->
+            <div fxFlex="noshrink">
+              <mat-form-field @enterForm
+                              *ngIf="_tipoVisible"
+                              appearance="standard"
+                              class="full-width">
+                <mat-label>Tipo</mat-label>
+                <mat-select formControlName="tipoEvento"
+                            required>
+                  <mat-option *ngFor="let t of _tiposDisponiveis$ | async"
+                              [value]="t">
+                    {{ t.descricao }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <!-- SUBTIPO -->
+            <div fxFlex="noshrink">
+              <mat-form-field @enterForm
+                              *ngIf="_subTipoVisible"
+                              appearance="standard"
+                              class="full-width">
+                <mat-label>Subtipo</mat-label>
+                <mat-select formControlName="subTipoEvento"
+                            required>
+                  <mat-option *ngFor="let t of _form?.value?.tipoEvento?.listaSubTipoEvento"
+                              [value]="t">
+                    {{ t.descricao }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <!-- DATA DA OCORRÊNCIA (NÃO É A DATA DO REGISTRO) -->
+            <div fxFlex="noshrink"
+                 [style.margin-top]="'5px'">
+              <mat-form-field @enterForm
+                              *ngIf="_dataVisible"
+                              appearance="standard">
+                <mat-label>Data</mat-label>
+                <input (click)="_openDatepickerClick(dataDaOcorrenciaDatepicker)"
+                       (focus)="_openDatepickerFocus(dataDaOcorrenciaDatepicker)"
+                       [matDatepicker]="dataDaOcorrenciaDatepicker"
+                       [max]="_dataDeHoje"
+                       [min]="_startDate"
+                       formControlName="dataEvento"
+                       matInput
+                       readonly
+                       required>
+                <mat-datepicker #dataDaOcorrenciaDatepicker
+                                [startAt]="_form?.value?.dataEvento">
+                </mat-datepicker>
+              </mat-form-field>
+            </div>
+          </div>
+        </section>
+
+        <section class="ocorrencia-formulario-painel-da-direita full-width"
+                 fxFlex="50%"
+                 fxFlexAlign="start"
+                 fxFlex.xs="100%">
+
+          <div fxLayout="column">
+            <div fxFlex="noshrink"
+                 tabindex="-1"
+                 #elementToFocusAfterDate>
+              <!-- OCORRÊNICA -->
+              <mat-form-field @enterForm
+                              *ngIf="_parecerVisible"
+                              appearance="fill"
+                              class="full-width"
+                              hintLabel="Max 3000 caracteres">
+                <mat-label>Ocorrência</mat-label>
+                <textarea #parecer
+                          class="text-uppercase"
+                          formControlName="parecer"
+                          matInput
+                          maxlength="3000"
+                          required
+                          rows="14">
+                </textarea>
+                <mat-hint align="end">{{parecer.value?.length || 0}}/3000</mat-hint>
+              </mat-form-field>
+            </div>
+
+            <div fxFlex="noshrink">
+              <!-- OBSERVAÇÃO -->
+              <mat-form-field @enterForm
+                              *ngIf="_parecerValidoEVisivel"
+                              appearance="fill"
+                              class="full-width"
+                              floatLabel="always"
+                              hintLabel="Max 3000 caracteres">
+                <mat-label>Localização (opcional)</mat-label>
+                <input #observacao
+                       class="text-uppercase"
+                       formControlName="observacao"
+                       matInput
+                       maxlength="70"
+                       placeholder="Ex.: Sala 105B (ONDE O AR-CONDICIONADO ESTRAGOU)">
+                <mat-hint align="end">{{observacao.value?.length || 0}}/70</mat-hint>
+              </mat-form-field>
+            </div>
+
+            <section @enterForm
+                     *ngIf="_parecerValidoEVisivel && !disabled"
+                     class="ocorrencia-formulario-radio-buttons"
+                     fxFlex="100%">
+              <mat-radio-group formControlName="isResolvido"
+                               required>
+                <mat-radio-button [value]="false">
+                  Apenas registrar
+                </mat-radio-button>
+                <mat-radio-button [value]="true">
+                  Registrar e marcar como resolvido
+                </mat-radio-button>
+              </mat-radio-group>
+            </section>
+          </div>
+        </section>
+      </section>
+
+      <section class="ocorrencia-formulario-botoes-acao"
+               fxLayout="row"
+               fxLayout.xs="column"
+               fxLayoutAlign="end end"
+               fxLayoutAlign.xs="end center">
+        <!-- BOTÃO DE CANCELAR -->
+        <div class="app-botao-cancelar"
+             fxFlex="10%"
+             fxFlex.xs="noshrink">
+          <button (click)="_cancelarEdicao()"
+                  color="warn"
+                  mat-raised-button
+                  type="button">
+            Cancelar
+          </button>
+        </div>
+
+        <!-- BOTÃO DE GRAVAR -->
+        <div *ngIf="_parecerValidoEVisivel && !disabled"
+             @enterForm
+             class="app-botao-gravar"
+             fxFlex="10%"
+             fxFlex.xs="noshrink">
+          <button (click)="_gravarOcorrencia()"
+                  [disabled]="_disableSaveButton"
+                  color="primary"
+                  mat-raised-button
+                  type="button">
+            Gravar
+          </button>
+        </div>
+      </section>
+    </mat-card-content>
+  </mat-card>
+</form>

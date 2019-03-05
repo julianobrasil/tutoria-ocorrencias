@@ -1,0 +1,22 @@
+<div class="ocorrencia-detalhes-configuracoes-acoes-container">
+  <mat-list dense>
+    <mat-list-item *ngIf="mostraAcaoAlterarTipoDoEvento">
+      <button (click)="alteraTipoDeEvento.emit()"
+              mat-button
+              type="button">
+        <mat-icon>low_priority</mat-icon>
+        <span>Alterar tipo</span>
+      </button>
+    </mat-list-item>
+
+    <mat-list-item *ngIf="mostraAcaoExcluirEvento">
+      <button (click)="excluiEvento.emit()"
+              color="warn"
+              mat-button
+              type="button">
+        <mat-icon>delete_forever</mat-icon>
+        <span class="app-color-red">Excluir ocorrência</span>
+      </button>
+    </mat-list-item>
+  </mat-list>
+</div>

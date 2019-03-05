@@ -1,5 +1,20 @@
-<app-lista-de-ocorrencias (paginacaoChange)="_atualizaPaginacao($event)"
+<app-lista-de-ocorrencias *ngIf="!_isCriandoNovaOcorrencia; else novaOcorrencia"
+                          (novaOcorrencia)="_mostraFormularioDeOcorrencia($event)"
+                          (paginacaoChange)="_atualizaPaginacao($event)"
                           (termoDeBuscaChange)="_filtraEventos($event)"
                           [eventos]="_eventos$ | async"
                           [paginacao]="_paginacao$ | async">
 </app-lista-de-ocorrencias>
+
+<ng-template #novaOcorrencia>
+  <div class="ocorrencia-nova-ocorrencia-wrapper">
+    <section class="ocorrencia-nova-ocorrencia-container">
+      <app-ocorrencia-formulario (cancelamentoSolicitado)="_isCriandoNovaOcorrencia=false"
+                                 (dadosDoFormularioParaGravar)="_gravaOcorrencia($event)"
+                                 [differencaDeHoraNoServidor]="_diferencaDeHoraNoServidor$ | async"
+                                 [tipoFormulario]="_ocorrenciaFormularioComponentTipo"
+                                 [unidades]="_unidades$ | async">
+      </app-ocorrencia-formulario>
+    </section>
+  </div>
+</ng-template>

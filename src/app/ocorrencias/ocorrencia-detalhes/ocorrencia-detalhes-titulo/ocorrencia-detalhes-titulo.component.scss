@@ -1,0 +1,56 @@
+@import '~@angular/material/theming';
+@import '../../../../theme.scss';
+
+.ocorrencia-detalhes-titulo-container {
+  display: flex;
+  flex-direction: column;
+
+  border-bottom: 0.5px solid rgba(0, 0, 0, .2);
+  padding-bottom: 20px;
+  margin-bottom: 15px;
+
+  .ocorrencia-detalhes-titulo-principal {
+    font-size: 2rem;
+    text-align: justify;
+  }
+
+  .ocorrencia-detalhes-titulo-subtitulo {
+    display: flex;
+    align-items: center;
+
+    margin-top: 8px;
+
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.5);
+
+    .ocorrencia-detalhes-titulo-subtitulo-icon {
+      display: flex;
+      align-items: center;
+
+      color: rgba(255, 255, 255, 1);
+      font-weight: 600;
+
+      padding: 4px 8px;
+
+      width: 90px;
+      margin-right: 8px;
+
+      border-radius: 4px;
+
+      .mat-icon {
+        font-size: 18px;
+        line-height: 1.4;
+      }
+
+      &.icon-ocorrencia-finalizada {
+        background-color: mat-color($app-warn);
+      }
+
+      &.icon-ocorrencia-nao-finalizada {
+        background-color: rgb(44, 190, 78);
+      }
+    }
+  }
+
+
+}

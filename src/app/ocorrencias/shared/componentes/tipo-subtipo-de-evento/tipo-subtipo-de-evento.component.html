@@ -1,0 +1,38 @@
+<form [formGroup]="_form"
+      novalidate>
+  <div fxLayout="column"
+       fxLayoutGap="10px">
+    <!-- TIPO -->
+    <div fxFlex="noshrink">
+      <mat-form-field @enterForm
+                      appearance="standard"
+                      class="full-width">
+        <mat-label>Tipo</mat-label>
+        <mat-select formControlName="tipoEvento"
+                    required>
+          <mat-option *ngFor="let t of tipoEventosDisponiveis"
+                      [value]="t">
+            {{ t.descricao }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- SUBTIPO -->
+    <div fxFlex="noshrink">
+      <mat-form-field @enterForm
+                      *ngIf="_form.get('tipoEvento').valid"
+                      appearance="standard"
+                      class="full-width">
+        <mat-label>Subtipo</mat-label>
+        <mat-select formControlName="subTipoEvento"
+                    required>
+          <mat-option *ngFor="let t of _form?.value?.tipoEvento?.listaSubTipoEvento"
+                      [value]="t">
+            {{ t.descricao }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+</form>

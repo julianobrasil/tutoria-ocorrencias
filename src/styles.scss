@@ -2,7 +2,7 @@
 @import 'src/theme.scss';
 
 .full-width {
-  width: 100%;
+  width: 100% !important;
 }
 
 body {
@@ -17,6 +17,18 @@ body {
 
 button {
   text-transform: uppercase;
+}
+
+textarea {
+  resize: none;
+}
+
+.app-color-red {
+  color: mat-color($app-warn);
+}
+
+.app-text-center {
+  text-align: center;
 }
 
 .mat-input-underline {

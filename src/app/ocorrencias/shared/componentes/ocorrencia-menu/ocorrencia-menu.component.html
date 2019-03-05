@@ -1,0 +1,25 @@
+<button mat-icon-button
+        [matMenuTriggerFor]="menu">
+  <mat-icon>more_vert</mat-icon>
+</button>
+<mat-menu #menu="matMenu">
+  <button mat-menu-item
+          matTooltip="Esconder comentário dos convidados">
+    <mat-icon>visibility</mat-icon>
+    <span>Esconder</span>
+  </button>
+  <button mat-menu-item>
+    <mat-icon>visibility_off</mat-icon>
+    <span>Mostrar</span>
+  </button>
+  <mat-divider></mat-divider>
+  <button mat-menu-item>
+    <mat-icon>edit</mat-icon>
+    <span>Alterar</span>
+  </button>
+  <button color="warn"
+          mat-menu-item>
+    <mat-icon color="warn">delete_forever</mat-icon>
+    <span class="app-color-red">Excluir</span>
+  </button>
+</mat-menu>

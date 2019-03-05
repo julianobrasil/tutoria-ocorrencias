@@ -1,6 +1,6 @@
 
 // tslint:disable:max-line-length
-import {Evento} from '../app/model/transport-objects/to';
+import {Evento} from '../app/model/transport-objects';
 
 export const EVENTOS_EXISTENTES: Evento[] = [
   {

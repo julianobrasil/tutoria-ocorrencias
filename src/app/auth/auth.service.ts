@@ -1,51 +1,37 @@
-import {HttpClient, HttpParams, HttpResponse} from '@angular/common/http';
-import {Inject, Injectable} from '@angular/core';
-import {NavigationExtras, Router} from '@angular/router';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Router} from '@angular/router';
 
-import {concat, forkJoin, Observable, of as observableOf, Subscription} from 'rxjs';
-import {catchError, concatMap, map, mergeMap, retry, tap} from 'rxjs/operators';
+import {Observable, of as observableOf} from 'rxjs';
+import {concatMap, map} from 'rxjs/operators';
 
+import {ImodbService} from '../model/servicos/imodb.service';
 import {InitService} from '../model/servicos/init.service';
 
-import {APP_ID, Permissoes, URL} from '../model/helper-objects/constantes';
+import {Permissoes, URL} from '../model/helper-objects/constantes';
 
-import {LoginData} from '../model/helper-objects/login-data';
+import {Funcoes} from '../model/helper-objects/funcoes-sistema';
 import {UserData} from '../model/servicos/classes/user-data';
-import {TutoriaService} from '../model/servicos/dao/tutoria.service';
-import {UsuarioService} from '../model/servicos/dao/usuario.service';
-import {ImodbService} from '../model/servicos/imodb.service';
 
-import {
-  DadosApp,
-  DataDeEntrega,
-  Funcao,
-  Permissao,
-  Tutoria,
-  UsuarioAD,
-  UsuarioEFuncaoDTO,
-  UsuarioFuncao,
-  ValidadeSenha,
-  ValorTutoria,
-} from '../model/transport-objects/to';
+import {environment} from '../../environments/environment';
 
 @Injectable()
 export class AuthService {
-  public email = '';
-  public nomeUsuario = '';
-  public apelido = '';
-  public sobrenome = '';
-  public isSenhaDeveSerTrocada: boolean;
-  public userPermissionsList = '';
-  public userFunctionsList = '';
-  public isLoggedIn: boolean;
-  public token = '';
-  public atualizacaoDeDadosPeriodica: any;
-  public interrompeObtencaoPeriodicaDeHoras: any;
-  public redirectUrl: string;
+  email = 'juliano.custodio@unialfa.com.br';
+  nomeUsuario = 'Juliano Pável';
+  apelido = 'Juliano';
+  sobrenome = 'Pável';
+  isSenhaDeveSerTrocada: boolean;
+  userPermissionsList = environment.production ? '' : `,${Permissoes.ADMINISTRACAO_SISTEMA},`;
+  userFunctionsList = '';
+  isLoggedIn: boolean;
+  token = '';
+  atualizacaoDeDadosPeriodica: any;
+  interrompeObtencaoPeriodicaDeHoras: any;
+  redirectUrl: string;
 
   constructor(
     private http: HttpClient,
-    public router: Router,
     private imodb: ImodbService,
     private _initService: InitService,
   ) {}
@@ -86,14 +72,14 @@ export class AuthService {
 
             this.userPermissionsList = permissoes;
 
-            this._verificaPermissoes(permissoes, userData);
+            this._verificaPermissoes(userData);
           }),
         );
       }),
     );
   }
 
-  private _verificaPermissoes(permissoes: string, userData: UserData) {
+  private _verificaPermissoes(userData: UserData) {
     if (
       this.isUserInRoles([
         Permissoes.REGISTRO_TUTORIA_ALTERAR,
@@ -157,45 +143,45 @@ export class AuthService {
     clearTimeout(this.atualizacaoDeDadosPeriodica);
 
     this.http.post(URL.logoutAuthURL, '', {responseType: 'text'}).subscribe(
-      (resAuth) => {
+      () => {
         this.http.post(URL.logoutGatewayURL, '', {responseType: 'text'}).subscribe(
-          (resGateway) => {
+          () => {
             window.location.href = URL.loginURL;
           },
-          (erro) => {
+          () => {
             window.location.href = URL.loginURL;
           },
         );
       },
-      (erro) => {
+      () => {
         this.http
           .get(URL.logoutAuthOldBrowsers_1st_LoginLogout_GET, {responseType: 'text'})
           .subscribe(
-            (resAuth) => {
+            () => {
               this.http.post(URL.logoutGatewayURL, '', {responseType: 'text'}).subscribe(
-                (resGateway) => {
+                () => {
                   window.location.href = URL.loginURL;
                 },
-                (erro2) => {
+                () => {
                   window.location.href = URL.loginURL;
                 },
               );
             },
-            (erro2) => {
+            () => {
               this.http
                 .get(URL.logoutAuthOldBrowsers_2nd_Login_GET, {responseType: 'text'})
                 .subscribe(
-                  (resAuth) => {
+                  () => {
                     this.http.post(URL.logoutGatewayURL, '', {responseType: 'text'}).subscribe(
-                      (resGateway) => {
+                      () => {
                         window.location.href = URL.loginURL;
                       },
-                      (erro3) => {
+                      () => {
                         window.location.href = URL.loginURL;
                       },
                     );
                   },
-                  (erro3) => {
+                  () => {
                     window.location.href = URL.loginURL;
                   },
                 );
@@ -219,5 +205,20 @@ export class AuthService {
 
   isUserInRole(role: string): boolean {
     return this.userPermissionsList.indexOf(role) > -1;
+  }
+
+  /** verifica se o usuário logado é administrador */
+  isUsuarioLogadoAdministrador(): boolean {
+    return this.isUserInRole(Permissoes.ADMINISTRACAO_SISTEMA);
+  }
+
+  /** verifica se usuário logado tem permissão de qualidade */
+  isUsuarioLogadoQualidade(): any {
+    return this.userFunctionsList.includes(Funcoes.QUALIDADE.funcaoSistema);
+  }
+
+  /** verifica se usuário logado tem permissão de diretor */
+  isUsuarioLogadoDiretoria(): any {
+    return this.userFunctionsList.includes(Funcoes.DIRETOR.funcaoSistema);
   }
 }

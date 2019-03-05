@@ -1,0 +1,51 @@
+<section class="comentario-container">
+  <section class="comentario-avatar">
+    <app-ocorrencia-avatar [corDoAvatar]="corDoAvatar"
+                           [isTextoDoAvatarBranco]="isTextoDoAvatarBranco"
+                           [label]="comentario?.autorRef?.description[0]"
+                           [identificacaoTooltip]="comentario?.autorRef?.description">
+    </app-ocorrencia-avatar>
+  </section>
+
+  <section class="comentario-principal mat-elevation-z4">
+    <section class="comentario-titulo">
+
+      <section class="comentario-titulo-autoria">
+        <strong>{{comentario?.autorRef?.description}}</strong>
+        <span *ngIf="!isEditando">
+          comentou {{(comentario?.historicoInteracoes | interacaoMaisRecente)?.data | tempoDecorrido}}
+        </span>
+      </section>
+
+      <section *ngIf="comentario?.role && !isEditando">
+        <app-ocorrencia-bagde [comentario]="comentario">
+        </app-ocorrencia-bagde>
+      </section>
+
+      <!-- MENU NA BARRA DE TÍTULO-->
+      <section [ngClass]="{'comentario-menu': isEditando}">
+        <app-ocorrencia-menu *ngIf="!isEditando"></app-ocorrencia-menu>
+      </section>
+    </section>
+
+    <!-- QUANDO O USUÁRIO NÃO ESTIVER EDITANDO, MOSTRA APENAS UM TEXTO -->
+    <section *ngIf="!isEditando; else novoComentario"
+             [innerHtml]="(comentario?.historicoInteracoes | interacaoMaisRecente)?.texto?.markdown | compilaMarkdown"
+             class="comentario-corpo">
+    </section>
+
+    <!-- MOSTRA UM TEXTAREA QUANDO O USUÁRIO ESTIVER EDITANDO O COMENTÁRIO/COMENTANDO -->
+    <ng-template #novoComentario>
+      <section class="comentario-corpo">
+        <mat-form-field appearance="fill"
+                        class="full-width">
+          <mat-label>{{_comentarioEmEdicaoCtrl?.value?'COMENTÁRIO':'DEIXE UM COMENTÁRIO...'}}</mat-label>
+          <textarea [formControl]="_comentarioEmEdicaoCtrl"
+                    matInput
+                    rows="5">
+        </textarea>
+        </mat-form-field>
+      </section>
+    </ng-template>
+  </section>
+</section>

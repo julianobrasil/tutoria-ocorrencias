@@ -1,0 +1,19 @@
+<section class="ocorrencia-acao-container">
+  <section class="ocorrencia-acao-badge">
+    <mat-icon [color]="_theme">{{_icon}}</mat-icon>
+  </section>
+
+  <section class="ocorrencia-acao-texto">
+    <app-ocorrencia-avatar [corDoAvatar]="acao?.autorRef?.code | obtemCorDoAvatar: coresDosParticipantes"
+                           [identificacaoTooltip]="acao?.autorRef?.description"
+                           [isTextoDoAvatarBranco]="acao?.autorRef.code | isTextoDoAvatarBranco: coresDosParticipantes"
+                           [label]="acao?.autorRef?.description[0]"
+                           size="mini">
+    </app-ocorrencia-avatar>
+
+    <span>
+      <strong>{{acao?.autorRef?.description}}</strong>
+      {{acao | acaoRealizada}} {{acao?.historicoInteracoes[0]?.data | tempoDecorrido}}
+    </span>
+  </section>
+</section>

@@ -7,6 +7,9 @@ import * as moment from 'moment';
 })
 export class TempoDecorridoPipe implements PipeTransform {
   transform(value: Date): any {
+    if (!value) {
+      return '';
+    }
     moment.locale('pt-br');
 
     const agora = new Date();
@@ -18,12 +21,15 @@ export class TempoDecorridoPipe implements PipeTransform {
 
     const mesMilliseconds = diaMilliseconds * 30;
 
-    const data =
-      diaMilliseconds > milliseconds
-        ? 'há ' + milliseconds / (1000 * 60 * 60) + ' horas'
-        : mesMilliseconds > milliseconds
-        ? 'há ' + milliseconds / (1000 * 60 * 60 * 24) + ' dias'
-        : 'em ' + moment(agora).format('DD MMM/YYYY');
+    const horaMilliseconds = 60 * 60 * 1000;
+
+    const data = horaMilliseconds > milliseconds ?
+        'agora mesmo' :
+        diaMilliseconds > milliseconds ?
+        `há  ${milliseconds / (1000 * 60 * 60)} horas` :
+        mesMilliseconds > milliseconds ?
+        `há ${milliseconds / (1000 * 60 * 60 * 24)} dias` :
+        `em ${moment(dia).format('DD MMM YYYY')}`;
 
     return data;
   }

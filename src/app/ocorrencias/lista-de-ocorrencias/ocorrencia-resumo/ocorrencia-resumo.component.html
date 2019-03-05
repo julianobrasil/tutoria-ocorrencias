@@ -1,5 +1,4 @@
-<div [ngClass]="_containerClasses"
-     [style.border-top]="showBorderTop ? 'border-top: 0.5px solid rgba(0,0,0,0.1)' : ''">
+<div [ngClass]="_containerClasses">
   <div>
     <mat-icon *ngIf="evento?.isResolvido"
               class="icon-ocorrencia-finalizada">
@@ -13,7 +12,7 @@
   </div>
 
   <div class="ocorrencia-resumo-texto-container">
-    <div>{{evento?.titulo}}</div>
+    <a [routerLink]="evento?.id">{{evento?.titulo}}</a>
 
     <div>
       aberta
@@ -23,12 +22,12 @@
   </div>
 
   <div>
-    <ng-container *ngIf="evento?.comentarios?.length">
+    <ng-container *ngIf="(evento?.interacoes | somenteComentarios)?.length">
       <mat-icon>
         chat_bubble_outline
       </mat-icon>
       <div>
-        {{evento?.comentarios?.length}}
+        {{(evento?.interacoes | somenteComentarios)?.length}}
       </div>
     </ng-container>
   </div>

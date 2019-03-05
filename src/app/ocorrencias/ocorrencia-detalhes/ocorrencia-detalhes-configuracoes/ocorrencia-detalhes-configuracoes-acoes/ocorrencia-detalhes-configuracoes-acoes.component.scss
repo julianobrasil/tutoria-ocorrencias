@@ -1,0 +1,13 @@
+.ocorrencia-detalhes-configuracoes-acoes-container {
+  .mat-button {
+    width: 100%;
+    padding-left: 0px;
+
+    font-size: 0.7rem;
+    text-align: left;
+  }
+
+  .mat-list.mat-list-base[dense] .mat-list-item .mat-list-item-content {
+    padding-left: 0px !important;
+  }
+}

@@ -1,0 +1,69 @@
+td,
+th {
+  font-size: 0.73rem;
+  vertical-align: middle;
+}
+
+.popover {
+  max-width: 100%;
+  /* Max Width of the popover (depending on the container!) */
+}
+
+.popover-class {
+  background-color: white;
+  padding: 0 10px;
+  font-size: 9px;
+  border-radius: 5px;
+  border-style: solid;
+  border-color: lightgray;
+  border-width: 1px;
+  margin-left: 10px;
+}
+
+.popover-class div {
+  margin: 5px 0;
+  font-weight: bold;
+}
+
+.app-tutorias-select-style {
+  font-size: 0.85rem;
+
+  .mat-option {
+    font-size: 0.8rem;
+  }
+}
+
+.ocorrencia-formulario-radio-buttons {
+  text-align: right;
+
+  .mat-radio-button {
+    font-size: 0.8em;
+  }
+
+  .mat-radio-button:nth-of-type(1) {
+    margin-right: 5px;
+  }
+}
+
+.ocorrencia-formulario-botoes-acao {
+  margin-top: 10px;
+  
+  & > div {
+    text-align: right;
+    margin-right: 10px;
+  }
+
+  .app-botao-cancelar {
+    text-align: right;
+  }
+
+  .app-botao-gravar {
+    text-align: right;
+    margin-right: 15px;
+    margin-left: 5px;
+
+    button {
+      width: 120px;
+    }
+  }
+}

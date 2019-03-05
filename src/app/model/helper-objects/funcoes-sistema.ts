@@ -31,6 +31,11 @@ export class Funcoes {
     'OPERACOES',
     'GERENTE DE OPERAÇÕES',
   );
+  public static CONVIDADO: ModeloFuncao = new ModeloFuncao(
+    'CONVIDADO',
+    'CONVIDADO',
+    'CONVIDADO',
+  );
 }
 
 export const funcoesObj = {

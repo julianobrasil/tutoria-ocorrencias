@@ -1,0 +1,26 @@
+<section mat-dialog-title>
+  Tipo da ocorrência
+</section>
+
+<section mat-dialog-content>
+  <app-tipo-subtipo-de-evento [formControl]="_formControl"
+                              [tipoEventosDisponiveis]="_tipoEventos$ | async">
+  </app-tipo-subtipo-de-evento>
+</section>
+
+<section mat-dialog-actions
+         align="end">
+  <button [mat-dialog-close]="null"
+          color="warn"
+          mat-button>
+    Fechar
+  </button>
+
+  <button [disabled]="_formControl?.invalid || _formControl?.pristine"
+          (click)="_gravaAlteracao()"
+          color="primary"
+          cdkFocusInitial
+          mat-button>
+    Gravar
+  </button>
+</section>

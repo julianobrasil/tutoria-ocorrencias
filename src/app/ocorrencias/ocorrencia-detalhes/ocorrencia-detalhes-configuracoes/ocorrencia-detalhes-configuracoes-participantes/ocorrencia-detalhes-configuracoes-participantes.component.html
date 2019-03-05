@@ -1,0 +1,17 @@
+<section class="ocorrencia-detalhes-configuracoes-participantes-container">
+  <section [ngClass]="_classesDoCabecalho">
+    <span>{{participantes?.length | numeroDeParticipantes}}</span>
+
+    <mat-icon>settings</mat-icon>
+  </section>
+
+  <section class="ocorrencia-detalhes-configuracoes-participantes-avatares">
+    <app-ocorrencia-avatar *ngFor="let participante of participantes"
+                           [corDoAvatar]="participante?.usuarioRef?.code | obtemCorDoAvatar: coresDosParticipantes"
+                           [identificacaoTooltip]="participante?.usuarioRef?.description"
+                           [isTextoDoAvatarBranco]="participante?.usuarioRef?.code | isTextoDoAvatarBranco: coresDosParticipantes"
+                           [label]="participante?.usuarioRef?.description[0]"
+                           size="small">
+    </app-ocorrencia-avatar>
+  </section>
+</section>

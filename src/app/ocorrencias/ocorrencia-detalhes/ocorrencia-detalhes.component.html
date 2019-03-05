@@ -1,0 +1,85 @@
+<section *ngIf="_atrasaAposCargaDeOcorrencia$ | async"
+         class="ocorrencia-detalhes-wrapper">
+  <section class="ocorrencia-detalhes-container">
+
+    <section class="ocorrencia-detalhes-cabecalho">
+      <app-ocorrencia-detalhes-titulo [ocorrencia]="_ocorrencia$ | async">
+      </app-ocorrencia-detalhes-titulo>
+    </section>
+
+    <section class="ocorrencia-detalhes-corpo">
+
+      <section class="ocorrencia-detalhes-coluna-do-meio">
+
+        <app-ocorrencia-formulario *ngIf="_mostraFormulario; else resumoFormulario"
+                                   [ocorrencia]="_ocorrencia$ | async">
+        </app-ocorrencia-formulario>
+
+        <ng-template #resumoFormulario>
+          <app-ocorrencia-formulario-somente-leitura [corDoAvatar]="(_ocorrencia$ | async)?.autorEvento?.code | obtemCorDoAvatar: _coresDosParticipantes"
+                                                     [isTextoDoAvatarBranco]="(_ocorrencia$ | async)?.autorEvento?.code | isTextoDoAvatarBranco: _coresDosParticipantes"
+                                                     [ocorrencia]="_ocorrencia$ | async">
+          </app-ocorrencia-formulario-somente-leitura>
+        </ng-template>
+
+        <!-- O HIDDEN AQUI AUXILIA A UX (TELA NÃO FICAR CARREGANDO AS PARTES INDIVIDUALMENTE) -->
+        <section [hidden]="!(_ocorrencia$ | async)"
+                 class="app-ocorrencia-divider"></section>
+
+        <!-- LISTA DE COMENTÁRIOS -->
+        <section>
+          <ng-container *ngFor="let comentario of (_ocorrencia$ | async)?.interacoes | interacoesPorOrdemCronologica; last as isLast">
+            <app-ocorrencia-comentario *ngIf="comentario?.tipoInteracao === _tipoInteracaoExistente.COMENTARIO"
+                                       [corDoAvatar]="comentario?.autorRef?.code | obtemCorDoAvatar: _coresDosParticipantes"
+                                       [isTextoDoAvatarBranco]="comentario?.autorRef?.code | isTextoDoAvatarBranco: _coresDosParticipantes"
+                                       [comentario]="comentario">
+            </app-ocorrencia-comentario>
+
+            <app-ocorrencia-acao *ngIf="comentario?.tipoInteracao === _tipoInteracaoExistente.ACAO"
+                                 [acao]="comentario"
+                                 [coresDosParticipantes]="_coresDosParticipantes">
+            </app-ocorrencia-acao>
+
+            <div *ngIf="!isLast"
+                 class="app-ocorrencia-divider">
+            </div>
+          </ng-container>
+        </section>
+
+        <div *ngIf="(_ocorrencia$ | async)?.interacoes?.length"
+             [ngClass]="(_ocorrencia$ | async) | lastDividerClasses">
+          <div class="app-ocorrencia-divider">
+          </div>
+        </div>
+
+        <!-- O HIDDEN AQUI AUXILIA A UX (TELA NÃO FICAR CARREGANDO AS PARTES INDIVIDUALMENTE) -->
+        <app-ocorrencia-comentario #ocorrenciaComentario="ocorrenciaComentario"
+                                   [comentario]="_novoComentario"
+                                   [corDoAvatar]="_novoComentario?.autorRef?.code | obtemCorDoAvatar: _coresDosParticipantes"
+                                   [hidden]="!(_ocorrencia$ | async)"
+                                   [isTextoDoAvatarBranco]="_novoComentario?.autorRef?.code | isTextoDoAvatarBranco: _coresDosParticipantes"
+                                   [isEditando]="true"
+                                   [roles]="_roles">
+        </app-ocorrencia-comentario>
+
+        <section class="ocorrencia-detalhes-actions">
+          <app-acoes-ligadas-a-novo-comentario (comentar)="_comenta($event)"
+                                               (encerrarEvento)="_encerraEvento($event)"
+                                               (reabrirEvento)="_reabreEvento($event)"
+                                               [ocorrencia]="_ocorrencia$ | async"
+                                               [textoNovoComentario]="ocorrenciaComentario.textoDoComentarioChange | async">
+          </app-acoes-ligadas-a-novo-comentario>
+        </section>
+
+      </section>
+
+      <section class="ocorrencia-detalhes-coluna-da-direita">
+        <app-ocorrencia-detalhes-configuracoes (alteraTipoEvento)="_alteraTipoEvento($event)"
+                                               (excluiEvento)="_excluiEvento()"
+                                               [coresDosParticipantes]="_coresDosParticipantes"
+                                               [ocorrencia]="_ocorrencia$ | async">
+        </app-ocorrencia-detalhes-configuracoes>
+      </section>
+    </section>
+  </section>
+</section>

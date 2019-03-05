@@ -1,0 +1,28 @@
+@import '~@angular/material/theming';
+@import '../../../../theme.scss';
+
+.ocorrencia-popover-de-escolha-container {
+  display: flex;
+  box-sizing: content-box;
+
+  margin-top: -10px;
+  margin-right: 5px;
+  padding: 8px 16px;
+  border-radius: 4px;
+
+  background: rgba(255, 255, 255, 1);
+
+  & > .mat-raised-button:not(:last-of-type) {
+    margin-right: 10px;
+  }
+
+  .ocorrencia-comum {
+    background-color: mat-color($app-primary,600);
+    color: white;
+  }
+
+  .ocorrencia-tutoria {
+    background-color: mat-color($app-accent,900);
+    color: white;
+  }
+}

@@ -1,13 +1,14 @@
 import {ObjectReference} from './object-reference';
 
-export enum TipoDeParticipacao {
+export enum TipoParticipacao {
   CONVIDADO = 'CONVIDADO',
   COORDENADOR = 'COORDENADOR',
+  DELEGADO = 'DELEGADO',
   DIRETOR = 'DIRETOR',
+  GERAL = 'GERAL', // quando o autor não for um tutor
   QUALIDADE = 'QUALIDADE',
   RESPONSAVEL = 'RESPONSAVEL',
   TUTOR = 'TUTOR',
-  DELEGADO = 'DELEGADO',
 }
 
 /**
@@ -17,7 +18,7 @@ export enum TipoDeParticipacao {
  * @interface Participante
  */
 export interface Participante {
-  tipo: TipoDeParticipacao;
+  tipoParticipacao: TipoParticipacao;
   usuarioRef: ObjectReference;
   isAutor: boolean;
 }

@@ -1,0 +1,7 @@
+<div *ngIf="label"
+     [matTooltip]="identificacaoTooltip"
+     [ngStyle]="{'background-color': corDoAvatar}"
+     [ngClass]="_classesDoContainer"
+     class="ocorrencia-detalhe-avatar-container mat-elevation-z8">
+  <div [ngStyle]="{color: isTextoDoAvatarBranco ? 'white' : 'black'}">{{label}}</div>
+</div>

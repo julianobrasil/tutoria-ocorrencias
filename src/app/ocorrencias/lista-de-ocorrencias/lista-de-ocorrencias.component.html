@@ -3,13 +3,13 @@
        [fxLayoutAlign]="_isVerySmallScreen ? 'start end' : 'space-between center'"
        [fxLayoutGap]="_isVerySmallScreen ? '1px' : '10px'">
     <div class="lista-de-ocorrencias-filtro-container"
-         fxFlex>
+         fxFlex="50%">
       <app-filtro-de-ocorrencias (termoDeBusca)="_termoDeBuscaAlterado($event)"></app-filtro-de-ocorrencias>
     </div>
 
     <div class="lista-de-ocorrencias-botao-nova-ocorrencia">
-      <button color="primary"
-              mat-raised-button>Nova Ocorrência</button>
+      <app-ocorrencia-popover-de-escolha (novaOcorrencia)="novaOcorrencia.emit($event)">
+      </app-ocorrencia-popover-de-escolha>
     </div>
   </div>
 
@@ -23,6 +23,6 @@
                  (page)="_paginaTrocada($event)"
                  [length]="paginacao?.totalElements"
                  [pageSize]="paginacao?.pageSize"
-                 [pageSizeOptions]="paginacao?.pageSizeOptions">
+                 [pageSizeOptions]="_pageSizeOptions">
   </mat-paginator>
 </div>

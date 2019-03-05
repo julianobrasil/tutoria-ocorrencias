@@ -21,10 +21,11 @@ import {
   UsuarioAD,
   UsuarioEFuncaoDTO,
   ValorTutoria,
-} from '../transport-objects/to';
+} from '../transport-objects/';
 
 import {APP_ID, Permissoes, URL} from '../helper-objects/constantes';
 import {UserData} from './classes/user-data';
+import { UNIDADES_EXISTENTES } from 'src/data/unidades';
 
 @Injectable()
 export class InitService {
@@ -101,7 +102,7 @@ export class InitService {
       .get<any>(URL.baseTutoriaServiceURL + URL.permissoesUsuarioAutenticadoPath)
       .pipe(
         map((res) => {
-          const userPermissionsList = res.reduce((a, b) => a + (a !== '' ? ',' : '') + b, '');
+          const userPermissionsList = res.reduce((a: string, b: string) => a + (a !== '' ? ',' : '') + b, '');
           return userPermissionsList;
         }),
       )
@@ -194,17 +195,7 @@ export class InitService {
   }
 
   private _obtemUnidades(): Observable<Unidade[] | null> {
-    return this._http.get<Unidade[]>(URL.baseTutoriaServiceURL + URL.unidadePath).pipe(
-      tap((unidades: Unidade[]) => {
-        console.log('unidades loaded');
-        this._imodb.unidades = unidades;
-      }),
-      catchError((err) => {
-        console.log('Error loading unidades');
-        this._imodb.unidades = [];
-        return observableOf(null);
-      }),
-    );
+    return observableOf(JSON.parse(JSON.stringify(UNIDADES_EXISTENTES)));
   }
 
   private _obtemUsuarios(): Observable<UsuarioAD[] | null> {

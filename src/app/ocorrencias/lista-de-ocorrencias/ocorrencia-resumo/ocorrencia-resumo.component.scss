@@ -1,5 +1,5 @@
 @import '~@angular/material/theming';
-@import 'src/theme.scss';
+@import '../../../../theme.scss';
 
 $barra-de-titulo-padding: 16px !default;
 $barra-de-titulo-border-radius: 4px !default;
@@ -9,12 +9,12 @@ $barra-de-titulo-header-size: 40px !default;
   display: flex;
   box-sizing: border-box;
 
-  border-bottom: 0.5px solid rgba(0,0,0,0.1);
-  border-left: 0.5px solid rgba(0,0,0,0.1);
-  border-right: 0.5px solid rgba(0,0,0,0.1);
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
+  border-left: 0.5px solid rgba(0, 0, 0, 0.1);
+  border-right: 0.5px solid rgba(0, 0, 0, 0.1);
 
   &.ocorrencia-container-border-top {
-    border-top: 0.5px solid rgba(0,0,0,0.1);
+    border-top: 0.5px solid rgba(0, 0, 0, 0.1);
   }
 
   div {
@@ -53,11 +53,11 @@ $barra-de-titulo-header-size: 40px !default;
   }
 
   .mat-icon.icon-ocorrencia-finalizada {
-    color: rgb(106, 245, 106);
+    color: mat-color($app-warn);
   }
 
   .mat-icon.icon-ocorrencia-nao-finalizada {
-    color: mat-color($app-warn);
+    color: rgb(106, 245, 106);
   }
 }
 
@@ -65,13 +65,18 @@ $barra-de-titulo-header-size: 40px !default;
   display: flex;
   flex-direction: column;
 
-  &>div:first-child {
-    text-transform: uppercase;
+  &>a:first-child {
+    color: inherit;
     font-weight: 500;
+    text-decoration: none;
+  }
+
+  &>a:first-child:hover {
+    color: mat-color($app-primary);
   }
 
   &>div:nth-child(2) {
     font-size: 0.8rem;
-    color: rgba(0, 0, 0, 0.4);
+    color: rgba(0, 0, 0, 0.6);
   }
 }

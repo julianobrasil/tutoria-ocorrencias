@@ -1,0 +1,52 @@
+.comentario-container {
+  display: flex;
+
+  .comentario-avatar {
+    max-width: 60px;
+    min-width: 60px;
+  }
+
+  .comentario-principal {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    border: 1px solid #c3c9cf;
+    border-radius: 4px;
+
+    font-size: 0.8rem;
+
+    .comentario-titulo {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      box-sizing: border-box;
+      border-bottom: 1px solid #c3c9cf;
+
+      padding-left: 10px;
+      padding-right: 0;
+
+      background-color: rgba(0, 0, 0, 0.05);
+
+      .comentario-titulo-autoria {
+        flex: 1;
+
+        padding-top: 10px;
+        padding-bottom: 10px;
+      }
+
+      .comentario-menu {
+        height: 40px;
+      }
+    }
+
+    .comentario-corpo {
+      padding: 15px;
+
+      textarea {
+        resize: vertical;
+      }
+    }
+  }
+}

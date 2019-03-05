@@ -1,0 +1,63 @@
+.ocorrencia-detalhes-wrapper {
+  display: flex;
+  justify-content: center;
+
+  .ocorrencia-detalhes-container {
+    display: flex;
+    flex-direction: column;
+    min-width: 980px;
+    max-width: 980px;
+
+    margin-bottom: 10px;
+
+    .ocorrencia-detalhes-cabecalho {
+      flex: 1;
+    }
+
+    .ocorrencia-detalhes-corpo {
+      display: flex;
+
+      .ocorrencia-detalhes-coluna-do-meio {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+
+        .ocorrencia-detalhes-actions {
+          display: flex;
+          justify-content: flex-end;
+          margin-top: 15px;
+        }
+      }
+
+      .ocorrencia-detalhes-coluna-da-direita {
+        min-width: 200px;
+        max-width: 200px;
+
+        margin-left: 20px;
+      }
+    }
+
+  }
+}
+
+.app-ocorrencia-divider {
+  box-sizing: border-box;
+
+  height: 15px;
+
+  margin-left: 80px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+
+  border-left: 2px solid rgba(0, 0, 0, 0.2)
+}
+
+.app-ocorrencia-last-divider-nao-resolvido {
+  border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+  margin-bottom: 20px;
+}
+
+.app-ocorrencia-last-divider-resolvido {
+  border-bottom: 4px solid rgba(0, 0, 0, 0.2);
+  margin-bottom: 20px;
+}

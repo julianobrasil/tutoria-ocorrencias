@@ -1,0 +1,28 @@
+<section *ngIf="ocorrencia"
+         class="ocorrencia-detalhes-configuracoes-container">
+
+  <section class="ocorrencia-detalhes-configuracoes-responsaveis">
+    <app-ocorrencia-detalhes-configuracoes-responsaveis [coresDosParticipantes]="coresDosParticipantes"
+                                                        [responsaveis]="ocorrencia?.participantes | filtraResponsaveis: _tipoDeParticipacao.RESPONSAVEL">
+    </app-ocorrencia-detalhes-configuracoes-responsaveis>
+  </section>
+
+  <mat-divider></mat-divider>
+
+  <section class="ocorrencia-detalhes-configuracoes-participantes">
+    <app-ocorrencia-detalhes-configuracoes-participantes [coresDosParticipantes]="coresDosParticipantes"
+                                                         [participantes]="ocorrencia?.participantes | filtraParticipantesRepetidos">
+    </app-ocorrencia-detalhes-configuracoes-participantes>
+  </section>
+
+  <mat-divider></mat-divider>
+
+  <section class="ocorrencia-detalhes-configuracoes-acoes">
+    <app-ocorrencia-detalhes-configuracoes-acoes (alteraTipoDeEvento)="_abreDialogoAlteraTipoEvento()"
+                                                 (excluiEvento)="_abreDialogoConfirmExclusaoEvento()"
+                                                 [mostraAcaoAlterarTipoDoEvento]="_temPermissaoParaAlterarTipoDeEvento"
+                                                 [mostraAcaoExcluirEvento]="_temPermissaoParaExcluirEvento">
+    </app-ocorrencia-detalhes-configuracoes-acoes>
+  </section>
+
+</section>

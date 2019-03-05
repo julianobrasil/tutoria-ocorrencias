@@ -14,7 +14,7 @@ import {
   UsuarioEPermissaoDTO,
   UsuarioFuncao,
   UsuarioPermissao,
-} from '../../transport-objects/to';
+} from '../../transport-objects/';
 
 import {URL} from '../../helper-objects/constantes';
 
