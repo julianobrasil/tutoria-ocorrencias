@@ -1,9 +1,9 @@
 import {Component, Input} from '@angular/core';
 
 export enum AvatarSize {
-  MINI='mini',
-  REGULAR='regular',
-  SMALL='small',
+  MINI = 'mini',
+  REGULAR = 'regular',
+  SMALL = 'small',
 }
 
 @Component({

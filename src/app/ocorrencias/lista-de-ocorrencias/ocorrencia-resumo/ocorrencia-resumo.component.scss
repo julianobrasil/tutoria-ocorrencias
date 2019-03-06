@@ -65,17 +65,26 @@ $barra-de-titulo-header-size: 40px !default;
   display: flex;
   flex-direction: column;
 
-  &>a:first-child {
-    color: inherit;
-    font-weight: 500;
-    text-decoration: none;
+  .ocorrencia-resumo-texto-titulo {
+
+    &>a:first-child {
+      color: inherit;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+    }
+  
+    &>a:first-child:hover {
+      color: mat-color($app-primary);
+    }
+
+    app-ocorrencia-rotulo: {
+      margin-left: 5px;
+      cursor: default;
+    }
   }
 
-  &>a:first-child:hover {
-    color: mat-color($app-primary);
-  }
-
-  &>div:nth-child(2) {
+  &>div {
     font-size: 0.8rem;
     color: rgba(0, 0, 0, 0.6);
   }

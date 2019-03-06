@@ -9,6 +9,13 @@
 
   <mat-divider></mat-divider>
 
+  <section class="ocorrencia-detalhes-configuracoes-rotulos">
+    <app-ocorrencia-detalhes-configuracoes-rotulos [ocorrencia]="ocorrencia">
+    </app-ocorrencia-detalhes-configuracoes-rotulos>
+  </section>
+
+  <mat-divider></mat-divider>
+  
   <section class="ocorrencia-detalhes-configuracoes-participantes">
     <app-ocorrencia-detalhes-configuracoes-participantes [coresDosParticipantes]="coresDosParticipantes"
                                                          [participantes]="ocorrencia?.participantes | filtraParticipantesRepetidos">

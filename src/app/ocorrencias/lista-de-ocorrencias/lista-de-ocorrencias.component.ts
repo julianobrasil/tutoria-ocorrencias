@@ -1,6 +1,13 @@
 // tslint:disable:max-line-length
 import {BreakpointObserver, BreakpointState} from '@angular/cdk/layout';
-import {ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, Output} from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  Output,
+} from '@angular/core';
 
 import {MatPaginatorIntl, PageEvent} from '@angular/material';
 
@@ -8,19 +15,25 @@ import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
 import {Evento} from '../../model/transport-objects';
-import {MatPaginatorIntlListaDeOcorrenciasPtBr} from '../i18n/mat-paginator-intl-lista-de-ocorrencias-pt-br';
+import {
+  MatPaginatorIntlListaDeOcorrenciasPtBr,
+} from '../i18n/mat-paginator-intl-lista-de-ocorrencias-pt-br';
 import {Paginacao} from '../ocorrencia-facade.service';
-import {OcorrenciaFormularioComponentTipo} from '../ocorrencia-formulario/ocorrencia-formulario-component.service';
+import {
+  OcorrenciaFormularioComponentTipo,
+} from '../ocorrencia-formulario/ocorrencia-formulario-component.service';
 // tslint:enable:max-line-length
 
 @Component({
   selector: 'app-lista-de-ocorrencias',
   templateUrl: './lista-de-ocorrencias.component.html',
   styleUrls: ['./lista-de-ocorrencias.component.scss'],
-  providers: [{
-    provide: MatPaginatorIntl,
-    useClass: MatPaginatorIntlListaDeOcorrenciasPtBr
-  }],
+  providers: [
+    {
+      provide: MatPaginatorIntl,
+      useClass: MatPaginatorIntlListaDeOcorrenciasPtBr,
+    },
+  ],
 })
 export class ListaDeOcorrenciasComponent implements OnDestroy {
   /** eventos para serem listados */
@@ -42,8 +55,8 @@ export class ListaDeOcorrenciasComponent implements OnDestroy {
 
   /** emite o termo digitado */
   @Output()
-  termoDeBuscaChange: EventEmitter<string|null|undefined> =
-      new EventEmitter<string|null|undefined>();
+  termoDeBuscaChange: EventEmitter<string | null | undefined> =
+      new EventEmitter<string | null | undefined>();
 
   /** emite quando o usuário clica no botão de nova ocorrência */
   @Output()
@@ -62,8 +75,8 @@ export class ListaDeOcorrenciasComponent implements OnDestroy {
   /** destrói todas as assinaturas em observables */
   private _destroy$: Subject<void> = new Subject<void>();
 
-  constructor(
-      _breakpointObserver: BreakpointObserver, private _cd: ChangeDetectorRef) {
+  constructor(_breakpointObserver: BreakpointObserver,
+              private _cd: ChangeDetectorRef) {
     const smallScreen = '(max-width: 900px)';
     const verySmallScreen = '(max-width: 780px)';
     _breakpointObserver.observe([smallScreen, verySmallScreen])
@@ -83,9 +96,7 @@ export class ListaDeOcorrenciasComponent implements OnDestroy {
   }
 
   /** dispara sinal de que o termo de busca foi alterado */
-  _termoDeBuscaAlterado(termo: string) {
-    this.termoDeBuscaChange.emit(termo);
-  }
+  _termoDeBuscaAlterado(termo: string) { this.termoDeBuscaChange.emit(termo); }
 
   /** configura página */
   _paginaTrocada(evt: PageEvent) {
@@ -96,8 +107,7 @@ export class ListaDeOcorrenciasComponent implements OnDestroy {
   }
 
   get _showPaginator(): boolean {
-    return !(
-        !this.paginacao.page &&
-        this.paginacao.totalElements < this.paginacao.pageSize);
+    return !(!this.paginacao.page &&
+             this.paginacao.totalElements < this.paginacao.pageSize);
   }
 }

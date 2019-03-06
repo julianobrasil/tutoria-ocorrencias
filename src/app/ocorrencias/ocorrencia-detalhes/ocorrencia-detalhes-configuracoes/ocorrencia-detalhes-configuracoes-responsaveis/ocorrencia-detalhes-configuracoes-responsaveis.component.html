@@ -2,7 +2,7 @@
   <section [ngClass]="_classesDoCabecalho">
     <span>Responsáveis</span>
 
-    <mat-icon>settings</mat-icon>
+    <mat-icon *ngIf="podeAdicionarResponsaveis">settings</mat-icon>
   </section>
 
   <section class="ocorrencia-detalhes-configuracoes-responsaveis-avatares">

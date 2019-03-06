@@ -19,10 +19,11 @@ import {AppComponent} from './app.component';
 import {AuthModule} from './auth/auth.module';
 import {AuthGuardModule} from './auth/guards/auth-guard.module';
 import {CustomMaterialModule} from './custom-material.module';
-import {ServicosSingletonModule} from './model/servicos/servicos-singleton.module';
+import {
+  ServicosSingletonModule,
+} from './model/servicos/servicos-singleton.module';
 import {ServicosModule} from './model/servicos/servicos.module';
 import * as fromDocuments from './model/transport-objects';
-import {SemestreDeTrabalho, TipoParticipacao} from './model/transport-objects';
 
 @NgModule({
   declarations: [AppComponent],
@@ -55,15 +56,14 @@ export class AppModule {
     this._store$.dispatch(new fromStore.GERAL.ACTIONS.ObtemConfigRun());
     this._store$.dispatch(
         new fromStore.GERAL.ACTIONS.ObtemUnidadesDisponiveisRun());
-    this._store$
-        .pipe(
-            select(fromStore.GERAL.SELECTORS.CONFIGURACOES_GERAIS
-                       .getSemestreDeTrabalho),
-            filter(Boolean), first(),
-            tap((s: SemestreDeTrabalho) => this._store$.dispatch(
-                    new fromStore.GERAL.ACTIONS
-                        .ObtemDatasDeEntregaDisponiveisRun(
-                            {ano: s.ano, semestre: s.semestre}))))
+    this._store$.pipe(select(fromStore.GERAL.SELECTORS.CONFIGURACOES_GERAIS
+                                 .getSemestreDeTrabalho),
+                      filter(Boolean), first(),
+                      tap((s: fromDocuments.SemestreDeTrabalho) =>
+                              this._store$.dispatch(
+                                  new fromStore.GERAL.ACTIONS
+                                      .ObtemDatasDeEntregaDisponiveisRun(
+                                          {ano: s.ano, semestre: s.semestre}))))
         .subscribe();
     this._store$.dispatch(new fromStore.GERAL.ACTIONS.ObtemHoraDoServidorRun());
   }
@@ -71,11 +71,13 @@ export class AppModule {
   _fixEventos(): void {
     EVENTOS_EXISTENTES.forEach((evt: fromDocuments.Evento) => {
       if (evt.tutoria.historicoTutores.length) {
-        evt.tutoria.historicoTutores.sort(
-            (a, b) => new Date(b.dataInicio).getTime() -
-                new Date(a.dataInicio).getTime(),
-        );
+        evt.tutoria.historicoTutores.sort((a, b) =>
+                                              new Date(b.dataInicio).getTime() -
+                                              new Date(a.dataInicio).getTime());
       }
+
+      evt.cidadeUnidade =
+          `${evt.tutoria.unidade.cidade}:${evt.tutoria.unidade.unidade}`;
 
       const tutor = evt.tutoria.historicoTutores[0];
 
@@ -83,56 +85,56 @@ export class AppModule {
                          .splice(0, 20)
                          .filter((item) => !!item)
                          .join(' ') +
-          '...';
+                     '...';
 
       evt.interacoes =
           evt.etapas
-              .map(
-                  (etapa: fromDocuments.Etapa): fromDocuments.Interacao => ({
-                    tipoInteracao: fromDocuments.TipoInteracao.COMENTARIO,
-                    autorRef: {
-                      code: etapa.emailResponsavel,
-                      description: etapa.emailResponsavel,
-                    },
-                    role: etapa.tipoEtapa,
-                    dataCriacao: new Date(etapa.dataFim),
-                    historicoInteracoes: [
-                      {
-                        data: etapa.dataFim,
-                        texto: {
-                          semFormatacao: etapa.parecer,
-                          markdown: etapa.parecer,
-                        },
-                      },
-                    ],
-                    id: '' + new Date().getTime() + Math.random(),
-                  }),
-                  )
-              .sort(
-                  (a, b) => new Date(a.dataCriacao).getTime() -
-                      new Date(b.dataCriacao).getTime());
+              .map((etapa: fromDocuments.Etapa): fromDocuments.Interacao => ({
+                     tipoInteracao: fromDocuments.TipoInteracao.COMENTARIO,
+                     autorRef: {
+                       code: etapa.emailResponsavel,
+                       description: etapa.emailResponsavel,
+                     },
+                     role: etapa.tipoEtapa,
+                     dataCriacao: new Date(etapa.dataFim),
+                     historicoInteracoes: [
+                       {
+                         data: etapa.dataFim,
+                         texto: {
+                           semFormatacao: etapa.parecer,
+                           markdown: etapa.parecer,
+                         },
+                       },
+                     ],
+                     id: '' + new Date().getTime() + Math.random(),
+                   }))
+              .sort((a, b) => new Date(a.dataCriacao).getTime() -
+                              new Date(b.dataCriacao).getTime());
 
       if (evt.isResolvido) {
         const acao: fromDocuments.Interacao = {
           tipoInteracao: fromDocuments.TipoInteracao.ACAO,
           dataCriacao: evt.lasModifiedDate,
-          autorRef: evt.interacoes && evt.interacoes.length ?
-              evt.interacoes[evt.interacoes.length - 1].autorRef :
-              {
-                code:
-                    evt.tutoria.historicoTutores.find((t) => !t.dataFim).email,
-                description:
-                    evt.tutoria.historicoTutores.find((t) => !t.dataFim)
-                        .nomeTutor,
-              },
+          autorRef:
+              evt.interacoes && evt.interacoes.length ?
+                  evt.interacoes[evt.interacoes.length - 1].autorRef :
+                  {
+                    code: evt.tutoria.historicoTutores.find((t) => !t.dataFim)
+                              .email,
+                    description:
+                        evt.tutoria.historicoTutores.find((t) => !t.dataFim)
+                            .nomeTutor,
+                  },
           id: '' + new Date().getTime(),
           role: evt.interacoes && evt.interacoes.length ?
-              evt.interacoes[evt.interacoes.length - 1].role :
-              TipoParticipacao.COORDENADOR,
-          historicoInteracoes: [{
-            data: evt.lasModifiedDate,
-            tipoAcao: fromDocuments.TipoAcao.ENCERRA_OCORRENCIA,
-          }],
+                    evt.interacoes[evt.interacoes.length - 1].role :
+                    fromDocuments.TipoParticipacao.COORDENADOR,
+          historicoInteracoes: [
+            {
+              data: evt.lasModifiedDate,
+              tipoAcao: fromDocuments.TipoAcao.ENCERRA_OCORRENCIA,
+            },
+          ],
         };
 
         evt.interacoes.push(acao);
@@ -142,11 +144,12 @@ export class AppModule {
 
       evt.titulo = titulo;
 
-      evt.autorEvento = tutor ? {
-        code: tutor.email,
-        description: tutor.nomeTutor,
-      } :
-                                null;
+      evt.autorEvento = tutor ?
+                            {
+                              code: tutor.email,
+                              description: tutor.nomeTutor,
+                            } :
+                            null;
 
       evt.participantes = evt.etapas.map(
           (etapa: fromDocuments.Etapa) => ({

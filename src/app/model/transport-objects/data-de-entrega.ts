@@ -2,7 +2,7 @@ import {AbstractDocument} from './abstract-document';
 import {SemestreDeTrabalho} from './semestre-de-trabalho';
 export class DataDeEntrega extends AbstractDocument {
   public unidade = '';
-  public datas: (Date | string)[];
+  public datas: Array<Date | string>;
   public semestreDeTrabalho: SemestreDeTrabalho;
 
   constructor() {

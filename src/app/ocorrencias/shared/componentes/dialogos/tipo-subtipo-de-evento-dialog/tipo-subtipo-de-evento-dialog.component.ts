@@ -5,9 +5,13 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {Observable} from 'rxjs';
 
 import {TipoEvento} from '../../../../../model/transport-objects/';
-import {TipoSubtipoDeEventoComponentData} from '../../tipo-subtipo-de-evento/tipo-subtipo-de-evento.component';
+import {
+  TipoSubtipoDeEventoComponentData,
+} from '../../tipo-subtipo-de-evento/tipo-subtipo-de-evento.component';
 
-import {TipoSubtipoDeEventoDialogComponentService} from './tipo-subtipo-de-evento-dialog-component.service';
+import {
+  TipoSubtipoDeEventoDialogComponentService,
+} from './tipo-subtipo-de-evento-dialog-component.service';
 
 // tslint:enable:max-line-length
 
@@ -21,20 +25,25 @@ export interface TipoSubtipoDeEventoDialogComponentData {
   styleUrls: ['./tipo-subtipo-de-evento-dialog.component.scss'],
 })
 export class TipoSubtipoDeEventoDialogComponent implements AfterViewInit {
-  /** controle de formulário */
+  /** controle do formulário que manipula o dado */
   _formControl: FormControl = new FormControl();
 
   /** tipos de eventos disponíveis */
   _tipoEventos$: Observable<TipoEvento[]> =
       this._componentService.getTipoEventosDisponiveis$();
 
+  /** valor original do componente TIPO:SUBTIPO */
+  _valorOriginal: string;
+
   constructor(
-      @Inject(MAT_DIALOG_DATA) private _data:
-          TipoSubtipoDeEventoDialogComponentData,
-      private _dialogRef: MatDialogRef<
-          TipoSubtipoDeEventoDialogComponent, TipoSubtipoDeEventoComponentData>,
-      private _componentService: TipoSubtipoDeEventoDialogComponentService,
-  ) {}
+      @Inject(MAT_DIALOG_DATA)
+      private _data: TipoSubtipoDeEventoDialogComponentData,
+      private _dialogRef: MatDialogRef<TipoSubtipoDeEventoDialogComponent,
+                                       TipoSubtipoDeEventoComponentData>,
+      private _componentService: TipoSubtipoDeEventoDialogComponentService) {
+    this._valorOriginal = `${_data.dados.descricaoTipoEvento}:${
+        _data.dados.descricaoSubTipoEvento}`;
+  }
 
   ngAfterViewInit() {
     if (!this._data || !this._data.dados) {
@@ -58,5 +67,15 @@ export class TipoSubtipoDeEventoDialogComponent implements AfterViewInit {
     }
 
     this._dialogRef.close(valor);
+  }
+
+  /** desabilita o botão de gravar */
+  get _botaoDeGravarDesabilitado() {
+    if (!this._formControl.value) {
+      return false;
+    }
+    const dadoCorrente = `${this._formControl.value.descricaoTipoEvento}:${
+        this._formControl.value.descricaoSubTipoEvento}`;
+    return dadoCorrente === this._valorOriginal;
   }
 }

@@ -2,7 +2,7 @@
   <section [ngClass]="_classesDoCabecalho">
     <span>{{participantes?.length | numeroDeParticipantes}}</span>
 
-    <mat-icon>settings</mat-icon>
+    <mat-icon *ngIf="podeAdicionarParticipantes">settings</mat-icon>
   </section>
 
   <section class="ocorrencia-detalhes-configuracoes-participantes-avatares">

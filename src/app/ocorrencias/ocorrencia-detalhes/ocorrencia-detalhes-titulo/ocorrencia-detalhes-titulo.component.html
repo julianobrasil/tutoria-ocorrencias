@@ -1,6 +1,17 @@
 <section *ngIf="ocorrencia"
          class="ocorrencia-detalhes-titulo-container">
-  <section class="ocorrencia-detalhes-titulo-principal">{{ocorrencia?.titulo}}</section>
+  <section class="ocorrencia-detalhes-titulo-principal">
+    <section class="ocorrencia-detalhes-titulo-principal-texto">{{ocorrencia?.titulo}}</section>
+
+    <section class="ocorrencia-detalhes-titulo-principal-botao">
+      <button (click)="_abreDialogoAlteracaoDeTitulo()"
+              color="accent"
+              mat-raised-button
+              type="button">
+        Altera Título
+      </button>
+    </section>
+  </section>
 
   <section class="ocorrencia-detalhes-titulo-subtitulo">
 
@@ -17,11 +28,11 @@
       </div>
       <div>
         <span *ngIf="ocorrencia?.isResolvido; else ocorrenciaFechada">
-          Resolvida
+          Fechada
         </span>
         <ng-template #ocorrenciaFechada>
           <span>
-            Pendente
+            Aberta
           </span>
         </ng-template>
       </div>
@@ -30,7 +41,7 @@
     <!-- AUTOR E DATA (À DIREITA DO BOTÃO NO TÍTULO)-->
     <div>
       <strong>{{ocorrencia?.autorEvento?.description}}</strong>
-      criou esta ocorrência {{ocorrencia?.dataRegistro | tempoDecorrido}}
+      criou esta ocorrência <app-tempo-decorrido [data]="ocorrencia?.dataRegistro"></app-tempo-decorrido>
     </div>
   </section>
 </section>

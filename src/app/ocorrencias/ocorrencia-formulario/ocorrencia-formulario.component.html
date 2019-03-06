@@ -169,7 +169,7 @@
             </div>
 
             <div fxFlex="noshrink">
-              <!-- OBSERVAÇÃO -->
+              <!-- LOCAL -->
               <mat-form-field @enterForm
                               *ngIf="_parecerValidoEVisivel"
                               appearance="fill"
@@ -177,13 +177,13 @@
                               floatLabel="always"
                               hintLabel="Max 3000 caracteres">
                 <mat-label>Localização (opcional)</mat-label>
-                <input #observacao
+                <input #local
                        class="text-uppercase"
-                       formControlName="observacao"
+                       formControlName="local"
                        matInput
                        maxlength="70"
                        placeholder="Ex.: Sala 105B (ONDE O AR-CONDICIONADO ESTRAGOU)">
-                <mat-hint align="end">{{observacao.value?.length || 0}}/70</mat-hint>
+                <mat-hint align="end">{{local.value?.length || 0}}/70</mat-hint>
               </mat-form-field>
             </div>
 

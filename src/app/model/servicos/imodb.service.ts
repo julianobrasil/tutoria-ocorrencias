@@ -1,6 +1,17 @@
 import {Injectable} from '@angular/core';
 
-import {Config, DadosApp, DataDeEntrega, Funcao, Permissao, SubTipoEvento, TipoEvento, Tutoria, Unidade, Usuario, UsuarioAD, ValorTutoria,} from '../transport-objects/';
+import {
+  Config,
+  DadosApp,
+  DataDeEntrega,
+  Funcao,
+  Permissao,
+  TipoEvento,
+  Tutoria,
+  Unidade,
+  UsuarioAD,
+  ValorTutoria,
+} from '../transport-objects/';
 
 @Injectable()
 export class ImodbService {

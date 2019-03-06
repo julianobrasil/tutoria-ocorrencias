@@ -1,4 +1,6 @@
-import {OcorrenciaFormularioComponentData} from 'src/app/ocorrencias/ocorrencia-formulario/ocorrencia-formulario-component.service';
+import {
+  OcorrenciaFormularioComponentData,
+} from '../../../ocorrencias/ocorrencia-formulario/ocorrencia-formulario-component.service';
 import {ClassificacaoEvento} from '../evento';
 import {TextoFormatado} from '../texto-formatado';
 
@@ -11,9 +13,9 @@ export class NovoEventoRequest {
 
   tipoEventoId: string;
   subTipoEventoNome: string;
-  dataEvento: Date|string;
+  dataEvento: Date | string;
   textoFormatado: TextoFormatado;
-  observacao: string;
+  local: string;
   isResolvido: boolean;
   classificacaoEvento?: ClassificacaoEvento;
 
@@ -22,9 +24,9 @@ export class NovoEventoRequest {
       dados: OcorrenciaFormularioComponentData): void {
     this.tutoriaId = dados.tutoria ? dados.tutoria.id : null;
 
-    this.cidadeUnidade = dados.unidade ?
-        `${dados.unidade.cidade}:${dados.unidade.unidade}` :
-        null;
+    this.cidadeUnidade =
+        dados.unidade ? `${dados.unidade.cidade}:${dados.unidade.unidade}` :
+                        null;
 
     this.titulo = dados.titulo;
     this.tipoEventoId = dados.tipoEvento ? dados.tipoEvento.id : null;
@@ -34,7 +36,7 @@ export class NovoEventoRequest {
     this.textoFormatado = {
       markdown: dados.parecer ? dados.parecer : '',
     };
-    this.observacao = dados.observacao ? dados.observacao : '';
+    this.local = dados.local ? dados.local : '';
     this.isResolvido = !!dados.isResolvido;
   }
 }

@@ -10,8 +10,20 @@
   margin-bottom: 15px;
 
   .ocorrencia-detalhes-titulo-principal {
+    display: flex;
+    justify-content: space-between;
+
     font-size: 2rem;
     text-align: justify;
+
+    .ocorrencia-detalhes-titulo-principal-botao {
+      margin-left: 30px;
+
+      .mat-raised-button {
+        height: 30px;
+        line-height: 32px;
+      }
+    }
   }
 
   .ocorrencia-detalhes-titulo-subtitulo {

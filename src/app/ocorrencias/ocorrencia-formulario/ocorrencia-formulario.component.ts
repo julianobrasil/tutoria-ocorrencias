@@ -1,19 +1,45 @@
-import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, ViewChild,} from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {MatDatepicker, MatOptionSelectionChange} from '@angular/material';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SatPopover} from '@ncstate/sat-popover';
 import {BehaviorSubject, combineLatest, Observable, Subject} from 'rxjs';
-import {debounceTime, filter, first, map, startWith, takeUntil, tap} from 'rxjs/operators';
+import {
+  debounceTime,
+  filter,
+  first,
+  map,
+  startWith,
+  takeUntil,
+  tap,
+} from 'rxjs/operators';
 
 import {TutoriaNome} from '../../model/helper-objects/telas/tutoria-helper';
 import {Evento, Unidade} from '../../model/transport-objects';
 import {SubTipoEvento, TipoEvento} from '../../model/transport-objects/';
 import {RouterExtraService} from '../../shared/services/router-extra';
 import {enterFormAnimation} from '../animations';
-import {OcorrenciaDadosDaGravacao, OcorrenciaStatusGravacaoService} from '../ocorrencia-status-gravacao.service';
+import {
+  OcorrenciaDadosDaGravacao,
+  OcorrenciaStatusGravacaoService,
+} from '../ocorrencia-status-gravacao.service';
 
-import {OcorrenciaFormularioComponentData, OcorrenciaFormularioComponentService, OcorrenciaFormularioComponentTipo,} from './ocorrencia-formulario-component.service';
+import {
+  OcorrenciaFormularioComponentData,
+  OcorrenciaFormularioComponentService,
+  OcorrenciaFormularioComponentTipo,
+} from './ocorrencia-formulario-component.service';
 
 @Component({
   selector: 'app-ocorrencia-formulario',
@@ -22,7 +48,8 @@ import {OcorrenciaFormularioComponentData, OcorrenciaFormularioComponentService,
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [enterFormAnimation],
 })
-export class OcorrenciaFormularioComponent implements AfterViewInit, OnDestroy {
+export class OcorrenciaFormularioComponent implements AfterViewInit,
+    OnDestroy {
   _form: FormGroup = new FormGroup({titulo: new FormControl()});
 
   private _disabled = false;
@@ -65,10 +92,11 @@ export class OcorrenciaFormularioComponent implements AfterViewInit, OnDestroy {
     return this._ocorrencia;
   }
   set ocorrencia(ocorrencia: Evento) {
-    this._ocorrencia = ocorrencia ?
-        Object.assign(
-            new Evento(), {...JSON.parse(JSON.stringify(ocorrencia))}) :
-        ocorrencia;
+    this._ocorrencia =
+        ocorrencia ?
+            Object.assign(new Evento(),
+                          {...JSON.parse(JSON.stringify(ocorrencia))}) :
+            ocorrencia;
 
     if (!ocorrencia) {
       this._form.reset();
@@ -141,15 +169,11 @@ export class OcorrenciaFormularioComponent implements AfterViewInit, OnDestroy {
   /** destrói todas as assinaturas em observables */
   private _destroy$: Subject<void> = new Subject<void>();
 
-  constructor(
-      private _cd: ChangeDetectorRef,
-      private _componentService: OcorrenciaFormularioComponentService,
-      private _fb: FormBuilder,
-      private _route: ActivatedRoute,
-      private _router: Router,
-      private _routerExtra: RouterExtraService,
-      private _statusGravacaoService: OcorrenciaStatusGravacaoService,
-  ) {
+  constructor(private _cd: ChangeDetectorRef,
+              private _componentService: OcorrenciaFormularioComponentService,
+              private _fb: FormBuilder, private _route: ActivatedRoute,
+              private _router: Router, private _routerExtra: RouterExtraService,
+              private _statusGravacaoService: OcorrenciaStatusGravacaoService) {
     this._initGeral();
 
     this._observeStatusGravacao();
@@ -163,9 +187,7 @@ export class OcorrenciaFormularioComponent implements AfterViewInit, OnDestroy {
           this._elementToFocusAfterDate.nativeElement.focus();
         }, 500);
 
-        setTimeout(() => {
-          this._datepickerDisabled = false;
-        }, 800);
+        setTimeout(() => { this._datepickerDisabled = false; }, 800);
       });
     }
   }
@@ -195,9 +217,9 @@ export class OcorrenciaFormularioComponent implements AfterViewInit, OnDestroy {
   _gravarOcorrencia() {
     // se estiver editando, existirá um objeto this._ocorrencia e o id deve ser
     // colocado no formulário
-    const formData: OcorrenciaFormularioComponentData = this._ocorrencia ?
-        {...this._form.value, id: this._ocorrencia.id} :
-        {...this._form.value};
+    const formData: OcorrenciaFormularioComponentData =
+        this._ocorrencia ? {...this._form.value, id: this._ocorrencia.id} :
+                           {...this._form.value};
 
     this.dadosDoFormularioParaGravar.emit(formData);
   }
@@ -230,9 +252,7 @@ export class OcorrenciaFormularioComponent implements AfterViewInit, OnDestroy {
   }
 
   /** mostra título... somente se conseguir pegar a hora do servidor */
-  get _tituloVisible(): boolean {
-    return !!this._differencaDeHoraNoServidor;
-  }
+  get _tituloVisible(): boolean { return !!this._differencaDeHoraNoServidor; }
 
   /** mostra tutoria ou unidade na template */
   get _turmaDeTutoriaOuUnidadeVisible(): boolean {
@@ -245,7 +265,7 @@ export class OcorrenciaFormularioComponent implements AfterViewInit, OnDestroy {
     const tipoEventoPossuiValor =
         !!this._form.get('tipoEvento') && !!this._form.get('tipoEvento').value;
     return tituloValidoEIntocado || tutoriaPossuiValor || unidadePossuiValor ||
-        tipoEventoPossuiValor;
+           tipoEventoPossuiValor;
   }
 
   /** mostra o select de tipo de evento */
@@ -253,12 +273,12 @@ export class OcorrenciaFormularioComponent implements AfterViewInit, OnDestroy {
     switch (this._tipoFormulario) {
       case OcorrenciaFormularioComponentTipo.TUTORIA: {
         return this._turmaDeTutoriaOuUnidadeVisible &&
-            this._form.get('tutoria') && this._form.get('tutoria').valid;
+               this._form.get('tutoria') && this._form.get('tutoria').valid;
       }
 
       case OcorrenciaFormularioComponentTipo.OCORRENCIA_COMUM: {
         return this._turmaDeTutoriaOuUnidadeVisible &&
-            this._form.get('unidade') && this._form.get('unidade').valid;
+               this._form.get('unidade') && this._form.get('unidade').valid;
       }
     }
     return false;
@@ -267,43 +287,41 @@ export class OcorrenciaFormularioComponent implements AfterViewInit, OnDestroy {
   /** mostra o select de tipo de evento */
   get _subTipoVisible(): boolean {
     return this._tipoVisible && this._form.get('tipoEvento') &&
-        this._form.get('tipoEvento').valid;
+           this._form.get('tipoEvento').valid;
   }
 
   get _dataVisible(): boolean {
     return this._subTipoVisible && this._form.get('subTipoEvento') &&
-        this._form.get('subTipoEvento').valid;
+           this._form.get('subTipoEvento').valid;
   }
 
   get _parecerVisible(): boolean {
     return this._dataVisible && this._form.get('dataEvento') &&
-        this._form.get('dataEvento').valid;
+           this._form.get('dataEvento').valid;
   }
 
   get _parecerValidoEVisivel(): boolean {
     return this._parecerVisible && this._form.get('parecer') &&
-        this._form.get('parecer').valid;
+           this._form.get('parecer').valid;
   }
 
   /** desabilita o botão de gravar */
   get _disableSaveButton(): boolean {
     const maxCaracteresUltrapassadoParecer =
         this._form.value.parecer && this._form.value.parecer.length > 3000;
-    const maxCaracteresUltrapassadoObservacao = this._form.value.observacao &&
+    const maxCaracteresUltrapassadoObservacao =
+        this._form.value.observacao &&
         this._form.value.observacao.length > 3000;
-    return (
-        !this._form.valid || maxCaracteresUltrapassadoObservacao ||
-        maxCaracteresUltrapassadoParecer);
+    return (!this._form.valid || maxCaracteresUltrapassadoObservacao ||
+            maxCaracteresUltrapassadoParecer);
   }
 
   /** inicialização geral do sistema */
   private _initGeral() {
     combineLatest(
         this._tipoFormulario$.pipe(
-            startWith(this._tipoFormulario),
-            debounceTime(500),
-            filter((value: number) => value !== null && value !== undefined),
-            ),
+            startWith(this._tipoFormulario), debounceTime(500),
+            filter((value: number) => value !== null && value !== undefined)),
         this._differencaDeHoraNoServidor$.pipe(
             debounceTime(500),
             filter((value: number) => value !== null && value !== undefined)),
@@ -328,32 +346,27 @@ export class OcorrenciaFormularioComponent implements AfterViewInit, OnDestroy {
   /** configura valores do formulário */
   private _setupFormValues(): void {
     combineLatest(this._componentService.getTiposDisponiveis$())
-        .pipe(
-            first(),
-            map(([values]) => values),
-            map(
-                (values: TipoEvento[]) => values.filter(
-                    (value: TipoEvento) => value.descricao ===
-                        this._ocorrencia.descricaoTipoEvento,
-                    )[0],
-                ),
-            tap((tipoEvento: TipoEvento) => {
-              const subTipoEvento = tipoEvento.listaSubTipoEvento.filter(
-                  (value: SubTipoEvento) => value.descricao ===
-                      this._ocorrencia.descricaoSubTipoEvento,
-                  )[0];
+        .pipe(first(), map(([values]) => values),
+              map((values: TipoEvento[]) => values.filter(
+                      (value: TipoEvento) =>
+                          value.descricao ===
+                          this._ocorrencia.descricaoTipoEvento)[0]),
+              tap((tipoEvento: TipoEvento) => {
+                const subTipoEvento = tipoEvento.listaSubTipoEvento.filter(
+                    (value: SubTipoEvento) =>
+                        value.descricao ===
+                        this._ocorrencia.descricaoSubTipoEvento)[0];
 
-              this._form.patchValue({
-                tutoria: this._ocorrencia.tutoria,
-                tipoEvento,
-                subTipoEvento,
-                dataEvento: new Date(this._ocorrencia.data),
-                parecer: this._ocorrencia.parecer,
-                observacao: this._ocorrencia.observacao,
-                isResolvido: this._ocorrencia.isResolvido,
-              });
-            }),
-            )
+                this._form.patchValue({
+                  tutoria: this._ocorrencia.tutoria,
+                  tipoEvento,
+                  subTipoEvento,
+                  dataEvento: new Date(this._ocorrencia.data),
+                  parecer: this._ocorrencia.parecer,
+                  local: this._ocorrencia.local,
+                  isResolvido: this._ocorrencia.isResolvido,
+                });
+              }))
         .subscribe();
   }
 
@@ -376,12 +389,10 @@ export class OcorrenciaFormularioComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    this._dataEvento = new Date(
-        new Date().getTime() - diffHoraLocalServidorMilliSeconds,
-    );
-    this._dataDeHoje = new Date(
-        new Date().getTime() - diffHoraLocalServidorMilliSeconds,
-    );
+    this._dataEvento =
+        new Date(new Date().getTime() - diffHoraLocalServidorMilliSeconds);
+    this._dataDeHoje =
+        new Date(new Date().getTime() - diffHoraLocalServidorMilliSeconds);
 
     this._form.enable();
   }
@@ -399,26 +410,26 @@ export class OcorrenciaFormularioComponent implements AfterViewInit, OnDestroy {
       titulo: [null, Validators.required],
       unidade: null,
       tutoria: tf === OcorrenciaFormularioComponentTipo.TUTORIA ?
-          [null, Validators.required] :
-          null,
+                   [null, Validators.required] :
+                   null,
       tipoEvento: [null, Validators.required],
       subTipoEvento: [null, Validators.required],
       dataEvento: [null, Validators.required],
       parecer: [null, Validators.required],
-      observacao: null,
-      isResolvido: [null, Validators.required]
+      local: null,
+      isResolvido: [null, Validators.required],
     });
 
     this._cd.markForCheck();
   }
 
   private _observeStatusGravacao() {
-    this._statusGravacaoService.getCriacaoDeEvento$().subscribe(
+    this._statusGravacaoService.getStatusCriacaoDeEvento$().subscribe(
         (status: OcorrenciaDadosDaGravacao) => {
           if (status.sucesso) {
-            this._router.navigate(
-                ['./', status.evento.id], {relativeTo: this._route});
+            this._router.navigate(['./', status.evento.id],
+                                  {relativeTo: this._route});
           }
-        })
+        });
   }
 }

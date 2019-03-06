@@ -2,9 +2,20 @@ import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {combineLatest, Observable} from 'rxjs';
 import {first, map} from 'rxjs/operators';
 
-import {ClassificacaoEvento, Evento, NovoEventoRequest, Unidade} from '../../model/transport-objects/';
-import {OcorrenciaStoreFacadeService, Paginacao} from '../ocorrencia-facade.service';
-import {OcorrenciaFormularioComponentData, OcorrenciaFormularioComponentTipo} from '../ocorrencia-formulario/ocorrencia-formulario-component.service';
+import {
+  ClassificacaoEvento,
+  Evento,
+  NovoEventoRequest,
+  Unidade,
+} from '../../model/transport-objects/';
+import {
+  OcorrenciaStoreFacadeService,
+  Paginacao,
+} from '../ocorrencia-facade.service';
+import {
+  OcorrenciaFormularioComponentData,
+  OcorrenciaFormularioComponentTipo,
+} from '../ocorrencia-formulario/ocorrencia-formulario-component.service';
 
 import {OcorrenciaComponentService} from './ocorrencia-component.service';
 
@@ -36,14 +47,10 @@ export class OcorrenciasComponent {
   /** tipo de formulário */
   _ocorrenciaFormularioComponentTipo: OcorrenciaFormularioComponentTipo;
 
-  constructor(
-      private _ocorrenciaStoreFacade: OcorrenciaStoreFacadeService,
-      private _componentService: OcorrenciaComponentService) {
+  constructor(private _ocorrenciaStoreFacade: OcorrenciaStoreFacadeService,
+              private _componentService: OcorrenciaComponentService) {
     combineLatest(this._paginacao$)
-        .pipe(
-            first(),
-            map((_) => _[0]),
-            )
+        .pipe(first(), map((_) => _[0]))
         .subscribe((paginacao: Paginacao) => {
           if (!paginacao) {
             this._ocorrenciaStoreFacade.setPaginacao({
@@ -58,7 +65,7 @@ export class OcorrenciasComponent {
   }
 
   /** filtra os eventos existentes */
-  _filtraEventos(termo: string|null|undefined) {
+  _filtraEventos(termo: string | null | undefined) {
     this._ocorrenciaStoreFacade.setTermoDeBuscaEBusca(termo);
   }
 
@@ -89,9 +96,6 @@ export class OcorrenciasComponent {
     // completa propridades faltantes de texto
     this._componentService.complementaDadosDeTexto(to.textoFormatado);
 
-    console
-        .log({to})
-
-            this._ocorrenciaStoreFacade.criaEvento(to);
+    this._ocorrenciaStoreFacade.criaEvento(to);
   }
 }

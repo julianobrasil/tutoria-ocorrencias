@@ -17,4 +17,4 @@ export class ObtemUnidadesDisponiveisSuccess implements Action {
 }
 
 export type UnidadeAction =
-    |ObtemUnidadesDisponiveisSuccess|ObtemUnidadesDisponiveisRun;
+    | ObtemUnidadesDisponiveisSuccess | ObtemUnidadesDisponiveisRun;

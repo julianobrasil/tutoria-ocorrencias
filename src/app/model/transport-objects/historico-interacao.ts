@@ -1,3 +1,4 @@
+import {HistoricoAuditoriaAcao} from './historico-auditoria-acao';
 import {TextoFormatado} from './texto-formatado';
 import {TipoAcao} from './tipo-acao';
 
@@ -8,9 +9,12 @@ import {TipoAcao} from './tipo-acao';
  * @interface HistoricoComentario
  */
 export interface HistoricoInteracao {
-  data: Date|string;
+  data: Date | string;
 
   texto?: TextoFormatado;
 
-  tipoAcao?: TipoAcao|undefined|null;
+  tipoAcao?: TipoAcao;
+
+  /** nem toda ação terá informações de auditoria */
+  auditoriaAcao?: HistoricoAuditoriaAcao;
 }

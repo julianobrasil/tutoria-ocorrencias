@@ -10,7 +10,10 @@ export enum OBTEM_DATAS_DE_ENTREGA_DISPONIVEIS {
 
 export class ObtemDatasDeEntregaDisponiveisRun implements Action {
   readonly type = OBTEM_DATAS_DE_ENTREGA_DISPONIVEIS.RUN;
-  constructor(public payload: {ano: number; semestre: number;}) {}
+  constructor(public payload: {
+    ano: number;
+    semestre: number;
+  }) {}
 }
 
 export class ObtemDatasDeEntregaDisponiveisSuccess implements Action {
@@ -19,4 +22,4 @@ export class ObtemDatasDeEntregaDisponiveisSuccess implements Action {
 }
 
 export type DataDeEntregaAction =
-    |ObtemDatasDeEntregaDisponiveisSuccess|ObtemDatasDeEntregaDisponiveisRun;
+    | ObtemDatasDeEntregaDisponiveisSuccess | ObtemDatasDeEntregaDisponiveisRun;

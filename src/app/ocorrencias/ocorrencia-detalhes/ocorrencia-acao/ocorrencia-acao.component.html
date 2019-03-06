@@ -11,9 +11,10 @@
                            size="mini">
     </app-ocorrencia-avatar>
 
-    <span>
-      <strong>{{acao?.autorRef?.description}}</strong>
-      {{acao | acaoRealizada}} {{acao?.historicoInteracoes[0]?.data | tempoDecorrido}}
-    </span>
+    <section class="ocorrencia-acao-texto-descricao">
+      <section class="autor texto-normal-negrito">{{acao?.autorRef?.description}}</section>
+      &nbsp;<span [innerHTML]="acao | acaoRealizada"></span>
+      <app-tempo-decorrido [data]="acao?.historicoInteracoes[0]?.data"></app-tempo-decorrido>
+    </section>
   </section>
 </section>

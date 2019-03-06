@@ -1,15 +1,27 @@
 import {Injectable} from '@angular/core';
 import {select, Store} from '@ngrx/store';
-import {Observable, Subject, timer} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
+import {combineLatest, Observable, Subject, timer} from 'rxjs';
+import {first, map, takeUntil} from 'rxjs/operators';
+import {environment} from '../../../environments/environment';
 
 import * as fromDiarioDeTutoriaStore from '../../../store/diario-de-tutoria';
 import {AuthService} from '../../auth/auth.service';
 import {Funcoes} from '../../model/helper-objects/funcoes-sistema';
 import {ImodbService} from '../../model/servicos/imodb.service';
-import {ObjectReference, Participante, TipoParticipacao} from '../../model/transport-objects';
-import {Coordenador, Evento, Responsavel, Tutor} from '../../model/transport-objects/';
-import {GeradorDeCoresService} from '../shared/utilitarios/gerador-de-cores.service';
+import {
+  ObjectReference,
+  Participante,
+  TipoParticipacao,
+} from '../../model/transport-objects';
+import {
+  Coordenador,
+  Evento,
+  Responsavel,
+  Tutor,
+} from '../../model/transport-objects/';
+import {
+  GeradorDeCoresService,
+} from '../shared/utilitarios/gerador-de-cores.service';
 
 export interface CorDoParticipante {
   usuarioRef: ObjectReference;
@@ -20,6 +32,8 @@ export interface CorDoParticipante {
 export enum OcorrenciaDetalhesOperation {
   REABRE_E_COMENTA,
   ENCERRA_E_COMENTA,
+  ALTERA_LOCAL,
+  ALTERA_TITULO,
 }
 
 export interface OcorrenciaDetalhesSavingStatus {
@@ -31,13 +45,14 @@ export interface OcorrenciaDetalhesSavingStatus {
   providedIn: 'root',
 })
 export class OcorrenciaDetalhesComponentService {
+  constructor(private _authService: AuthService,
+              private _geradorDeCoresService: GeradorDeCoresService,
+              private _store$: Store<{}>, public _imodb: ImodbService) {}
 
-  constructor(
-      private _authService: AuthService,
-      private _geradorDeCoresService: GeradorDeCoresService,
-      private _store$: Store<{}>,
-      public _imodb: ImodbService,
-  ) {}
+  /** obtém o úlgimo valor emitido pelo observable passado como parâmetro */
+  getLatestValue<T>(value$: Observable<T>): Observable<T> {
+    return combineLatest(value$).pipe(map(([value]) => value), first());
+  }
 
   /** tipos de evento disponíveis */
   getEventoById$(id: string): Observable<Evento> {
@@ -47,7 +62,7 @@ export class OcorrenciaDetalhesComponentService {
 
   /** obtém evento direto do banco de dados */
   obtemEventoDoBancoPeriodicamente(id: string, destroy$: Subject<void>): void {
-    timer(0, 5000)
+    timer(0, environment.production ? 5000 : 600000)
         .pipe(takeUntil(destroy$))
         .subscribe(
             (_) => this._store$.dispatch(
@@ -96,8 +111,7 @@ export class OcorrenciaDetalhesComponentService {
             codigoCorHexadecimal,
             isTextoDoAvatarBranco:
                 this._geradorDeCoresService.isContrastOkToWhite(
-                    codigoCorHexadecimal,
-                    ),
+                    codigoCorHexadecimal),
           };
         });
 
@@ -156,6 +170,33 @@ export class OcorrenciaDetalhesComponentService {
         }));
   }
 
+  /**
+   * Altera o local da ocorrência
+   *
+   * @param {string} eventoId
+   * @param {string} local
+   * @memberof OcorrenciaDetalhesComponentService
+   */
+  alteraLocal(eventoId: string, local: string): void {
+    this._store$.dispatch(
+        new fromDiarioDeTutoriaStore.ACTIONS.EVENTO.AlteraLocalDoEventoRun({
+            eventoId, local,
+        }));
+  }
+
+  /**
+   * Altera o título do evento
+   *
+   * @param {string} eventoId
+   * @param {string} titulo
+   * @memberof OcorrenciaDetalhesComponentService
+   */
+  alteraTitulo(eventoId: string, titulo: string): void {
+    this._store$.dispatch(
+        new fromDiarioDeTutoriaStore.ACTIONS.EVENTO.AlteraTituloDoEventoRun({
+            eventoId, titulo,
+        }));
+  }
 
   /**
    * Reabre evento que estava fechado. Note que o usuário pode rebrir e comentar
@@ -197,34 +238,31 @@ export class OcorrenciaDetalhesComponentService {
    */
   insereComentario(ocorrencia: Evento, textoComentario: string): void {
     this._store$.dispatch(
-      new fromDiarioDeTutoriaStore.ACTIONS.EVENTO.InsereComentarioRun({
-        eventoId: ocorrencia.id,
-        textoComentario,
-      }));
+        new fromDiarioDeTutoriaStore.ACTIONS.EVENTO.InsereComentarioRun({
+          eventoId: ocorrencia.id,
+          textoComentario,
+        }));
   }
 
   /** verifica se ou usuário logado é tutor */
   private _isTutor(historicoTutores: Tutor[]): boolean {
     return historicoTutores.some(
         (tutor: Tutor) =>
-            !tutor.dataFim && tutor.email === this._authService.email,
-    );
+            !tutor.dataFim && tutor.email === this._authService.email);
   }
 
   /** verifica se ou usuário logado é coordenador */
   private _isCoordenador(coordenadores: Coordenador[]): boolean {
     return coordenadores.some(
         (coordenador: Coordenador) =>
-            coordenador.email === this._authService.email,
-    );
+            coordenador.email === this._authService.email);
   }
 
   /** verifica se ou usuário logado é responsável */
   private _isResponsavel(responsaveis: Responsavel[]): boolean {
     return responsaveis.some(
         (responsavel: Responsavel) =>
-            responsavel.email === this._authService.email,
-    );
+            responsavel.email === this._authService.email);
   }
 
   /** verifica se ou usuário logado é da qualidade */
@@ -244,7 +282,6 @@ export class OcorrenciaDetalhesComponentService {
     return participantes.some(
         (participante: Participante) =>
             participante.usuarioRef.code === this._authService.email &&
-            participante.tipoParticipacao === TipoParticipacao.CONVIDADO,
-    );
+            participante.tipoParticipacao === TipoParticipacao.CONVIDADO);
   }
 }

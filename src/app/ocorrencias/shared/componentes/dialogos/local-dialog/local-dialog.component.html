@@ -1,0 +1,37 @@
+<section mat-dialog-title>
+  Local da ocorrência
+</section>
+
+<section mat-dialog-content>
+  <mat-form-field appearance="fill"
+                  class="full-width"
+                  floatLabel="always"
+                  hintLabel="Max 3000 caracteres">
+    <mat-label>Localização (opcional)</mat-label>
+    <input #local
+           class="text-uppercase"
+           [formControl]="_formControl"
+           matInput
+           maxlength="70"
+           placeholder="Ex.: Sala 105B (ONDE O AR-CONDICIONADO ESTRAGOU)"
+           required>
+    <mat-hint align="end">{{local.value?.length || 0}}/70</mat-hint>
+  </mat-form-field>
+</section>
+
+<section mat-dialog-actions
+         align="end">
+  <button [mat-dialog-close]="null"
+          color="warn"
+          mat-button>
+    Fechar
+  </button>
+
+  <button [disabled]="_botaoDeGravarDesabilitado"
+          (click)="_gravaAlteracao()"
+          color="primary"
+          cdkFocusInitial
+          mat-button>
+    Gravar
+  </button>
+</section>

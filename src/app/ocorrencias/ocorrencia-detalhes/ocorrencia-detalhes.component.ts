@@ -2,12 +2,34 @@ import {ChangeDetectionStrategy, Component, OnDestroy} from '@angular/core';
 import {MatDialog} from '@angular/material';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {combineLatest, Observable, of as observableOf, Subject} from 'rxjs';
-import {debounceTime, delay, filter, first, map, switchMapTo, takeUntil, tap} from 'rxjs/operators';
-import {ConfirmationDialogComponent, ConfirmationDialogComponentData} from 'src/app/shared/dialogs/confirmation-dialog/confirmation-dialog.component';
+import {
+  debounceTime,
+  delay,
+  filter,
+  first,
+  map,
+  switchMapTo,
+  takeUntil,
+  tap,
+} from 'rxjs/operators';
+import {
+  ConfirmationDialogComponent,
+  ConfirmationDialogComponentData,
+} from '../../shared/dialogs/confirmation-dialog/confirmation-dialog.component';
 
 import {Evento, Interacao, TipoInteracao} from '../../model/transport-objects';
 
-import {CorDoParticipante, OcorrenciaDetalhesComponentService} from './ocorrencia-detalhes-component.service';
+import {
+  CorDoParticipante,
+  OcorrenciaDetalhesComponentService,
+  OcorrenciaDetalhesOperation,
+} from './ocorrencia-detalhes-component.service';
+import {
+  OcorrenciaDetalhesTituloChanged,
+} from './ocorrencia-detalhes-titulo/ocorrencia-detalhes-titulo.component';
+import {
+  OcorrenciaFormularioSomenteLeituraChanged,
+} from './ocorrencia-formulario-somente-leitura/ocorrencia-formulario-somente-leitura.component';
 
 @Component({
   selector: 'app-ocorrencia-detalhes',
@@ -42,12 +64,9 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
   /** destrói todas as assinaturas em observables */
   private _destroy$: Subject<void> = new Subject<void>();
 
-  constructor(
-      private _activatedRoute: ActivatedRoute,
-      private _componentService: OcorrenciaDetalhesComponentService,
-      private _dialog: MatDialog,
-      private _router: Router,
-  ) {
+  constructor(private _activatedRoute: ActivatedRoute,
+              private _componentService: OcorrenciaDetalhesComponentService,
+              private _dialog: MatDialog, private _router: Router) {
     this._monitoraIdInexistente();
 
     this._obtemOcorrenciaAPartirDaRota();
@@ -65,18 +84,39 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
   /** exclui o evento corrente */
   _excluiEvento() {
     combineLatest(this._ocorrencia$.pipe(filter(Boolean)))
-        .pipe(
-            first(),
-            map(([evento]) => evento),
-            )
-        .subscribe(
-            (ocorrencia: Evento) =>
-                this._componentService.excluiEvento(ocorrencia.id));
+        .pipe(first(), map(([evento]) => evento))
+        .subscribe((ocorrencia: Evento) =>
+                       this._componentService.excluiEvento(ocorrencia.id));
   }
 
   /** altera tipo de evento */
   _alteraTipoEvento(ocorrencia: Evento) {
     this._componentService.alteraTipoEvento(ocorrencia);
+  }
+
+  /** trata alterações na ocorrência originadas do formulário somente leitura */
+  _ocorrenciaAlteradaNoFormularioSomenteLeitura(
+      evt: OcorrenciaFormularioSomenteLeituraChanged) {
+    switch (evt.type) {
+      case OcorrenciaDetalhesOperation.ALTERA_LOCAL: {
+        this._componentService.getLatestValue(this._ocorrencia$)
+            .subscribe((ocorrencia: Evento) =>
+                           this._componentService.alteraLocal(ocorrencia.id,
+                                                              evt.valor));
+      }
+    }
+  }
+
+  /** trata alteração no título da ocorrência */
+  _tituloDaOcorrenciaAlterado(evt: OcorrenciaDetalhesTituloChanged) {
+    switch (evt.type) {
+      case OcorrenciaDetalhesOperation.ALTERA_TITULO: {
+        this._componentService.getLatestValue(this._ocorrencia$)
+            .subscribe((ocorrencia: Evento) =>
+                           this._componentService.alteraTitulo(ocorrencia.id,
+                                                               evt.valor));
+      }
+    }
   }
 
   /**
@@ -85,13 +125,9 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
    */
   _reabreEvento(textoDoComentario: string) {
     combineLatest(this._ocorrencia$.pipe(filter(Boolean)))
-        .pipe(
-            first(),
-            map(([evento]) => evento),
-            )
-        .subscribe(
-            (ocorrencia: Evento) => this._componentService.reabreEvento(
-                ocorrencia, textoDoComentario));
+        .pipe(first(), map(([evento]) => evento))
+        .subscribe((ocorrencia: Evento) => this._componentService.reabreEvento(
+                       ocorrencia, textoDoComentario));
   }
 
   /**
@@ -100,25 +136,18 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
    */
   _encerraEvento(textoDoComentario: string) {
     combineLatest(this._ocorrencia$.pipe(filter(Boolean)))
-        .pipe(
-            first(),
-            map(([evento]) => evento),
-            )
-        .subscribe(
-            (ocorrencia: Evento) => this._componentService.encerraEvento(
-                ocorrencia, textoDoComentario));
+        .pipe(first(), map(([evento]) => evento))
+        .subscribe((ocorrencia: Evento) => this._componentService.encerraEvento(
+                       ocorrencia, textoDoComentario));
   }
 
   /** insere novo comentário */
   _comenta(textoDoComentario: string) {
     combineLatest(this._ocorrencia$.pipe(filter(Boolean)))
-        .pipe(
-            first(),
-            map(([evento]) => evento),
-            )
-        .subscribe(
-            (ocorrencia: Evento) => this._componentService.insereComentario(
-                ocorrencia, textoDoComentario));
+        .pipe(first(), map(([evento]) => evento))
+        .subscribe((ocorrencia: Evento) =>
+                       this._componentService.insereComentario(
+                           ocorrencia, textoDoComentario));
   }
 
   /**
@@ -152,8 +181,8 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
   private _monitoraIdInexistente() {
     this._componentService.getEventoByIdErro()
         .pipe(filter((_) => !!_), first(), takeUntil(this._destroy$))
-        .subscribe(
-            (erro: boolean) => erro ? this._showDialogAndNavigateAway() : null);
+        .subscribe((erro: boolean) =>
+                       erro ? this._showDialogAndNavigateAway() : null);
   }
 
   /**
@@ -172,7 +201,7 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
         <summary>Outras causas possíveis</summary>
         <ul>
           <li>Falta de conexão com a Internet</li>
-          <li>Problema com a rede</li>  
+          <li>Problema com a rede</li>
         </ul>
       </details>
     `;
@@ -186,9 +215,10 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
       botaoTrueVisible: false,
     };
 
-    const dialogRef = this._dialog.open<
-        ConfirmationDialogComponent, ConfirmationDialogComponentData, boolean>(
-        ConfirmationDialogComponent, {data});
+    const dialogRef =
+        this._dialog.open<ConfirmationDialogComponent,
+                          ConfirmationDialogComponentData, boolean>(
+            ConfirmationDialogComponent, {data});
 
     dialogRef.afterClosed().subscribe(
         (_) =>
@@ -204,18 +234,13 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
    */
   private _obtemOcorrenciaAPartirDaRota() {
     this._activatedRoute.paramMap
-        .pipe(
-            map((p: ParamMap) => p.get('id')),
-            tap((id: string) => {
-              this._ocorrencia$ =
-                  this._componentService.getEventoById$(id).pipe(
-                      debounceTime(300));
-              this._atrasaAposCargaDeOcorrencia$ = this._ocorrencia$.pipe(
-                  switchMapTo(observableOf(true)), delay(500));
-            }),
-            first(),
-            takeUntil(this._destroy$),
-            )
+        .pipe(map((p: ParamMap) => p.get('id')), tap((id: string) => {
+                this._ocorrencia$ = this._componentService.getEventoById$(id)
+                                        .pipe(debounceTime(300));
+                this._atrasaAposCargaDeOcorrencia$ = this._ocorrencia$.pipe(
+                    switchMapTo(observableOf(true)), delay(500));
+              }),
+              first(), takeUntil(this._destroy$))
         .subscribe((id: string) => {
           this._componentService.getEventoById$(id).pipe(first()).subscribe(
               (evt: Evento) => {
@@ -237,18 +262,11 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
    * @memberof OcorrenciaDetalhesComponent
    */
   private _configuraCoresDosAvataresDosParticipantes() {
-    this._ocorrencia$
-        .pipe(
-            filter(Boolean),
-            first(),
-            takeUntil(this._destroy$),
-            )
-        .subscribe(
-            (evt: Evento) =>
-                (this._coresDosParticipantes =
-                     this._componentService.setCoresDosParticipantes(
-                         evt.participantes,
-                         )),
-        );
+    this._ocorrencia$.pipe(filter(Boolean), first(),
+                           takeUntil(this._destroy$))
+        .subscribe((evt: Evento) =>
+                       (this._coresDosParticipantes =
+                            this._componentService.setCoresDosParticipantes(
+                                evt.participantes)));
   }
 }

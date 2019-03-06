@@ -17,4 +17,4 @@ export class ObtemTutoriasDoUsuarioLogadoSuccess implements Action {
 }
 
 export type TutoriaAction =
-    ObtemTutoriasDoUsuarioLogadoRun|ObtemTutoriasDoUsuarioLogadoSuccess;
+    ObtemTutoriasDoUsuarioLogadoRun | ObtemTutoriasDoUsuarioLogadoSuccess;

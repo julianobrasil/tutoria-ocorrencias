@@ -9,7 +9,7 @@ import {CorDoParticipante} from '../../ocorrencia-detalhes-component.service';
   styleUrls: ['./ocorrencia-detalhes-configuracoes-participantes.component.scss'],
 })
 export class OcorrenciaDetalhesConfiguracoesParticipantesComponent {
-  /** responsáveis */
+  /** participantes */
   @Input()
   participantes: Participante[];
 
@@ -17,7 +17,7 @@ export class OcorrenciaDetalhesConfiguracoesParticipantesComponent {
   @Input()
   coresDosParticipantes: CorDoParticipante[];
 
-  /** verifica se o usuário logado tem permissão para adicionar responsáveis */
+  /** verifica se o usuário logado tem permissão para adicionar participantes */
   @Input()
   podeAdicionarParticipantes = true;
 

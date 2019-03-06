@@ -24,9 +24,27 @@
     </section>
 
     <section class="formulario-somente-leitura-corpo">
+      <div *ngIf="ocorrencia?.cidadeUnidade">
+        <strong>UNIDADE:</strong> {{ocorrencia?.cidadeUnidade}}
+      </div>
+      <div *ngIf="ocorrencia?.local"
+           (mouseenter)="_mostraBotaoAlterarLocal = true"
+           (mouseleave)="_mostraBotaoAlterarLocal = false"
+           class="formulario-somente-leitura-corpo-local">
+        <div><strong>LOCAL:</strong> {{ocorrencia?.local}}</div>
+
+        <div>
+          <button *ngIf="_mostraBotaoAlterarLocal"
+                  (click)="_mostaDialogoDeAlterarLocal()"
+                  mat-icon-button
+                  type="button">
+            <mat-icon>edit</mat-icon>
+          </button>
+        </div>
+      </div>
       <div [innerHTML]="ocorrencia?.tutoria | tutoriaTurmas"></div>
 
-      <div [innerHTML]="ocorrencia?.textoFormatado?.html | localEUnidade: ocorrencia">
+      <div [innerHTML]="ocorrencia?.textoFormatado?.html">
       </div>
     </section>
   </section>

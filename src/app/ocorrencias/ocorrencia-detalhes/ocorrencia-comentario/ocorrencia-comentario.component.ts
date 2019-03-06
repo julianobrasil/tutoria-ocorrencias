@@ -4,7 +4,10 @@ import {merge, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
 import {Evento, Interacao} from '../../../model/transport-objects';
-import {OcorrenciaDadosDaGravacao, OcorrenciaStatusGravacaoService} from '../../ocorrencia-status-gravacao.service';
+import {
+  OcorrenciaDadosDaGravacao,
+  OcorrenciaStatusGravacaoService,
+} from '../../ocorrencia-status-gravacao.service';
 
 @Component({
   selector: 'app-ocorrencia-comentario',
@@ -41,8 +44,7 @@ export class OcorrenciaComentarioComponent implements OnDestroy {
   /** destrói todas as assinaturas em observables */
   private _destroy$: Subject<void> = new Subject<void>();
 
-  constructor(private _statusGravacao:
-                  OcorrenciaStatusGravacaoService) {
+  constructor(private _statusGravacao: OcorrenciaStatusGravacaoService) {
     this._comentarioEmEdicaoCtrl.valueChanges.pipe(takeUntil(this._destroy$))
         .subscribe((value: string) => this.textoDoComentarioChange.emit(value));
 
@@ -58,13 +60,11 @@ export class OcorrenciaComentarioComponent implements OnDestroy {
 
   /** monitora o status da gravação */
   private _setupMonitoraStatusGravacao() {
-    merge(
-        this._statusGravacao.getReaberturaFechamento$(),
-        this._statusGravacao.getInsercaoDeComentario$(),
-        )
+    merge(this._statusGravacao.getStatusReaberturaFechamento$(),
+          this._statusGravacao.getStatusInsercaoDeComentario$())
         .pipe(takeUntil(this._destroy$))
-        .subscribe(
-            (status: OcorrenciaDadosDaGravacao) =>
-                status.sucesso ? this._comentarioEmEdicaoCtrl.reset() : null)
+        .subscribe((status: OcorrenciaDadosDaGravacao) =>
+                       status.sucesso ? this._comentarioEmEdicaoCtrl.reset() :
+                                        null);
   }
 }

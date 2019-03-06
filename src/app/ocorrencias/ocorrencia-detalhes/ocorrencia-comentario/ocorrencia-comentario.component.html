@@ -13,7 +13,8 @@
       <section class="comentario-titulo-autoria">
         <strong>{{comentario?.autorRef?.description}}</strong>
         <span *ngIf="!isEditando">
-          comentou {{(comentario?.historicoInteracoes | interacaoMaisRecente)?.data | tempoDecorrido}}
+          comentou
+          <app-tempo-decorrido [data]="(comentario?.historicoInteracoes | interacaoMaisRecente)?.data"></app-tempo-decorrido>
         </span>
       </section>
 

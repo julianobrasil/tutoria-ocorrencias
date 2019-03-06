@@ -1,4 +1,10 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+} from '@angular/core';
 
 import {Evento} from '../../../model/transport-objects';
 
@@ -14,14 +20,16 @@ export class AcoesLigadasANovoComentarioComponent {
 
   /** texto do novo comentário */
   _textoNovoComentario: string;
-  @Input() get textoNovoComentario(): string{return this._textoNovoComentario};
+  @Input()
+  get textoNovoComentario(): string {
+    return this._textoNovoComentario;
+  }
   set textoNovoComentario(texto: string) {
     this._textoNovoComentario = texto;
 
     this._textoBotaoReabrir = texto ? 'REABRIR E COMENTAR' : 'REABRIR';
     this._textoBotaoEncerrar = texto ? 'ENCERRAR E COMENTAR' : 'ENCERRAR';
   }
-
 
   /** emite quando o botão de reabrir é clicado */
   @Output() reabrirEvento: EventEmitter<string> = new EventEmitter<string>();

@@ -1,0 +1,34 @@
+<section mat-dialog-title>
+  Título da ocorrência
+</section>
+
+<section mat-dialog-content>
+  <mat-form-field appearance="fill"
+                  class="full-width"
+                  floatLabel="always">
+    <mat-label>Título</mat-label>
+    <input #local
+           class="text-uppercase"
+           [formControl]="_formControl"
+           matInput
+           maxlength="70"
+           required>
+  </mat-form-field>
+</section>
+
+<section mat-dialog-actions
+         align="end">
+  <button [mat-dialog-close]="null"
+          color="warn"
+          mat-button>
+    Fechar
+  </button>
+
+  <button [disabled]="_botaoDeGravarDesabilitado"
+          (click)="_gravaAlteracao()"
+          color="primary"
+          cdkFocusInitial
+          mat-button>
+    Gravar
+  </button>
+</section>

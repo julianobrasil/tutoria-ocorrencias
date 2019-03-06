@@ -15,6 +15,10 @@ body {
   font-family: Roboto, 'Courier New', Courier, monospace
 }
 
+* {
+  outline: none !important;
+}
+
 button {
   text-transform: uppercase;
 }

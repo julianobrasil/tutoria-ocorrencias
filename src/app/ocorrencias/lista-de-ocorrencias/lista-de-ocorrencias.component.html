@@ -7,10 +7,10 @@
       <app-filtro-de-ocorrencias (termoDeBusca)="_termoDeBuscaAlterado($event)"></app-filtro-de-ocorrencias>
     </div>
 
-    <div class="lista-de-ocorrencias-botao-nova-ocorrencia">
+    <section class="lista-de-ocorrencias-botao-nova-ocorrencia">
       <app-ocorrencia-popover-de-escolha (novaOcorrencia)="novaOcorrencia.emit($event)">
       </app-ocorrencia-popover-de-escolha>
-    </div>
+    </section>
   </div>
 
   <ng-container *ngFor="let evento of eventos; first as isFirst">

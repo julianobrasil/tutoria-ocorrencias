@@ -11,13 +11,13 @@ export enum ClassificacaoEvento {
   TUTORIA_TUTOR = 'TUTORIA_TUTOR',
   TUTORIA_GERAL = 'TUTORIA_GERAL',
   OUVIDORIA = 'OUVIDORIA',
-  OCORRENCIA_COMUM = "OCORRENCIA_COMUM"
+  OCORRENCIA_COMUM = 'OCORRENCIA_COMUM',
 }
 
 export class Evento extends AbstractDocument {
-  data: Date|string = new Date();
-  dataRegistro: Date|string = new Date();
-  dataUltimaCutucada?: Date|string = new Date();
+  data: Date | string = new Date();
+  dataRegistro: Date | string = new Date();
+  dataUltimaCutucada?: Date | string = new Date();
   descricaoSubTipoEvento = '';
   descricaoTipoEvento = '';
   etapaAtual = '';
@@ -40,6 +40,7 @@ export class Evento extends AbstractDocument {
   titulo?: string;
   textoFormatado?: TextoFormatado;
   cidadeUnidade?: string;
+  local?: string;
 
   constructor() {
     super();

@@ -16,7 +16,7 @@
     Fechar
   </button>
 
-  <button [disabled]="_formControl?.invalid || _formControl?.pristine"
+  <button [disabled]="_formControl?.invalid || _botaoDeGravarDesabilitado"
           (click)="_gravaAlteracao()"
           color="primary"
           cdkFocusInitial

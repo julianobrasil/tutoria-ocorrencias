@@ -5,12 +5,22 @@ import {combineLatest, Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
 
 import {Evento, TipoParticipacao} from '../../../model/transport-objects';
-import {ConfirmationDialogComponent, ConfirmationDialogComponentData,} from '../../../shared/dialogs/confirmation-dialog/confirmation-dialog.component';
-import {TipoSubtipoDeEventoDialogComponent, TipoSubtipoDeEventoDialogComponentData,} from '../../shared/componentes/dialogos/tipo-subtipo-de-evento-dialog/tipo-subtipo-de-evento-dialog.component';
-import {TipoSubtipoDeEventoComponentData} from '../../shared/componentes/tipo-subtipo-de-evento/tipo-subtipo-de-evento.component';
+import {
+  ConfirmationDialogComponent,
+  ConfirmationDialogComponentData,
+} from '../../../shared/dialogs/confirmation-dialog/confirmation-dialog.component';
+import {
+  TipoSubtipoDeEventoDialogComponent,
+  TipoSubtipoDeEventoDialogComponentData,
+} from '../../shared/componentes/dialogos/tipo-subtipo-de-evento-dialog/tipo-subtipo-de-evento-dialog.component';
+import {
+  TipoSubtipoDeEventoComponentData,
+} from '../../shared/componentes/tipo-subtipo-de-evento/tipo-subtipo-de-evento.component';
 import {CorDoParticipante} from '../ocorrencia-detalhes-component.service';
 
-import {OcorrenciaDetalhesConfiguracoesComponentService} from './ocorrencia-detalhes-configuracoes-component.service';
+import {
+  OcorrenciaDetalhesConfiguracoesComponentService,
+} from './ocorrencia-detalhes-configuracoes-component.service';
 // tslint:enable:max-line-length
 
 @Component({
@@ -53,26 +63,17 @@ export class OcorrenciaDetalhesConfiguracoesComponent implements OnDestroy {
   /** destrói todas as assinaturas em observables */
   private _destroy$: Subject<void> = new Subject<void>();
 
-  constructor(
-      private _matDialog: MatDialog,
-      private _componentService:
-          OcorrenciaDetalhesConfiguracoesComponentService,
-  ) {
+  constructor(private _matDialog: MatDialog,
+              private _componentService:
+                  OcorrenciaDetalhesConfiguracoesComponentService) {
     combineLatest(this._ocorrencia$)
-        .pipe(
-            map(([evento]) => evento),
-            takeUntil(this._destroy$),
-            )
+        .pipe(map(([evento]) => evento), takeUntil(this._destroy$))
         .subscribe((evt: Evento) => {
           this._temPermissaoParaExcluirEvento =
-              this._componentService.temPermissaoParaExcluirEvento(
-                  evt,
-              );
+              this._componentService.temPermissaoParaExcluirEvento(evt);
 
           this._temPermissaoParaAlterarTipoDeEvento =
-              this._componentService.temPermissaoParaAlterarTipoDeEvento(
-                  evt,
-              );
+              this._componentService.temPermissaoParaAlterarTipoDeEvento(evt);
         });
   }
 
@@ -101,11 +102,11 @@ export class OcorrenciaDetalhesConfiguracoesComponent implements OnDestroy {
       },
     };
 
-    const dialogRef = this._matDialog.open<
-        TipoSubtipoDeEventoDialogComponent,
-        TipoSubtipoDeEventoDialogComponentData,
-        TipoSubtipoDeEventoComponentData>(
-        TipoSubtipoDeEventoDialogComponent, {data, width: '60vw'});
+    const dialogRef =
+        this._matDialog.open<TipoSubtipoDeEventoDialogComponent,
+                             TipoSubtipoDeEventoDialogComponentData,
+                             TipoSubtipoDeEventoComponentData>(
+            TipoSubtipoDeEventoDialogComponent, {data, width: '60vw'});
 
     dialogRef.afterClosed().subscribe(
         (dado: TipoSubtipoDeEventoComponentData) => {
@@ -149,15 +150,15 @@ export class OcorrenciaDetalhesConfiguracoesComponent implements OnDestroy {
       botaoTrueVisible: true,
       botaoTrueText: 'Pode excluir',
     };
-    const dialogRef = this._matDialog.open<
-        ConfirmationDialogComponent, ConfirmationDialogComponentData, boolean>(
-        ConfirmationDialogComponent, {data});
+    const dialogRef =
+        this._matDialog.open<ConfirmationDialogComponent,
+                             ConfirmationDialogComponentData, boolean>(
+            ConfirmationDialogComponent, {data});
 
     dialogRef.afterClosed().subscribe(
         (podeExcluir: boolean) =>
             podeExcluir && this._temPermissaoParaExcluirEvento ?
-            this.excluiEvento.emit() :
-            null,
-    );
+                this.excluiEvento.emit() :
+                null);
   }
 }

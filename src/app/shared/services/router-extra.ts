@@ -13,11 +13,9 @@ export class RouterExtraService {
       if (event instanceof NavigationEnd) {
         this._urlAnterior = this._urlCorrente;
         this._urlCorrente = event.url;
-      };
+      }
     });
   }
 
-  getUrlAnterior() {
-    return this._urlAnterior;
-  }
+  getUrlAnterior() { return this._urlAnterior; }
 }

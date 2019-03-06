@@ -3,7 +3,8 @@
   <section class="ocorrencia-detalhes-container">
 
     <section class="ocorrencia-detalhes-cabecalho">
-      <app-ocorrencia-detalhes-titulo [ocorrencia]="_ocorrencia$ | async">
+      <app-ocorrencia-detalhes-titulo (ocorrenciaChanged)="_tituloDaOcorrenciaAlterado($event)"
+                                      [ocorrencia]="_ocorrencia$ | async">
       </app-ocorrencia-detalhes-titulo>
     </section>
 
@@ -16,7 +17,8 @@
         </app-ocorrencia-formulario>
 
         <ng-template #resumoFormulario>
-          <app-ocorrencia-formulario-somente-leitura [corDoAvatar]="(_ocorrencia$ | async)?.autorEvento?.code | obtemCorDoAvatar: _coresDosParticipantes"
+          <app-ocorrencia-formulario-somente-leitura (ocorrenciaChanged)="_ocorrenciaAlteradaNoFormularioSomenteLeitura($event)"
+                                                     [corDoAvatar]="(_ocorrencia$ | async)?.autorEvento?.code | obtemCorDoAvatar: _coresDosParticipantes"
                                                      [isTextoDoAvatarBranco]="(_ocorrencia$ | async)?.autorEvento?.code | isTextoDoAvatarBranco: _coresDosParticipantes"
                                                      [ocorrencia]="_ocorrencia$ | async">
           </app-ocorrencia-formulario-somente-leitura>

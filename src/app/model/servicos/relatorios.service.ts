@@ -5,27 +5,28 @@ import {catchError, map} from 'rxjs/operators';
 
 import {AuthService} from '../../auth/auth.service';
 import {URL} from '../helper-objects/constantes';
-import {RelatorioConsultaTutoriasWrapperDTO, SemestreDeTrabalho} from '../transport-objects/';
+import {
+  RelatorioConsultaTutoriasWrapperDTO,
+  SemestreDeTrabalho,
+} from '../transport-objects/';
 
 @Injectable()
 export class RelatoriosService {
   constructor(private authService: AuthService, private _http: HttpClient) {}
 
   obtemRelatorioAtividadesTutorias(
-      relatorioConsulta: RelatorioConsultaTutoriasWrapperDTO,
-      ): Observable<any> {
-    return Observable.create((observer) => {
+      relatorioConsulta: RelatorioConsultaTutoriasWrapperDTO): Observable<any> {
+    return new Observable((observer) => {
       const xhr = new XMLHttpRequest();
 
-      xhr.open(
-          'POST',
-          URL.baseTutoriaServiceURL + URL.relatorioAtividadesTutoriasPOSTPath,
-          true);
+      xhr.open('POST', URL.baseTutoriaServiceURL +
+                           URL.relatorioAtividadesTutoriasPOSTPath,
+               true);
       // xhr.setRequestHeader(url.authorizationHeaderKey,
       // this.authService.token);
       xhr.setRequestHeader(URL.httpContenTypeKey, URL.httpContenTypeJsonValue);
-      xhr.setRequestHeader(
-          'X-XSRF-TOKEN', document.cookie.split('XSRF-TOKEN=')[1]);
+      xhr.setRequestHeader('X-XSRF-TOKEN',
+                           document.cookie.split('XSRF-TOKEN=')[1]);
       xhr.withCredentials = true;
       xhr.responseType = 'blob';
 
@@ -47,16 +48,16 @@ export class RelatoriosService {
   }
 
   obtemRelatorioTodasTutorias(): Observable<any> {
-    return Observable.create((observer) => {
+    return new Observable((observer) => {
       const xhr = new XMLHttpRequest();
 
-      xhr.open(
-          'GET', URL.baseTutoriaServiceURL + URL.relatorioTutoriasTodosPath,
-          true);
+      xhr.open('GET',
+               URL.baseTutoriaServiceURL + URL.relatorioTutoriasTodosPath,
+               true);
       // xhr.setRequestHeader(url.authorizationHeaderKey,
       // this.authService.token);
-      xhr.setRequestHeader(
-          'X-XSRF-TOKEN', document.cookie.split('XSRF-TOKEN=')[1]);
+      xhr.setRequestHeader('X-XSRF-TOKEN',
+                           document.cookie.split('XSRF-TOKEN=')[1]);
       xhr.withCredentials = true;
       xhr.responseType = 'blob';
 
@@ -78,20 +79,18 @@ export class RelatoriosService {
   }
 
   obtemRelatorioEspecificoTutorias(
-      relatorioConsulta: RelatorioConsultaTutoriasWrapperDTO,
-      ): Observable<any> {
-    return Observable.create((observer) => {
+      relatorioConsulta: RelatorioConsultaTutoriasWrapperDTO): Observable<any> {
+    return new Observable((observer) => {
       const xhr = new XMLHttpRequest();
 
-      xhr.open(
-          'POST',
-          URL.baseTutoriaServiceURL + URL.relatorioTutoriasEspecificoPOSTPath,
-          true);
+      xhr.open('POST', URL.baseTutoriaServiceURL +
+                           URL.relatorioTutoriasEspecificoPOSTPath,
+               true);
       // xhr.setRequestHeader(url.authorizationHeaderKey,
       // this.authService.token);
       xhr.setRequestHeader(URL.httpContenTypeKey, URL.httpContenTypeJsonValue);
-      xhr.setRequestHeader(
-          'X-XSRF-TOKEN', document.cookie.split('XSRF-TOKEN=')[1]);
+      xhr.setRequestHeader('X-XSRF-TOKEN',
+                           document.cookie.split('XSRF-TOKEN=')[1]);
       xhr.withCredentials = true;
       xhr.responseType = 'blob';
 
@@ -114,7 +113,7 @@ export class RelatoriosService {
 
   obtemRelatorioTodosRepresentantes(notificaEleicaoRepresentantes: boolean):
       Observable<any> {
-    return Observable.create((observer) => {
+    return new Observable((observer) => {
       const xhr = new XMLHttpRequest();
 
       xhr.open(
@@ -123,12 +122,11 @@ export class RelatoriosService {
               '?' +
               URL.relatorioRepresentantesTodosKey1_notificaEleicaoRepresentantes +
               '=' + notificaEleicaoRepresentantes,
-          true,
-      );
+          true);
       // xhr.setRequestHeader(url.authorizationHeaderKey,
       // this.authService.token);
-      xhr.setRequestHeader(
-          'X-XSRF-TOKEN', document.cookie.split('XSRF-TOKEN=')[1]);
+      xhr.setRequestHeader('X-XSRF-TOKEN',
+                           document.cookie.split('XSRF-TOKEN=')[1]);
       xhr.withCredentials = true;
       xhr.responseType = 'blob';
 
@@ -150,22 +148,18 @@ export class RelatoriosService {
   }
 
   obtemRelatorioEspecificoRepresentantes(
-      relatorioConsulta: RelatorioConsultaTutoriasWrapperDTO,
-      ): Observable<any> {
-    return Observable.create((observer) => {
+      relatorioConsulta: RelatorioConsultaTutoriasWrapperDTO): Observable<any> {
+    return new Observable((observer) => {
       const xhr = new XMLHttpRequest();
 
-      xhr.open(
-          'POST',
-          URL.baseTutoriaServiceURL +
-              URL.relatorioRepresentantesEspecificoPOSTPath,
-          true,
-      );
+      xhr.open('POST', URL.baseTutoriaServiceURL +
+                           URL.relatorioRepresentantesEspecificoPOSTPath,
+               true);
       // xhr.setRequestHeader(url.authorizationHeaderKey,
       // this.authService.token);
       xhr.setRequestHeader(URL.httpContenTypeKey, URL.httpContenTypeJsonValue);
-      xhr.setRequestHeader(
-          'X-XSRF-TOKEN', document.cookie.split('XSRF-TOKEN=')[1]);
+      xhr.setRequestHeader('X-XSRF-TOKEN',
+                           document.cookie.split('XSRF-TOKEN=')[1]);
       xhr.withCredentials = true;
       xhr.responseType = 'blob';
 
@@ -189,18 +183,14 @@ export class RelatoriosService {
   obtemRelatorioDetalhadoPorSemestre(semestreDeTrabalho: SemestreDeTrabalho):
       Observable<any> {
     const requestUrl = URL.baseTutoriaServiceURL +
-        URL.relatorioAtividadesDetalhadoPorSemestrePOSTPath;
+                       URL.relatorioAtividadesDetalhadoPorSemestrePOSTPath;
 
-    return this._http
-        .post(requestUrl, semestreDeTrabalho, {
-          responseType: 'blob',
-          withCredentials: true,
-        })
-        .pipe(
-            map((res) => ({file: res})),
-            catchError((res) => {
-              return observableOf({file: null});
-            }),
-        );
+    return this._http.post(requestUrl, semestreDeTrabalho,
+                           {
+                             responseType: 'blob',
+                             withCredentials: true,
+                           })
+        .pipe(map((res) => ({file: res})),
+              catchError((res) => observableOf({file: null})));
   }
 }

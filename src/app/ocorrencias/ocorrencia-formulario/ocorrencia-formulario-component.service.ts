@@ -6,7 +6,14 @@ import {map, tap} from 'rxjs/operators';
 
 import * as fromStore from '../../../store';
 import {ImodbService} from '../../model/servicos/imodb.service';
-import {Evento, SubTipoEvento, TipoEvento, Tutor, Tutoria, Unidade} from '../../model/transport-objects/';
+import {
+  Evento,
+  SubTipoEvento,
+  TipoEvento,
+  Tutor,
+  Tutoria,
+  Unidade,
+} from '../../model/transport-objects/';
 
 export enum OcorrenciaFormularioComponentTipo {
   TUTORIA,
@@ -22,7 +29,7 @@ export interface OcorrenciaFormularioComponentData {
   subTipoEvento: SubTipoEvento;
   dataEvento: Date;
   parecer: string;
-  observacao: string;
+  local: string;
   isResolvido: boolean;
 }
 
@@ -52,11 +59,8 @@ export class TutoriaNome {
   providedIn: 'root',
 })
 export class OcorrenciaFormularioComponentService {
-  constructor(
-      private _matSnackbar: MatSnackBar,
-      private _store$: Store<{}>,
-      public _imodb: ImodbService,
-  ) {}
+  constructor(private _matSnackbar: MatSnackBar, private _store$: Store<{}>,
+              public _imodb: ImodbService) {}
 
   copiaFormularioParaObjeto(ocorrencia: Evento, formulario: any): Evento {
     if (!ocorrencia) {
@@ -65,8 +69,8 @@ export class OcorrenciaFormularioComponentService {
 
     // coleta tutoria...
     const tutoria: Tutoria = formulario.tutoriaEscolhida ?
-        (formulario.tutoriaEscolhida as Tutoria) :
-        null;
+                                 (formulario.tutoriaEscolhida as Tutoria) :
+                                 null;
     if (!tutoria) {
       const message = 'Não é possível gravar uma ocorrência sem uma turma';
       this._matSnackbar.open(message, 'ERRO', {duration: 7000});
@@ -75,9 +79,9 @@ export class OcorrenciaFormularioComponentService {
     ocorrencia.tutoria = tutoria;
 
     // coleta o tipo...
-    const tipoEvento: TipoEvento = formulario.tipoEscolhido ?
-        (formulario.tipoEscolhido as TipoEvento) :
-        null;
+    const tipoEvento: TipoEvento =
+        formulario.tipoEscolhido ? (formulario.tipoEscolhido as TipoEvento) :
+                                   null;
     if (!tipoEvento || !tipoEvento.descricao) {
       const message =
           'Não é possível gravar uma ocorrência sem um tipo/subtipo';
@@ -87,9 +91,10 @@ export class OcorrenciaFormularioComponentService {
     ocorrencia.descricaoTipoEvento = tipoEvento.descricao;
 
     // coleta o subtipo...
-    const subTipoEvento: SubTipoEvento = formulario.subTipoEscolhido ?
-        (formulario.subTipoEscolhido as SubTipoEvento) :
-        null;
+    const subTipoEvento: SubTipoEvento =
+        formulario.subTipoEscolhido ?
+            (formulario.subTipoEscolhido as SubTipoEvento) :
+            null;
     if (!subTipoEvento || !subTipoEvento.descricao) {
       const message =
           'Não é possível gravar uma ocorrência sem um tipo/subtipo';
@@ -119,8 +124,7 @@ export class OcorrenciaFormularioComponentService {
     return this._store$.pipe(
         select(fromStore.GERAL.SELECTORS.TUTORIA.getTutorias),
         tap((tutorias: Tutoria[]) => this._ordenaTutorias(tutorias)),
-        map((tutorias: Tutoria[]) => this.arrumaTutoriaNomes(tutorias)),
-    );
+        map((tutorias: Tutoria[]) => this.arrumaTutoriaNomes(tutorias)));
   }
 
   /** tipos de evento disponíveis */
@@ -141,10 +145,10 @@ export class OcorrenciaFormularioComponentService {
         a.historicoTutores.sort(
             (a1: Tutor, b1: Tutor) =>
                 a1.nomeTutor.toUpperCase() === b1.nomeTutor.toUpperCase() ?
-                0 :
-                a1.nomeTutor.toUpperCase() < b1.nomeTutor.toUpperCase() ? -1 :
-                                                                          1,
-        );
+                    0 :
+                    a1.nomeTutor.toUpperCase() < b1.nomeTutor.toUpperCase() ?
+                    -1 :
+                    1);
         aTutor.push(a.historicoTutores[0]);
       }
 
@@ -152,10 +156,10 @@ export class OcorrenciaFormularioComponentService {
         b.historicoTutores.sort(
             (a1: Tutor, b1: Tutor) =>
                 a1.nomeTutor.toUpperCase() === b1.nomeTutor.toUpperCase() ?
-                0 :
-                a1.nomeTutor.toUpperCase() < b1.nomeTutor.toUpperCase() ? -1 :
-                                                                          1,
-        );
+                    0 :
+                    a1.nomeTutor.toUpperCase() < b1.nomeTutor.toUpperCase() ?
+                    -1 :
+                    1);
         bTutor.push(b.historicoTutores[0]);
       }
 
@@ -181,9 +185,8 @@ export class OcorrenciaFormularioComponentService {
     tutoriasNomes.sort(
         (a: TutoriaNome, b: TutoriaNome) =>
             a.nome.toUpperCase() === b.nome.toUpperCase() ?
-            0 :
-            a.nome.toUpperCase() < b.nome.toUpperCase() ? -1 : 1,
-    );
+                0 :
+                a.nome.toUpperCase() < b.nome.toUpperCase() ? -1 : 1);
 
     return tutoriasNomes;
   }

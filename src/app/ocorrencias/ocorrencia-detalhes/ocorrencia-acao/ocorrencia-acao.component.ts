@@ -1,11 +1,13 @@
-import {Component, Input} from '@angular/core';
-import {Interacao, TipoAcao} from 'src/app/model/transport-objects';
+import {Component, Input, ViewEncapsulation} from '@angular/core';
+
+import {Interacao, TipoAcao} from '../../../model/transport-objects';
 import {CorDoParticipante} from '../ocorrencia-detalhes-component.service';
 
 @Component({
   selector: 'app-ocorrencia-acao',
   templateUrl: './ocorrencia-acao.component.html',
   styleUrls: ['./ocorrencia-acao.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class OcorrenciaAcaoComponent {
   /** acao a ser mostrada */
@@ -47,6 +49,18 @@ export class OcorrenciaAcaoComponent {
       case TipoAcao.ALTERA_TIPO: {
         this._theme = 'primary';
         this._icon = 'low_priority';
+        break;
+      }
+
+      case TipoAcao.ALTERA_LOCAL: {
+        this._theme = 'primary';
+        this._icon = 'place';
+        break;
+      }
+
+      case TipoAcao.ALTERA_TITULO: {
+        this._theme = 'primary';
+        this._icon = 'title';
         break;
       }
     }

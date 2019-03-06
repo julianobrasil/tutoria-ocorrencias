@@ -16,9 +16,21 @@
 
     margin-left: 5px;
 
-    &>span {
+    .ocorrencia-acao-texto-descricao {
+      display: inline;
       margin-left: 5px;
+
       font-size: 0.8rem;
+      color: rgba(0, 0, 0, 0.8);
+
+      .autor {
+        display: inline;
+      }
+
+      .texto-normal-negrito {
+        color: rgba(0, 0, 0, 1);
+        font-weight: 600;
+      }
     }
   }
 }

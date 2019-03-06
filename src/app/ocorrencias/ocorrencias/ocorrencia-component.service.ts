@@ -1,7 +1,9 @@
 import {Injectable} from '@angular/core';
 
 import {TextoFormatado} from '../../model/transport-objects';
-import {FormatadorDeTextoService} from '../shared/utilitarios/formatador-de-texto.service';
+import {
+  FormatadorDeTextoService,
+} from '../shared/utilitarios/formatador-de-texto.service';
 
 @Injectable({providedIn: 'root'})
 export class OcorrenciaComponentService {

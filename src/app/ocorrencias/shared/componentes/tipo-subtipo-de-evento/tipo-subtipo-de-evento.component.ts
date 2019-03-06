@@ -1,5 +1,17 @@
-import {AfterViewInit, Component, HostListener, Input, OnDestroy} from '@angular/core';
-import {ControlValueAccessor, FormBuilder, FormGroup, NG_VALUE_ACCESSOR, Validators,} from '@angular/forms';
+import {
+  AfterViewInit,
+  Component,
+  HostListener,
+  Input,
+  OnDestroy,
+} from '@angular/core';
+import {
+  ControlValueAccessor,
+  FormBuilder,
+  FormGroup,
+  NG_VALUE_ACCESSOR,
+  Validators,
+} from '@angular/forms';
 
 import {combineLatest, Subject} from 'rxjs';
 import {filter, map, takeUntil} from 'rxjs/operators';
@@ -27,7 +39,7 @@ export interface TipoSubtipoDeEventoComponentData {
   ],
 })
 export class TipoSubtipoDeEventoComponent implements ControlValueAccessor,
-                                                     OnDestroy, AfterViewInit {
+    OnDestroy, AfterViewInit {
   _form: FormGroup;
 
   private _disabled = true;
@@ -80,9 +92,7 @@ export class TipoSubtipoDeEventoComponent implements ControlValueAccessor,
     this._setupFormData();
   }
 
-  ngAfterViewInit() {
-    this._setupFormSubscribers();
-  }
+  ngAfterViewInit() { this._setupFormSubscribers(); }
 
   ngOnDestroy() {
     if (this._destroy$ && !this._destroy$.closed) {
@@ -102,43 +112,36 @@ export class TipoSubtipoDeEventoComponent implements ControlValueAccessor,
   }
 
   /** implementação do ControlValueAccessor */
-  registerOnTouched(fn: () => void): void {
-    this._onTouch = fn;
-  }
+  registerOnTouched(fn: () => void): void { this._onTouch = fn; }
 
   /** implementação do ControlValueAccessor */
-  setDisabledState?(isDisabled: boolean): void {
-    this.disabled = isDisabled;
-  }
+  setDisabledState?(isDisabled: boolean): void { this.disabled = isDisabled; }
 
   /** configura dados do formulário */
   private _setupFormData() {
-    combineLatest(
-        this._tipoSubtipoDeEventoComponentData$,
-        this._tipoEventosDisponiveis$.pipe(filter(Boolean)),
-        )
-        .pipe(
-            map(([tipoSubtipoDeEventoComponentData, _]) =>
-                    tipoSubtipoDeEventoComponentData),
-            takeUntil(this._destroy$),
-            )
+    combineLatest(this._tipoSubtipoDeEventoComponentData$,
+                  this._tipoEventosDisponiveis$.pipe(filter(Boolean)))
+        .pipe(map(([tipoSubtipoDeEventoComponentData, _]) =>
+                      tipoSubtipoDeEventoComponentData),
+              takeUntil(this._destroy$))
         .subscribe((data: TipoSubtipoDeEventoComponentData) => {
-          const tipoEvento: TipoEvento = data && data.descricaoTipoEvento ?
-              this.tipoEventosDisponiveis.find(
-                  (t: TipoEvento) => t.descricao.toUpperCase() ===
-                      data.descricaoTipoEvento.toUpperCase(),
-                  ) :
-              null;
-          const subTipoEvento: SubTipoEvento = tipoEvento ?
-              tipoEvento.listaSubTipoEvento.find(
-                  (s: SubTipoEvento) => s.descricao.toUpperCase() ===
-                      data.descricaoSubTipoEvento.toUpperCase(),
-                  ) :
-              null;
+          const tipoEvento: TipoEvento =
+              data && data.descricaoTipoEvento ?
+                  this.tipoEventosDisponiveis.find(
+                      (t: TipoEvento) =>
+                          t.descricao.toUpperCase() ===
+                          data.descricaoTipoEvento.toUpperCase()) :
+                  null;
+          const subTipoEvento: SubTipoEvento =
+              tipoEvento ?
+                  tipoEvento.listaSubTipoEvento.find(
+                      (s: SubTipoEvento) =>
+                          s.descricao.toUpperCase() ===
+                          data.descricaoSubTipoEvento.toUpperCase()) :
+                  null;
 
           this._form.setValue({
-            tipoEvento,
-            subTipoEvento,
+              tipoEvento, subTipoEvento,
           });
         });
   }
@@ -148,12 +151,14 @@ export class TipoSubtipoDeEventoComponent implements ControlValueAccessor,
     this._form.valueChanges.pipe(takeUntil(this._destroy$))
         .subscribe((value) => {
           this._onChange({
-            descricaoSubTipoEvento: value && value.subTipoEvento ?
-                (value.subTipoEvento as SubTipoEvento).descricao :
-                null,
-            descricaoTipoEvento: value && value.tipoEvento ?
-                (value.tipoEvento as TipoEvento).descricao :
-                null,
+            descricaoSubTipoEvento:
+                value && value.subTipoEvento ?
+                    (value.subTipoEvento as SubTipoEvento).descricao :
+                    null,
+            descricaoTipoEvento:
+                value && value.tipoEvento ?
+                    (value.tipoEvento as TipoEvento).descricao :
+                    null,
           });
 
           this._onTouch();

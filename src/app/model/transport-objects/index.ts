@@ -32,8 +32,9 @@ export * from './validade-senha';
 export * from './valor-tutoria';
 
 /** NOVOS OBJETOS DA APLICAÇÃO */
-export * from './interacao';
+export * from './historico-auditoria-acao';
 export * from './historico-interacao';
+export * from './interacao';
 export * from './object-reference';
 export * from './participante';
 export * from './texto-formatado';
