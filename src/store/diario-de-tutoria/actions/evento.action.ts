@@ -3,8 +3,10 @@ import {Action} from '@ngrx/store';
 import {
   Evento,
   NovoEventoRequest,
+  TextoFormatado,
+  Visibilidade,
 } from '../../../app/model/transport-objects';
-import {TipoEvento, Tutoria} from '../../../app/model/transport-objects/';
+import {TipoEvento} from '../../../app/model/transport-objects/';
 import {Paginacao} from '../../../app/ocorrencias/ocorrencia-facade.service';
 
 export enum OBTEM_EVENTOS_PAGINADOS {
@@ -64,9 +66,25 @@ export enum ALTERA_LOCAL_DO_EVENTO {
   SUCCESS = '[DIÁRIO DE TUTORIA:EVENTOS]: Altera local do evento success',
 }
 
+export enum ALTERA_UNIDADE_DO_EVENTO {
+  RUN = '[DIÁRIO DE TUTORIA:EVENTOS]: Altera unidade do evento run',
+  SUCCESS = '[DIÁRIO DE TUTORIA:EVENTOS]: Altera unidade do evento success',
+}
+
 export enum ALTERA_TITULO_DO_EVENTO {
   RUN = '[DIÁRIO DE TUTORIA:EVENTOS]: Altera título do evento run',
   SUCCESS = '[DIÁRIO DE TUTORIA:EVENTOS]: Altera título do evento success',
+}
+
+export enum ALTERA_VISIBILIDADE_DA_INTERACAO {
+  RUN = '[DIÁRIO DE TUTORIA:EVENTOS]: Altera visibilidade da interação run',
+  SUCCESS =
+      '[DIÁRIO DE TUTORIA:EVENTOS]: Altera visibilidade da interação success',
+}
+
+export enum ALTERA_TEXTO_DE_COMENTARIO {
+  RUN = '[DIÁRIO DE TUTORIA:EVENTOS]: Altera texto de comentário run',
+  SUCCESS = '[DIÁRIO DE TUTORIA:EVENTOS]: Altera texto de comentário success',
 }
 
 export class ObtemEventosPaginadosRun implements Action {
@@ -209,7 +227,20 @@ export class AlteraLocalDoEventoRun implements Action {
 }
 
 export class AlteraLocalDoEventoSuccess implements Action {
-  readonly type = ALTERA_TITULO_DO_EVENTO.SUCCESS;
+  readonly type = ALTERA_LOCAL_DO_EVENTO.SUCCESS;
+  constructor(public payload: { evento: Evento; }) {}
+}
+
+export class AlteraUnidadeDoEventoRun implements Action {
+  readonly type = ALTERA_UNIDADE_DO_EVENTO.RUN;
+  constructor(public payload: {
+    eventoId: string;
+    unidade: string;
+  }) {}
+}
+
+export class AlteraUnidadeDoEventoSuccess implements Action {
+  readonly type = ALTERA_UNIDADE_DO_EVENTO.SUCCESS;
   constructor(public payload: { evento: Evento; }) {}
 }
 
@@ -222,14 +253,45 @@ export class AlteraTituloDoEventoRun implements Action {
 }
 
 export class AlteraTituloDoEventoSuccess implements Action {
-  readonly type = ALTERA_LOCAL_DO_EVENTO.SUCCESS;
+  readonly type = ALTERA_TITULO_DO_EVENTO.SUCCESS;
+  constructor(public payload: { evento: Evento; }) {}
+}
+
+export class AlteraVisibilidadeDaInteracaoRun implements Action {
+  readonly type = ALTERA_VISIBILIDADE_DA_INTERACAO.RUN;
+  constructor(public payload: {
+    eventoId: string;
+    interacaoId: string;
+    visibilidade: Visibilidade;
+  }) {}
+}
+
+export class AlteraVisibilidadeDaInteracaoSuccess implements Action {
+  readonly type = ALTERA_VISIBILIDADE_DA_INTERACAO.SUCCESS;
+  constructor(public payload: { evento: Evento; }) {}
+}
+
+export class AlteraTextoDeComentarioRun implements Action {
+  readonly type = ALTERA_TEXTO_DE_COMENTARIO.RUN;
+  constructor(public payload: {
+    eventoId: string;
+    interacaoId: string;
+    textoFormatado: TextoFormatado;
+  }) {}
+}
+
+export class AlteraTextoDeComentarioSuccess implements Action {
+  readonly type = ALTERA_TEXTO_DE_COMENTARIO.SUCCESS;
   constructor(public payload: { evento: Evento; }) {}
 }
 
 export type EventoAction =
     | AlteraLocalDoEventoRun | AlteraLocalDoEventoSuccess |
+    AlteraTextoDeComentarioRun | AlteraTextoDeComentarioSuccess |
     AlteraTituloDoEventoRun | AlteraTituloDoEventoSuccess |
     AlteraTipoDeEventoRun | AlteraTipoDeEventoSuccess |
+    AlteraUnidadeDoEventoRun | AlteraUnidadeDoEventoSuccess |
+    AlteraVisibilidadeDaInteracaoRun | AlteraVisibilidadeDaInteracaoSuccess |
     ConfiguraDadosDePaginacaoRun | EncerraEventoRun | EncerraEventoSuccess |
     ExcluiEventoRun | ExcluiEventoSuccess | InsereComentarioRun |
     InsereComentarioSuccess | ObtemEventoPorIdRun | CriaEventoFail |

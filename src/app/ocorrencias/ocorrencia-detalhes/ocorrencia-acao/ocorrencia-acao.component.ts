@@ -53,7 +53,13 @@ export class OcorrenciaAcaoComponent {
       }
 
       case TipoAcao.ALTERA_LOCAL: {
-        this._theme = 'primary';
+        this._theme = 'warn';
+        this._icon = 'place';
+        break;
+      }
+
+      case TipoAcao.ALTERA_UNIDADE: {
+        this._theme = 'warn';
         this._icon = 'place';
         break;
       }
@@ -61,6 +67,12 @@ export class OcorrenciaAcaoComponent {
       case TipoAcao.ALTERA_TITULO: {
         this._theme = 'primary';
         this._icon = 'title';
+        break;
+      }
+
+      case TipoAcao.ALTERA_VISIBILIDADE_INTERACAO: {
+        this._theme = 'primary';
+        this._icon = 'visibility';
         break;
       }
     }

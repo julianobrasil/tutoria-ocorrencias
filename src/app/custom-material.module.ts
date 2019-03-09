@@ -11,6 +11,7 @@ import {
   MAT_DATE_LOCALE,
   MatAutocompleteModule,
   MatButtonModule,
+  MatButtonToggleModule,
   MatCardModule,
   MatCheckboxModule,
   MatChipsModule,
@@ -41,6 +42,7 @@ import {CustomDateAdapter} from './core/date-time/custom-date-adapter';
   exports: [
     MatAutocompleteModule,
     MatButtonModule,
+    MatButtonToggleModule,
     MatCardModule,
     MatCheckboxModule,
     MatChipsModule,

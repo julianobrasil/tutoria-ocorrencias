@@ -1,68 +1,78 @@
-@import '~@angular/material/theming';
-@import '../../../../theme.scss';
+@import "~@angular/material/theming";
+@import "../../../../theme.scss";
 
 .ocorrencia-detalhes-titulo-container {
   display: flex;
-  flex-direction: column;
 
-  border-bottom: 0.5px solid rgba(0, 0, 0, .2);
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.2);
   padding-bottom: 20px;
   margin-bottom: 15px;
 
-  .ocorrencia-detalhes-titulo-principal {
+  .ocorrencia-detalhes-titulo-container-left-panel {
+    flex: 1;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
 
-    font-size: 2rem;
-    text-align: justify;
+    .ocorrencia-detalhes-titulo-principal {
+      display: flex;
+      justify-content: space-between;
 
-    .ocorrencia-detalhes-titulo-principal-botao {
-      margin-left: 30px;
-
-      .mat-raised-button {
-        height: 30px;
-        line-height: 32px;
-      }
+      font-size: 2rem;
+      text-align: left;
     }
-  }
 
-  .ocorrencia-detalhes-titulo-subtitulo {
-    display: flex;
-    align-items: center;
-
-    margin-top: 8px;
-
-    font-size: 14px;
-    color: rgba(0, 0, 0, 0.5);
-
-    .ocorrencia-detalhes-titulo-subtitulo-icon {
+    .ocorrencia-detalhes-titulo-subtitulo {
       display: flex;
       align-items: center;
 
-      color: rgba(255, 255, 255, 1);
-      font-weight: 600;
+      margin-top: 8px;
 
-      padding: 4px 8px;
+      font-size: 14px;
+      color: rgba(0, 0, 0, 0.5);
 
-      width: 90px;
-      margin-right: 8px;
+      .ocorrencia-detalhes-titulo-subtitulo-icon {
+        display: flex;
+        align-items: center;
 
-      border-radius: 4px;
+        color: rgba(255, 255, 255, 1);
+        font-weight: 600;
 
-      .mat-icon {
-        font-size: 18px;
-        line-height: 1.4;
-      }
+        padding: 4px 8px;
 
-      &.icon-ocorrencia-finalizada {
-        background-color: mat-color($app-warn);
-      }
+        width: 90px;
+        margin-right: 8px;
 
-      &.icon-ocorrencia-nao-finalizada {
-        background-color: rgb(44, 190, 78);
+        border-radius: 4px;
+
+        .mat-icon {
+          font-size: 18px;
+          line-height: 1.4;
+        }
+
+        &.icon-ocorrencia-finalizada {
+          background-color: mat-color($app-warn);
+        }
+
+        &.icon-ocorrencia-nao-finalizada {
+          background-color: rgb(44, 190, 78);
+        }
       }
     }
   }
 
+  .ocorrencia-detalhes-titulo-container-right-panel {
+    display: flex;
+    flex-direction: column;
 
+    margin-left: 30px;
+
+    .mat-raised-button {
+      height: 30px;
+      line-height: 32px;
+
+      &.m-top-10px {
+        margin-top: 10px;
+      }
+    }
+  }
 }

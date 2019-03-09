@@ -3,7 +3,7 @@ import {SatPopover} from '@ncstate/sat-popover';
 
 import {
   OcorrenciaFormularioComponentTipo,
-} from '../../ocorrencia-formulario/ocorrencia-formulario-component.service';
+} from '../../../ocorrencia-formulario/ocorrencia-formulario-component.service';
 
 @Component({
   selector: 'app-ocorrencia-popover-de-escolha',

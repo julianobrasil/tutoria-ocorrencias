@@ -19,8 +19,7 @@ export class TutoriaEffects {
   @Effect()
   obtemTutorias$ = this._actions$.pipe(
       ofType(fromActions.OBTEM_TUTORIAS_DO_USUARIO_LOGADO.RUN),
-      switchMap(() => this._tutoriaService.findTutoriaByEmailTutorAtivo(
-                                              this._authService.email)
+      switchMap(() => this._tutoriaService.findTutoriaByEmailTutorAtivo()
                           .pipe(catchError(() => observableOf([])))),
       map((tutorias: Tutoria[]) =>
               new fromActions.ObtemTutoriasDoUsuarioLogadoSuccess({tutorias})));

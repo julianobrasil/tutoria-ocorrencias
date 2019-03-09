@@ -19,19 +19,34 @@
       </section>
 
       <section class="formulario-somente-leitura-acoes">
-        <app-ocorrencia-menu></app-ocorrencia-menu>
+        <app-ocorrencia-menu (alteraLocal)="_mostaDialogoDeAlterarLocal()"
+                             (alteraUnidade)="_mostaDialogoDeAlterarUnidade()"
+                             [isCabecalhoEvento]="true"
+                             [ocorrencia]="ocorrencia">
+        </app-ocorrencia-menu>
       </section>
     </section>
 
     <section class="formulario-somente-leitura-corpo">
-      <div *ngIf="ocorrencia?.cidadeUnidade">
-        <strong>UNIDADE:</strong> {{ocorrencia?.cidadeUnidade}}
+      <div (mouseenter)="_mostraBotaoAlterarUnidade = true"
+           (mouseleave)="_mostraBotaoAlterarUnidade = false"
+           class="formulario-somente-leitura-corpo-unidade">
+        <div><strong>UNIDADE:</strong> {{ocorrencia?.cidadeUnidade ? ocorrencia?.cidadeUnidade : 'NÃO INFORMADA'}}</div>
+
+        <div>
+          <button *ngIf="_podeAlterarUnidade"
+                  (click)="_mostaDialogoDeAlterarUnidade()"
+                  mat-icon-button
+                  type="button">
+            <mat-icon>edit</mat-icon>
+          </button>
+        </div>
       </div>
-      <div *ngIf="ocorrencia?.local"
-           (mouseenter)="_mostraBotaoAlterarLocal = true"
+
+      <div (mouseenter)="_mostraBotaoAlterarLocal = true"
            (mouseleave)="_mostraBotaoAlterarLocal = false"
            class="formulario-somente-leitura-corpo-local">
-        <div><strong>LOCAL:</strong> {{ocorrencia?.local}}</div>
+        <div><strong>LOCAL:</strong> {{ocorrencia?.local ? ocorrencia?.local : 'NÃO INFORMADO'}}</div>
 
         <div>
           <button *ngIf="_mostraBotaoAlterarLocal"

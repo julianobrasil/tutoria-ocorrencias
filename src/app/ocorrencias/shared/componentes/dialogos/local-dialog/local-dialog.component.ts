@@ -11,7 +11,7 @@ export interface LocalDialogComponentData { local: string; }
 })
 export class LocalDialogComponent {
   /** controle do formulário que manipula o dado */
-  _formControl: FormControl = new FormControl('', Validators.required);
+  _formControl: FormControl = new FormControl('');
 
   /** valor original do componente */
   _valorOriginal: string;
@@ -34,7 +34,6 @@ export class LocalDialogComponent {
 
   /** retorna true se o botão de gravar estiver desabilitado */
   get _botaoDeGravarDesabilitado(): boolean {
-    return this._formControl.invalid ||
-           this._valorOriginal === this._formControl.value;
+    return this._valorOriginal === this._formControl.value;
   }
 }

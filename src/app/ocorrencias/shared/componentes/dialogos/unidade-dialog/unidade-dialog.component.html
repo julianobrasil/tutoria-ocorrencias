@@ -1,0 +1,40 @@
+<section mat-dialog-title>
+  Título da ocorrência
+</section>
+
+<section mat-dialog-content>
+  <mat-form-field appearance="standard"
+                  class="full-width">
+    <mat-label>Unidade (OPCIONAL)</mat-label>
+    <mat-select (selectionChange)="_trataOpcaoNenhuma($event)"
+                class="app-tutorias-select-style"
+                [formControl]="_formControl"
+                placeholder="OPCIONAL">
+      <mat-option *ngIf="_formControl?.value"
+                  [value]="null">SEM UNIDADE</mat-option>
+      <ng-container *ngFor="let u of _unidades$ | async">
+        <mat-option [value]="u"
+                    class="app-option-popover-style">
+          {{u}}
+        </mat-option>
+      </ng-container>
+    </mat-select>
+  </mat-form-field>
+</section>
+
+<section mat-dialog-actions
+         align="end">
+  <button [mat-dialog-close]="null"
+          color="warn"
+          mat-button>
+    Fechar
+  </button>
+
+  <button [disabled]="_botaoDeGravarDesabilitado"
+          (click)="_gravaAlteracao()"
+          color="primary"
+          cdkFocusInitial
+          mat-button>
+    Gravar
+  </button>
+</section>

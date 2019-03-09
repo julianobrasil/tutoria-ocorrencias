@@ -1,7 +1,11 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+// tslint:disable: max-line-length
+import {Component, EventEmitter, Input, Output, ViewEncapsulation} from '@angular/core';
 import {MatDialog} from '@angular/material';
 
 import {Evento} from '../../../model/transport-objects';
+import {
+  OcorrenciaFormularioComponentTipo,
+} from '../../ocorrencia-formulario/ocorrencia-formulario-component.service';
 import {
   TituloDialogComponent,
   TituloDialogComponentData,
@@ -9,6 +13,7 @@ import {
 import {
   OcorrenciaDetalhesOperation,
 } from '../ocorrencia-detalhes-component.service';
+// tslint:enable: max-line-length
 
 export interface OcorrenciaDetalhesTituloChanged {
   type: OcorrenciaDetalhesOperation;
@@ -19,6 +24,7 @@ export interface OcorrenciaDetalhesTituloChanged {
   selector: 'app-ocorrencia-detalhes-titulo',
   templateUrl: './ocorrencia-detalhes-titulo.component.html',
   styleUrls: ['./ocorrencia-detalhes-titulo.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class OcorrenciaDetalhesTituloComponent {
   /** texto do título */
@@ -28,6 +34,11 @@ export class OcorrenciaDetalhesTituloComponent {
   @Output()
   ocorrenciaChanged: EventEmitter<OcorrenciaDetalhesTituloChanged> =
       new EventEmitter<OcorrenciaDetalhesTituloChanged>();
+
+  /** emite quando o usuário clica no botão de nova ocorrência */
+  @Output()
+  novaOcorrencia: EventEmitter<OcorrenciaFormularioComponentTipo> =
+      new EventEmitter<OcorrenciaFormularioComponentTipo>();
 
   /** apresenta botão de alterar local */
   _mostraBotaoAlterarLocal = false;

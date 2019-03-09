@@ -1,0 +1,46 @@
+<section class="comentario-visualizacao-container">
+
+  <section class="comentario-visualizacao-principal mat-elevation-z4">
+    <!-- BARRA DE TÍTULO -->
+    <section class="comentario-visualizacao-titulo"
+             [class.darker]="_isVisibilidadeLimitada">
+
+      <!-- NOME DO AUTOR E DATA DO COMENTÁRIO -->
+      <section class="comentario-visualizacao-titulo-autoria">
+        <strong>{{comentario?.autorRef?.description}}</strong>
+
+        <span>
+          comentou
+          <app-tempo-decorrido [data]="(comentario?.historicoInteracoes | interacaoMaisRecente)?.data"></app-tempo-decorrido>
+        </span>
+
+        <div *ngIf="_isVisibilidadeLimitada"
+             class="icone-de-visibilidade-limitada"
+             matTooltip="Este comentário não está visível para todos">
+          <mat-icon>visibility_off</mat-icon>
+        </div>
+      </section>
+
+      <section *ngIf="comentario?.role">
+        <app-ocorrencia-bagde [comentario]="comentario">
+        </app-ocorrencia-bagde>
+      </section>
+
+      <!-- MENU NA BARRA DE TÍTULO-->
+      <section class="comentario-visualizacao-menu">
+        <app-ocorrencia-menu (alteraTexto)="_alteraTextoDoComentario()"
+                             (tornaVisivel)="_alteraVisibilidadeDoComentario($event)"
+                             [comentario]="comentario"
+                             [ocorrencia]="ocorrencia">
+        </app-ocorrencia-menu>
+      </section>
+    </section>
+
+    <!-- TEXTO DO COMENTÁRIO -->
+    <section #sectionComTexto
+             [innerHtml]="(comentario?.historicoInteracoes | interacaoMaisRecente)?.texto?.markdown | compilaMarkdown"
+             class="comentario-visualizacao-corpo">
+    </section>
+
+  </section>
+</section>

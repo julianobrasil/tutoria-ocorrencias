@@ -1,47 +1,53 @@
 <section *ngIf="ocorrencia"
          class="ocorrencia-detalhes-titulo-container">
-  <section class="ocorrencia-detalhes-titulo-principal">
-    <section class="ocorrencia-detalhes-titulo-principal-texto">{{ocorrencia?.titulo}}</section>
+  <section class="ocorrencia-detalhes-titulo-container-left-panel">
+    <section class="ocorrencia-detalhes-titulo-principal">
+      <section class="ocorrencia-detalhes-titulo-principal-texto">{{ocorrencia?.titulo}}</section>
+    </section>
 
-    <section class="ocorrencia-detalhes-titulo-principal-botao">
-      <button (click)="_abreDialogoAlteracaoDeTitulo()"
-              color="accent"
-              mat-raised-button
-              type="button">
-        Altera Título
-      </button>
+    <section class="ocorrencia-detalhes-titulo-subtitulo">
+
+      <!-- ÍCONE (COLUNA DA ESQUERDA-->
+      <div [ngClass]="_iconClass">
+        <div>
+          <mat-icon *ngIf="ocorrencia?.isResolvido">
+            check_circle_outline
+          </mat-icon>
+
+          <mat-icon *ngIf="!ocorrencia?.isResolvido">
+            error_outline
+          </mat-icon>
+        </div>
+        <div>
+          <span *ngIf="ocorrencia?.isResolvido; else ocorrenciaFechada">
+            Fechada
+          </span>
+          <ng-template #ocorrenciaFechada>
+            <span>
+              Aberta
+            </span>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- AUTOR E DATA (À DIREITA DO BOTÃO NO TÍTULO)-->
+      <div>
+        <strong>{{ocorrencia?.autorEvento?.description}}</strong>
+        criou esta ocorrência <app-tempo-decorrido [data]="ocorrencia?.dataRegistro"></app-tempo-decorrido>
+      </div>
     </section>
   </section>
 
-  <section class="ocorrencia-detalhes-titulo-subtitulo">
+  <section class="ocorrencia-detalhes-titulo-container-right-panel">
+    <app-ocorrencia-popover-de-escolha (novaOcorrencia)="novaOcorrencia.emit($event)">
+    </app-ocorrencia-popover-de-escolha>
 
-    <!-- ÍCONE (COLUNA DA ESQUERDA-->
-    <div [ngClass]="_iconClass">
-      <div>
-        <mat-icon *ngIf="ocorrencia?.isResolvido">
-          check_circle_outline
-        </mat-icon>
-
-        <mat-icon *ngIf="!ocorrencia?.isResolvido">
-          error_outline
-        </mat-icon>
-      </div>
-      <div>
-        <span *ngIf="ocorrencia?.isResolvido; else ocorrenciaFechada">
-          Fechada
-        </span>
-        <ng-template #ocorrenciaFechada>
-          <span>
-            Aberta
-          </span>
-        </ng-template>
-      </div>
-    </div>
-
-    <!-- AUTOR E DATA (À DIREITA DO BOTÃO NO TÍTULO)-->
-    <div>
-      <strong>{{ocorrencia?.autorEvento?.description}}</strong>
-      criou esta ocorrência <app-tempo-decorrido [data]="ocorrencia?.dataRegistro"></app-tempo-decorrido>
-    </div>
+    <button (click)="_abreDialogoAlteracaoDeTitulo()"
+            class="m-top-10px"
+            color="accent"
+            mat-raised-button
+            type="button">
+      Altera Título
+    </button>
   </section>
 </section>

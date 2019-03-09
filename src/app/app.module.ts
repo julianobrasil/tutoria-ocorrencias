@@ -76,16 +76,20 @@ export class AppModule {
                                               new Date(a.dataInicio).getTime());
       }
 
+      evt.textoFormatado = {
+        html: evt.parecer,
+        markdown: evt.parecer,
+        semFormatacao: evt.parecer,
+      };
+
       evt.cidadeUnidade =
           `${evt.tutoria.unidade.cidade}:${evt.tutoria.unidade.unidade}`;
 
       const tutor = evt.tutoria.historicoTutores[0];
 
-      const titulo = evt.parecer.split(' ')
-                         .splice(0, 20)
-                         .filter((item) => !!item)
-                         .join(' ') +
-                     '...';
+      const titulo =
+          evt.parecer.split(' ').splice(0, 20).filter(Boolean).join(' ') +
+          '...';
 
       evt.interacoes =
           evt.etapas
@@ -107,6 +111,9 @@ export class AppModule {
                        },
                      ],
                      id: '' + new Date().getTime() + Math.random(),
+                     visibilidade: {
+                       tipo: fromDocuments.TipoVisibilidade.TODOS,
+                     },
                    }))
               .sort((a, b) => new Date(a.dataCriacao).getTime() -
                               new Date(b.dataCriacao).getTime());

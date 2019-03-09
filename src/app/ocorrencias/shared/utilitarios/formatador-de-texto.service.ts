@@ -7,7 +7,11 @@ import * as marked from 'marked';
   providedIn: 'root',
 })
 export class FormatadorDeTextoService {
-  constructor(@Inject(DOCUMENT) private _document: Document) {}
+  constructor(@Inject(DOCUMENT) private _document: Document) {
+    marked.setOptions({
+      breaks: true,
+    });
+  }
 
   /**
    * Transforma um texto markdonw em um texto HTML

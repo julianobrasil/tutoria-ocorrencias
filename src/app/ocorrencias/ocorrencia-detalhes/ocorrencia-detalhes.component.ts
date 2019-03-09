@@ -17,8 +17,23 @@ import {
   ConfirmationDialogComponentData,
 } from '../../shared/dialogs/confirmation-dialog/confirmation-dialog.component';
 
-import {Evento, Interacao, TipoInteracao} from '../../model/transport-objects';
+import {
+  Evento,
+  Interacao,
+  TextoFormatado,
+  TipoInteracao,
+} from '../../model/transport-objects';
 
+import {
+  OcorrenciaFormularioComponentTipo,
+} from '../ocorrencia-formulario/ocorrencia-formulario-component.service';
+import {
+  FormatadorDeTextoService,
+} from '../shared/utilitarios/formatador-de-texto.service';
+import {
+  OcorrenciaComentarioChanged,
+  OcorrenciaComentarioChangedType,
+} from './ocorrencia-comentario/ocorrencia-comentario.component';
 import {
   CorDoParticipante,
   OcorrenciaDetalhesComponentService,
@@ -66,7 +81,9 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
 
   constructor(private _activatedRoute: ActivatedRoute,
               private _componentService: OcorrenciaDetalhesComponentService,
-              private _dialog: MatDialog, private _router: Router) {
+              private _dialog: MatDialog,
+              private _formatadorDeTextoService: FormatadorDeTextoService,
+              private _router: Router) {
     this._monitoraIdInexistente();
 
     this._obtemOcorrenciaAPartirDaRota();
@@ -103,6 +120,15 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
             .subscribe((ocorrencia: Evento) =>
                            this._componentService.alteraLocal(ocorrencia.id,
                                                               evt.valor));
+        break;
+      }
+
+      case OcorrenciaDetalhesOperation.ALTERA_UNIDADE: {
+        this._componentService.getLatestValue(this._ocorrencia$)
+            .subscribe((ocorrencia: Evento) =>
+                           this._componentService.alteraUnidade(ocorrencia.id,
+                                                                evt.valor));
+        break;
       }
     }
   }
@@ -115,6 +141,7 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
             .subscribe((ocorrencia: Evento) =>
                            this._componentService.alteraTitulo(ocorrencia.id,
                                                                evt.valor));
+        break;
       }
     }
   }
@@ -148,6 +175,42 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
         .subscribe((ocorrencia: Evento) =>
                        this._componentService.insereComentario(
                            ocorrencia, textoDoComentario));
+  }
+
+  /** roteia para o formulário de nova ocorrência */
+  _trataNovaOcorrencia(tipoDeNovaOcorrencia:
+                           OcorrenciaFormularioComponentTipo) {
+    this._router.navigate(['../nova-ocorrencia', tipoDeNovaOcorrencia],
+                          {relativeTo: this._activatedRoute});
+  }
+
+  /** processa solicitações de alteração no comentário */
+  _processaAlteracaoNoComentario(comentario: Interacao,
+                                 alteracao: OcorrenciaComentarioChanged) {
+    this._componentService.getLatestValue(this._ocorrencia$)
+        .subscribe((ocorrencia: Evento) => {
+          switch (alteracao.type) {
+            case OcorrenciaComentarioChangedType.VISIBILIDADE: {
+              this._componentService.alteraVisibilidade(
+                  ocorrencia.id, comentario.id, alteracao.visibilidade);
+              break;
+            }
+
+            case OcorrenciaComentarioChangedType.TEXTO_COMENTARIO: {
+              const textoFormatado: TextoFormatado = {
+                markdown: alteracao.texto,
+                html: this._formatadorDeTextoService.markdownToHtml(
+                    alteracao.texto),
+                semFormatacao: this._formatadorDeTextoService.limpaMarkdown(
+                    alteracao.texto),
+              };
+
+              this._componentService.alteraTextoComentario(
+                  ocorrencia.id, comentario.id, textoFormatado);
+              break;
+            }
+          }
+        });
   }
 
   /**
@@ -262,8 +325,7 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
    * @memberof OcorrenciaDetalhesComponent
    */
   private _configuraCoresDosAvataresDosParticipantes() {
-    this._ocorrencia$.pipe(filter(Boolean), first(),
-                           takeUntil(this._destroy$))
+    this._ocorrencia$.pipe(filter(Boolean), first(), takeUntil(this._destroy$))
         .subscribe((evt: Evento) =>
                        (this._coresDosParticipantes =
                             this._componentService.setCoresDosParticipantes(

@@ -1,18 +1,39 @@
-import {Component, EventEmitter, Input, OnDestroy, Output} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  Output,
+  ViewEncapsulation,
+} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {merge, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
-import {Evento, Interacao} from '../../../model/transport-objects';
+import {Evento, Interacao, Visibilidade} from '../../../model/transport-objects';
 import {
   OcorrenciaDadosDaGravacao,
   OcorrenciaStatusGravacaoService,
 } from '../../ocorrencia-status-gravacao.service';
 
+export enum OcorrenciaComentarioChangedType {
+  TEXTO_COMENTARIO,
+  VISIBILIDADE,
+}
+
+export interface OcorrenciaComentarioChanged {
+  type: OcorrenciaComentarioChangedType;
+  visibilidade?: Visibilidade;
+  texto?: string;
+}
+
 @Component({
   selector: 'app-ocorrencia-comentario',
   templateUrl: './ocorrencia-comentario.component.html',
   styleUrls: ['./ocorrencia-comentario.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None,
   exportAs: 'ocorrenciaComentario',
 })
 export class OcorrenciaComentarioComponent implements OnDestroy {
@@ -38,16 +59,19 @@ export class OcorrenciaComentarioComponent implements OnDestroy {
   @Output()
   textoDoComentarioChange: EventEmitter<string> = new EventEmitter<string>();
 
-  /** controle do comentário que estiver sendo criado/editado */
-  _comentarioEmEdicaoCtrl: FormControl = new FormControl();
+  /** mostra os botões de ação no rodapé do componente */
+  @Input() mostraBotoesDeAcao = true;
+
+  /** Emite quando há alterações no comentário. */
+  @Output()
+  comentarioChanged: EventEmitter<OcorrenciaComentarioChanged> = new EventEmitter<
+    OcorrenciaComentarioChanged
+  >();
 
   /** destrói todas as assinaturas em observables */
   private _destroy$: Subject<void> = new Subject<void>();
 
   constructor(private _statusGravacao: OcorrenciaStatusGravacaoService) {
-    this._comentarioEmEdicaoCtrl.valueChanges.pipe(takeUntil(this._destroy$))
-        .subscribe((value: string) => this.textoDoComentarioChange.emit(value));
-
     this._setupMonitoraStatusGravacao();
   }
 
@@ -60,11 +84,9 @@ export class OcorrenciaComentarioComponent implements OnDestroy {
 
   /** monitora o status da gravação */
   private _setupMonitoraStatusGravacao() {
-    merge(this._statusGravacao.getStatusReaberturaFechamento$(),
-          this._statusGravacao.getStatusInsercaoDeComentario$())
-        .pipe(takeUntil(this._destroy$))
-        .subscribe((status: OcorrenciaDadosDaGravacao) =>
-                       status.sucesso ? this._comentarioEmEdicaoCtrl.reset() :
-                                        null);
+    this._statusGravacao
+      .getStatusAlteracaoDeTextoDoComentario$()
+      .pipe(takeUntil(this._destroy$))
+      .subscribe((status: OcorrenciaDadosDaGravacao) => (this.isEditando = !status.sucesso));
   }
 }

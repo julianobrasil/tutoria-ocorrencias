@@ -1,5 +1,4 @@
 import {Evento} from '../../../app/model/transport-objects';
-import {TipoEvento, Tutoria} from '../../../app/model/transport-objects/';
 import {Paginacao} from '../../../app/ocorrencias/ocorrencia-facade.service';
 import * as fromActions from '../actions';
 
@@ -17,17 +16,14 @@ export const initialState: EventoState = {
   eventoPorIdErro: false,
 };
 
-export function reducer(
-    state: EventoState = initialState,
-    action: fromActions.EVENTO.EventoAction): EventoState {
+export function reducer(state: EventoState = initialState,
+                        action: fromActions.EVENTO.EventoAction): EventoState {
   state = _configraDadosDePaginacao(state, action);
   state = _listaEventos(state, action);
   state = _obtemEventoPorId(state, action);
-  state = _alteraTipoEvento(state, action);
   state = _reabreEncerraEvento(state, action);
-  state = _insereComentario(state, action);
   state = _criaEvento(state, action);
-  state = _alteraLocalDoEvento(state, action);
+  state = _acoesQueAtualizamUmEvento(state, action);
 
   return state;
 }
@@ -83,32 +79,7 @@ function _obtemEventoPorId(
     action: fromActions.EVENTO.EventoAction): EventoState {
   switch (action.type) {
     case fromActions.EVENTO.OBTEM_EVENTO_POR_ID.RUN: {
-      return { ...state, eventoPorIdErro: false };
-    }
-    case fromActions.EVENTO.OBTEM_EVENTO_POR_ID.SUCCESS: {
-      const index: number | null =
-          action.payload.evento ?
-              state.eventos.findIndex((evt: Evento) =>
-                                          evt.id === action.payload.evento.id) :
-              null;
-
-      if (index !== null) {
-        const eventos = [...state.eventos];
-        if (index > -1) {
-          eventos.splice(index, 1, action.payload.evento);
-
-          return {
-              ...state, eventos,
-          };
-        } else {
-          eventos.push(action.payload.evento);
-
-          return {
-              ...state, eventos,
-          };
-        }
-      }
-      break;
+      return {...state, eventoPorIdErro: false};
     }
 
     case fromActions.EVENTO.OBTEM_EVENTO_POR_ID.FAIL: {
@@ -123,40 +94,7 @@ function _obtemEventoPorId(
         eventos.splice(index, 1);
       }
 
-      return { ...state, eventos, eventoPorIdErro: true };
-    }
-  }
-
-  return state;
-}
-
-function _alteraTipoEvento(
-    state: EventoState = initialState,
-    action: fromActions.EVENTO.EventoAction): EventoState {
-  switch (action.type) {
-    case fromActions.EVENTO.ALTERA_TIPO_EVENTO.SUCCESS: {
-      const index: number | null =
-          action.payload.evento ?
-              state.eventos.findIndex((evt: Evento) =>
-                                          evt.id === action.payload.evento.id) :
-              null;
-
-      if (index !== null) {
-        const eventos = [...state.eventos];
-        if (index > -1) {
-          eventos.splice(index, 1, action.payload.evento);
-
-          return {
-              ...state, eventos,
-          };
-        } else {
-          eventos.push(action.payload.evento);
-
-          return {
-              ...state, eventos,
-          };
-        }
-      }
+      return {...state, eventos, eventoPorIdErro: true};
     }
   }
 
@@ -173,65 +111,6 @@ function _reabreEncerraEvento(
           ...state,
       };
     }
-
-    case fromActions.EVENTO.ENCERRA_EVENTO.SUCCESS:
-    case fromActions.EVENTO.REABRE_EVENTO.SUCCESS: {
-      const index: number | null =
-          action.payload.evento ?
-              state.eventos.findIndex((evt: Evento) =>
-                                          evt.id === action.payload.evento.id) :
-              null;
-
-      if (index !== null) {
-        const eventos = [...state.eventos];
-        if (index > -1) {
-          eventos.splice(index, 1, action.payload.evento);
-
-          return {
-              ...state, eventos,
-          };
-        } else {
-          eventos.push(action.payload.evento);
-
-          return {
-              ...state, eventos,
-          };
-        }
-      }
-    }
-  }
-
-  return state;
-}
-
-function _insereComentario(
-    state: EventoState = initialState,
-    action: fromActions.EVENTO.EventoAction): EventoState {
-  switch (action.type) {
-    case fromActions.EVENTO.INSERE_COMENTARIO_EVENTO.SUCCESS: {
-      const index: number | null =
-          action.payload.evento ?
-              state.eventos.findIndex((evt: Evento) =>
-                                          evt.id === action.payload.evento.id) :
-              null;
-
-      if (index !== null) {
-        const eventos = [...state.eventos];
-        if (index > -1) {
-          eventos.splice(index, 1, action.payload.evento);
-
-          return {
-              ...state, eventos,
-          };
-        } else {
-          eventos.push(action.payload.evento);
-
-          return {
-              ...state, eventos,
-          };
-        }
-      }
-    }
   }
 
   return state;
@@ -243,18 +122,27 @@ function _criaEvento(state: EventoState = initialState,
     case fromActions.EVENTO.CRIA_EVENTO.SUCCESS: {
       const eventos: Evento[] = [...state.eventos, action.payload.evento];
 
-      return { ...state, eventos };
+      return {...state, eventos};
     }
   }
 
   return state;
 }
 
-function _alteraLocalDoEvento(
+function _acoesQueAtualizamUmEvento(
     state: EventoState = initialState,
     action: fromActions.EVENTO.EventoAction): EventoState {
   switch (action.type) {
-    case fromActions.EVENTO.ALTERA_LOCAL_DO_EVENTO.SUCCESS: {
+    case fromActions.EVENTO.ALTERA_LOCAL_DO_EVENTO.SUCCESS:
+    case fromActions.EVENTO.ALTERA_TEXTO_DE_COMENTARIO.SUCCESS:
+    case fromActions.EVENTO.ALTERA_TIPO_EVENTO.SUCCESS:
+    case fromActions.EVENTO.ALTERA_TITULO_DO_EVENTO.SUCCESS:
+    case fromActions.EVENTO.ALTERA_UNIDADE_DO_EVENTO.SUCCESS:
+    case fromActions.EVENTO.ALTERA_VISIBILIDADE_DA_INTERACAO.SUCCESS:
+    case fromActions.EVENTO.ENCERRA_EVENTO.SUCCESS:
+    case fromActions.EVENTO.INSERE_COMENTARIO_EVENTO.SUCCESS:
+    case fromActions.EVENTO.OBTEM_EVENTO_POR_ID.SUCCESS:
+    case fromActions.EVENTO.REABRE_EVENTO.SUCCESS: {
       const index: number | null =
           action.payload.evento ?
               state.eventos.findIndex((evt: Evento) =>

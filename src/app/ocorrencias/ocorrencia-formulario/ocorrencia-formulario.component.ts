@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {MatDatepicker, MatOptionSelectionChange} from '@angular/material';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, Router, UrlSegment} from '@angular/router';
 import {SatPopover} from '@ncstate/sat-popover';
 import {BehaviorSubject, combineLatest, Observable, Subject} from 'rxjs';
 import {
@@ -427,8 +427,19 @@ export class OcorrenciaFormularioComponent implements AfterViewInit,
     this._statusGravacaoService.getStatusCriacaoDeEvento$().subscribe(
         (status: OcorrenciaDadosDaGravacao) => {
           if (status.sucesso) {
-            this._router.navigate(['./', status.evento.id],
-                                  {relativeTo: this._route});
+            combineLatest(this._route.url)
+                .pipe(first(), map((value: [UrlSegment[]]) => value[0]))
+                .subscribe((values: UrlSegment[]) => {
+                  console.log(values);
+                  if (values.some((v: UrlSegment) =>
+                                      v.path === 'nova-ocorrencia')) {
+                    this._router.navigate(['../../', status.evento.id],
+                                          {relativeTo: this._route});
+                  } else {
+                    this._router.navigate(['./', status.evento.id],
+                                          {relativeTo: this._route});
+                  }
+                });
           }
         });
   }

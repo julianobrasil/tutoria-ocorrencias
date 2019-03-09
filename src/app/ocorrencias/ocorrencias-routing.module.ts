@@ -3,8 +3,12 @@ import {RouterModule, Routes} from '@angular/router';
 
 import {AuthGuard} from '../auth/guards/auth-guard.service';
 
-import {OcorrenciaDetalhesComponent} from './ocorrencia-detalhes/ocorrencia-detalhes.component';
-import {OcorrenciasRoutingComponent} from './ocorrencias-routing-component.component';
+import {
+  OcorrenciaDetalhesComponent,
+} from './ocorrencia-detalhes/ocorrencia-detalhes.component';
+import {
+  OcorrenciasRoutingComponent,
+} from './ocorrencias-routing-component.component';
 import {OcorrenciasComponent} from './ocorrencias/ocorrencias.component';
 
 const ocorrenciasRoutes: Routes = [
@@ -14,6 +18,10 @@ const ocorrenciasRoutes: Routes = [
     canActivate: [AuthGuard],
     children: [
       {path: '', component: OcorrenciasComponent},
+      {
+        path: 'nova-ocorrencia/:tipoNovaOcorrencia',
+        component: OcorrenciasComponent,
+      },
       {path: ':id', component: OcorrenciaDetalhesComponent, pathMatch: 'full'},
     ],
   },
@@ -25,4 +33,5 @@ const ocorrenciasRoutes: Routes = [
   declarations: [],
   providers: [],
 })
-export class OcorrenciasRoutingModule {}
+export class OcorrenciasRoutingModule {
+}

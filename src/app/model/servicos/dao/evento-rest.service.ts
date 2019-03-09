@@ -211,6 +211,50 @@ export class EventoRestService {
   }
 
   /**
+   * Altera a unidade onde um evento ocorre
+   *
+   * @param {string} eventoId
+   * @param {string} unidade
+   * @returns {Observable<fromDocuments.Evento>}
+   * @memberof EventoRestService
+   */
+  alteraUnidadeDoEvento(eventoId: string,
+                        unidade: string): Observable<fromDocuments.Evento> {
+    const evento = EVENTOS_EXISTENTES.find((evt: fromDocuments.Evento) =>
+                                               evt.id === eventoId);
+
+    const valorAntigo = evento.cidadeUnidade;
+    evento.cidadeUnidade = unidade;
+
+    const agora = new Date();
+    // AÇÃO
+    const acao: fromDocuments.Interacao = {
+      autorRef: {
+        code: this._authService.email,
+        description: this._authService.nomeUsuario,
+      },
+      dataCriacao: new Date(agora),
+      tipoInteracao: fromDocuments.TipoInteracao.ACAO,
+      id: '' + new Date(agora).getTime(),
+      role: Funcoes.ADMINISTRADOR.funcaoSistema,
+      historicoInteracoes: [
+        {
+          data: new Date(agora),
+          tipoAcao: fromDocuments.TipoAcao.ALTERA_UNIDADE,
+          auditoriaAcao: {
+            valorAntigo,
+            valorCorrente: evento.cidadeUnidade,
+          },
+        },
+      ],
+    };
+
+    evento.interacoes.push(acao);
+
+    return observableOf(JSON.parse(JSON.stringify(evento)));
+  }
+
+  /**
    * Altera o título de um evento
    *
    * @param {string} eventoId
@@ -472,6 +516,56 @@ export class EventoRestService {
     };
 
     evento.interacoes.push(comentario);
+
+    return observableOf(JSON.parse(JSON.stringify(evento)));
+  }
+
+  /**
+   * Altera a visibilidade de uma interação
+   *
+   * @param {string} eventoId id do evento
+   * @param {string} interacaoId id da interação
+   * @param {fromDocuments.Visibilidade} visibilidade visibilidade a ser
+   * alterada
+   * @returns {Observable<fromDocuments.Evento>}
+   * @memberof EventoRestService
+   */
+  alteraVisibilidadeDaInteracao(eventoId: string, interacaoId: string,
+                                visibilidade: fromDocuments.Visibilidade):
+      Observable<fromDocuments.Evento> {
+    const evento = EVENTOS_EXISTENTES.find((evt: fromDocuments.Evento) =>
+                                               evt.id === eventoId);
+
+    const comentario: fromDocuments.Interacao = evento.interacoes.find(
+        (interacao: fromDocuments.Interacao) => interacao.id === interacaoId);
+
+    comentario.visibilidade = visibilidade;
+
+    return observableOf(JSON.parse(JSON.stringify(evento)));
+  }
+
+  /**
+   * Altear texto de um comentário
+   *
+   * @param {string} eventoId id do evento
+   * @param {string} interacaoId id da interação
+   * @param {fromDocuments.TextoFormatado} textoFormatado texto formatado
+   * @memberof EventoRestService
+   */
+  alteraTextoDeComentario(eventoId: string, interacaoId: string,
+                          textoFormatado: fromDocuments.TextoFormatado): any {
+    const evento = EVENTOS_EXISTENTES.find((evt: fromDocuments.Evento) =>
+                                               evt.id === eventoId);
+
+    const comentario: fromDocuments.Interacao = evento.interacoes.find(
+        (interacao: fromDocuments.Interacao) => interacao.id === interacaoId);
+
+    const historico: fromDocuments.HistoricoInteracao = {
+      data: new Date(),
+      texto: textoFormatado,
+    };
+
+    comentario.historicoInteracoes.push(historico);
 
     return observableOf(JSON.parse(JSON.stringify(evento)));
   }

@@ -1,0 +1,24 @@
+<section class="comentario-edicao-container">
+  <section class="comentario-edicao-principal mat-elevation-z4">
+    <ckeditor [config]="_config"
+              [editor]="_editor"
+              [formControl]="_comentarioEmEdicaoCtrl">
+    </ckeditor>
+
+    <!-- BOTÕES DE AÇÃO -->
+    <section *ngIf="mostraBotoesDeAcao"
+             class="comentario-edicao-botoes-acao">
+      <button (click)="_cancelaEdicao()"
+              color="warn"
+              mat-button
+              type="button">Cancelar</button>
+
+      <button (click)="_atualizaComentario()"
+              [disabled]="_botaoGravarDesabilitado"
+              cdkFocusInitial
+              mat-button
+              color="primary"
+              type="button">Atualizar comentário</button>
+    </section>
+  </section>
+</section>

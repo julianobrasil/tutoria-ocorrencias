@@ -72,8 +72,7 @@
                                 [value]="null">SEM UNIDADE</mat-option>
                     <ng-container *ngFor="let u of unidades">
                       <mat-option [value]="u"
-                                  class="app-option-popover-style"
-                                  satDisableClick>
+                                  class="app-option-popover-style">
                         {{u?.cidade}}:{{u.unidade}}
                       </mat-option>
                     </ng-container>

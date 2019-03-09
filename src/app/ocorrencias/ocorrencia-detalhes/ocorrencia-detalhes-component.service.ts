@@ -1,17 +1,23 @@
 import {Injectable} from '@angular/core';
+
 import {select, Store} from '@ngrx/store';
+import * as fromDiarioDeTutoriaStore from '../../../store/diario-de-tutoria';
+
 import {combineLatest, Observable, Subject, timer} from 'rxjs';
 import {first, map, takeUntil} from 'rxjs/operators';
+
 import {environment} from '../../../environments/environment';
 
-import * as fromDiarioDeTutoriaStore from '../../../store/diario-de-tutoria';
 import {AuthService} from '../../auth/auth.service';
+
 import {Funcoes} from '../../model/helper-objects/funcoes-sistema';
 import {ImodbService} from '../../model/servicos/imodb.service';
 import {
   ObjectReference,
   Participante,
+  TextoFormatado,
   TipoParticipacao,
+  Visibilidade,
 } from '../../model/transport-objects';
 import {
   Coordenador,
@@ -34,6 +40,7 @@ export enum OcorrenciaDetalhesOperation {
   ENCERRA_E_COMENTA,
   ALTERA_LOCAL,
   ALTERA_TITULO,
+  ALTERA_UNIDADE,
 }
 
 export interface OcorrenciaDetalhesSavingStatus {
@@ -185,6 +192,20 @@ export class OcorrenciaDetalhesComponentService {
   }
 
   /**
+   * Altera a unidade da ocorrência
+   *
+   * @param {string} id
+   * @param {string} valor
+   * @memberof OcorrenciaDetalhesComponentService
+   */
+  alteraUnidade(eventoId: string, unidade: string): void {
+    this._store$.dispatch(
+        new fromDiarioDeTutoriaStore.ACTIONS.EVENTO.AlteraUnidadeDoEventoRun({
+            eventoId, unidade,
+        }));
+  }
+
+  /**
    * Altera o título do evento
    *
    * @param {string} eventoId
@@ -196,6 +217,22 @@ export class OcorrenciaDetalhesComponentService {
         new fromDiarioDeTutoriaStore.ACTIONS.EVENTO.AlteraTituloDoEventoRun({
             eventoId, titulo,
         }));
+  }
+
+  /**
+   * Torna um comentário visível para todos
+   *
+   * @param {string} eventoId
+   * @param {string} interacaoId
+   * @param {boolean} tornaComentarioVisivel
+   * @memberof OcorrenciaDetalhesComponentService
+   */
+  alteraVisibilidade(eventoId: string, interacaoId: string,
+                     visibilidade: Visibilidade): void {
+    this._store$.dispatch(new fromDiarioDeTutoriaStore.ACTIONS.EVENTO
+                              .AlteraVisibilidadeDaInteracaoRun({
+                                  eventoId, interacaoId, visibilidade,
+                              }));
   }
 
   /**
@@ -244,25 +281,42 @@ export class OcorrenciaDetalhesComponentService {
         }));
   }
 
+  /**
+   * Altera texto do comentário
+   *
+   * @param {string} eventoId
+   * @param {string} interacaoId
+   * @param {TextoFormatado} textoFormatado
+   * @memberof OcorrenciaDetalhesComponentService
+   */
+  alteraTextoComentario(eventoId: string, interacaoId: string,
+                        textoFormatado: TextoFormatado): void {
+    this._store$.dispatch(
+        new fromDiarioDeTutoriaStore.ACTIONS.EVENTO.AlteraTextoDeComentarioRun({
+          eventoId,
+          interacaoId,
+          textoFormatado,
+        }));
+  }
+
   /** verifica se ou usuário logado é tutor */
   private _isTutor(historicoTutores: Tutor[]): boolean {
-    return historicoTutores.some(
-        (tutor: Tutor) =>
-            !tutor.dataFim && tutor.email === this._authService.email);
+    return historicoTutores.some((tutor: Tutor) =>
+                                     !tutor.dataFim &&
+                                     tutor.email === this._authService.email);
   }
 
   /** verifica se ou usuário logado é coordenador */
   private _isCoordenador(coordenadores: Coordenador[]): boolean {
-    return coordenadores.some(
-        (coordenador: Coordenador) =>
-            coordenador.email === this._authService.email);
+    return coordenadores.some((coordenador: Coordenador) =>
+                                  coordenador.email ===
+                                  this._authService.email);
   }
 
   /** verifica se ou usuário logado é responsável */
   private _isResponsavel(responsaveis: Responsavel[]): boolean {
-    return responsaveis.some(
-        (responsavel: Responsavel) =>
-            responsavel.email === this._authService.email);
+    return responsaveis.some((responsavel: Responsavel) =>
+                                 responsavel.email === this._authService.email);
   }
 
   /** verifica se ou usuário logado é da qualidade */

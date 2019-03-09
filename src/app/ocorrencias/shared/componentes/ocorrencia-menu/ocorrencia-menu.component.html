@@ -3,22 +3,56 @@
   <mat-icon>more_vert</mat-icon>
 </button>
 <mat-menu #menu="matMenu">
-  <button mat-menu-item
-          matTooltip="Esconder comentário dos convidados">
-    <mat-icon>visibility</mat-icon>
+  <button *ngIf="_mostraBotaoDeEsconder"
+          (click)="tornaVisivel.emit(false)"
+          mat-menu-item
+          matTooltip="Esconder comentário dos convidados"
+          type="button">
+    <mat-icon>visibility_off</mat-icon>
     <span>Esconder</span>
   </button>
-  <button mat-menu-item>
-    <mat-icon>visibility_off</mat-icon>
+
+  <button *ngIf="_mostraBotaoDeMostrar"
+          (click)="tornaVisivel.emit(true)"
+          mat-menu-item
+          matTooltip="Mostrar comentário a convidados"
+          type="button">
+    <mat-icon>visibility</mat-icon>
     <span>Mostrar</span>
   </button>
-  <mat-divider></mat-divider>
-  <button mat-menu-item>
-    <mat-icon>edit</mat-icon>
-    <span>Alterar</span>
+
+  <mat-divider *ngIf="_mostraDividerAbaixoDeVisibilidade"></mat-divider>
+
+  <button *ngIf="isCabecalhoEvento"
+          (click)="alteraLocal.emit()"
+          color="warn"
+          mat-menu-item
+          type="button">
+    <mat-icon color="warn">place</mat-icon>
+    <span>Alterar Local</span>
   </button>
-  <button color="warn"
-          mat-menu-item>
+
+  <button *ngIf="isCabecalhoEvento && !ocorrencia?.tutoria"
+          (click)="alteraUnidade.emit()"
+          color="warn"
+          mat-menu-item
+          type="button">
+    <mat-icon color="warn">place</mat-icon>
+    <span>Alterar Unidade</span>
+  </button>
+
+  <button *ngIf="_mostraAlterarTexto"
+          (click)="alteraTexto.emit()"
+          mat-menu-item
+          type="button">
+    <mat-icon>edit</mat-icon>
+    <span>Alterar Texto</span>
+  </button>
+
+  <button *ngIf="!isCabecalhoEvento"
+          color="warn"
+          mat-menu-item
+          type="button">
     <mat-icon color="warn">delete_forever</mat-icon>
     <span class="app-color-red">Excluir</span>
   </button>

@@ -2,6 +2,18 @@ import {HistoricoInteracao} from './historico-interacao';
 import {ObjectReference} from './object-reference';
 import {TipoInteracao} from './tipo-interacao';
 
+export enum TipoVisibilidade {
+  PARTICIPANTES_ESPECIFICOS,
+  SOMENTE_AUTOR,
+  SOMENTE_GESTORES,
+  TODOS,
+}
+
+export interface Visibilidade {
+  tipo: TipoVisibilidade;
+  usuarios?: ObjectReference[];
+}
+
 export interface Interacao {
   // todo comentário tem um id
   id: string;
@@ -10,9 +22,11 @@ export interface Interacao {
 
   autorRef: ObjectReference;
 
-  dataCriacao: Date|string;
+  dataCriacao: Date | string;
 
   role: string;
+
+  visibilidade?: Visibilidade;
 
   historicoInteracoes: HistoricoInteracao[];
 }

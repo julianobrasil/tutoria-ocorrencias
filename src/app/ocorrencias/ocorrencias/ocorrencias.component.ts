@@ -1,13 +1,9 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {combineLatest, Observable} from 'rxjs';
-import {first, map} from 'rxjs/operators';
+import {ChangeDetectionStrategy, Component, OnDestroy, ViewEncapsulation} from '@angular/core';
+import {ActivatedRoute, ParamMap} from '@angular/router';
 
-import {
-  ClassificacaoEvento,
-  Evento,
-  NovoEventoRequest,
-  Unidade,
-} from '../../model/transport-objects/';
+import {combineLatest, Observable, Subject} from 'rxjs';
+import {filter, first, map, takeUntil} from 'rxjs/operators';
+
 import {
   OcorrenciaStoreFacadeService,
   Paginacao,
@@ -16,16 +12,23 @@ import {
   OcorrenciaFormularioComponentData,
   OcorrenciaFormularioComponentTipo,
 } from '../ocorrencia-formulario/ocorrencia-formulario-component.service';
-
 import {OcorrenciaComponentService} from './ocorrencia-component.service';
+
+import {
+  Evento,
+  NovoEventoRequest,
+  Unidade,
+} from '../../model/transport-objects/';
 
 @Component({
   selector: 'app-ocorrencias',
   templateUrl: './ocorrencias.component.html',
   styleUrls: ['./ocorrencias.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None,
 })
-export class OcorrenciasComponent {
+export class OcorrenciasComponent implements OnDestroy {
+
   /** dados de eventos paginados */
   _eventos$: Observable<Evento[]> = this._ocorrenciaStoreFacade.getEventos$();
 
@@ -47,8 +50,14 @@ export class OcorrenciasComponent {
   /** tipo de formulário */
   _ocorrenciaFormularioComponentTipo: OcorrenciaFormularioComponentTipo;
 
-  constructor(private _ocorrenciaStoreFacade: OcorrenciaStoreFacadeService,
+  /** destrói todas as assinaturas em observables */
+  private _destroy$: Subject<void> = new Subject<void>();
+
+  constructor(private _activatedRoute: ActivatedRoute,
+              private _ocorrenciaStoreFacade: OcorrenciaStoreFacadeService,
               private _componentService: OcorrenciaComponentService) {
+    this._obtemOcorrenciaAPartirDaRota();
+
     combineLatest(this._paginacao$)
         .pipe(first(), map((_) => _[0]))
         .subscribe((paginacao: Paginacao) => {
@@ -62,6 +71,13 @@ export class OcorrenciasComponent {
 
           this._ocorrenciaStoreFacade.setTermoDeBuscaEBusca('');
         });
+  }
+
+  ngOnDestroy() {
+    if (this._destroy$ && !this._destroy$.closed) {
+      this._destroy$.next();
+      this._destroy$.complete();
+    }
   }
 
   /** filtra os eventos existentes */
@@ -97,5 +113,30 @@ export class OcorrenciasComponent {
     this._componentService.complementaDadosDeTexto(to.textoFormatado);
 
     this._ocorrenciaStoreFacade.criaEvento(to);
+  }
+
+  /**
+   * Analisa a rota, obtém a ocorrência do store e já solicita atualização a
+   * partir do banco
+   *
+   * @private
+   * @memberof OcorrenciaDetalhesComponent
+   */
+  private _obtemOcorrenciaAPartirDaRota() {
+    this._activatedRoute.paramMap.pipe(
+                                     map((p: ParamMap) =>
+                                             p.get('tipoNovaOcorrencia') ?
+                                                 +p.get('tipoNovaOcorrencia') :
+                                                 null),
+                                     takeUntil(this._destroy$))
+        .subscribe((tipoNovaOcorrencia: OcorrenciaFormularioComponentTipo) => {
+          if (tipoNovaOcorrencia) {
+            this._ocorrenciaFormularioComponentTipo = tipoNovaOcorrencia;
+
+            this._isCriandoNovaOcorrencia = true;
+          } else {
+            this._isCriandoNovaOcorrencia = false;
+          }
+        });
   }
 }

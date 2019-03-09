@@ -199,6 +199,29 @@ export class EventoEffects {
               new fromActions.AlteraLocalDoEventoSuccess({evento})));
 
   @Effect()
+  alteraUnidadeEvento$ = this._actions$.pipe(
+      ofType(fromActions.ALTERA_UNIDADE_DO_EVENTO.RUN),
+      switchMap(
+          (action: fromActions.AlteraUnidadeDoEventoRun) =>
+              this._eventoService.alteraUnidadeDoEvento(action.payload.eventoId,
+                                                        action.payload.unidade)
+                  .pipe(catchError((e) => observableOf('erro')))),
+      tap((item: Evento | string) =>
+              typeof item ===
+              'string' ? this._ocorrenciaStatusGravacaoService.statusGravacao$
+                  .next({
+                    sucesso: false,
+                    operacaoExecutada: OcorrenciaOperacao.ALTERA_UNIDADE,
+                  }) : this._ocorrenciaStatusGravacaoService.statusGravacao$
+                  .next({
+                    sucesso: true,
+                    operacaoExecutada: OcorrenciaOperacao.ALTERA_UNIDADE,
+                    evento: item as Evento,
+                  })),
+      map((evento: Evento) =>
+              new fromActions.AlteraUnidadeDoEventoSuccess({evento})));
+
+  @Effect()
   alteraTituloEvento$ = this._actions$.pipe(
       ofType(fromActions.ALTERA_TITULO_DO_EVENTO.RUN),
       switchMap(
@@ -220,4 +243,56 @@ export class EventoEffects {
                   })),
       map((evento: Evento) =>
               new fromActions.AlteraTituloDoEventoSuccess({evento})));
+
+  @Effect()
+  alteraVisibilidadeDaInteracao$ = this._actions$.pipe(
+      ofType(fromActions.ALTERA_VISIBILIDADE_DA_INTERACAO.RUN),
+      switchMap((action: fromActions.AlteraVisibilidadeDaInteracaoRun) =>
+                    this._eventoService.alteraVisibilidadeDaInteracao(
+                                           action.payload.eventoId,
+                                           action.payload.interacaoId,
+                                           action.payload.visibilidade)
+                        .pipe(catchError((e) => observableOf('erro')))),
+      tap((item: Evento | string) =>
+              typeof item ===
+              'string' ? this._ocorrenciaStatusGravacaoService.statusGravacao$
+                  .next({
+                    sucesso: false,
+                    operacaoExecutada:
+                        OcorrenciaOperacao.ALTERA_VISIBILIDADE_INTERACAO,
+                  }) : this._ocorrenciaStatusGravacaoService.statusGravacao$
+                  .next({
+                    sucesso: true,
+                    operacaoExecutada:
+                        OcorrenciaOperacao.ALTERA_VISIBILIDADE_INTERACAO,
+                    evento: item as Evento,
+                  })),
+      map((evento: Evento) =>
+              new fromActions.AlteraVisibilidadeDaInteracaoSuccess({evento})));
+
+  @Effect()
+  alteraTextoDeComentario$ = this._actions$.pipe(
+      ofType(fromActions.ALTERA_TEXTO_DE_COMENTARIO.RUN),
+      switchMap((action: fromActions.AlteraTextoDeComentarioRun) =>
+                    this._eventoService.alteraTextoDeComentario(
+                                           action.payload.eventoId,
+                                           action.payload.interacaoId,
+                                           action.payload.textoFormatado)
+                        .pipe(catchError((e) => observableOf('erro')))),
+      tap((item: Evento | string) =>
+              typeof item ===
+              'string' ? this._ocorrenciaStatusGravacaoService.statusGravacao$
+                  .next({
+                    sucesso: false,
+                    operacaoExecutada:
+                        OcorrenciaOperacao.ALTERA_TEXTO_DE_COMENTARIO,
+                  }) : this._ocorrenciaStatusGravacaoService.statusGravacao$
+                  .next({
+                    sucesso: true,
+                    operacaoExecutada:
+                        OcorrenciaOperacao.ALTERA_TEXTO_DE_COMENTARIO,
+                    evento: item as Evento,
+                  })),
+      map((evento: Evento) =>
+              new fromActions.AlteraTextoDeComentarioSuccess({evento})));
 }
