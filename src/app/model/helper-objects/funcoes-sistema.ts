@@ -47,3 +47,16 @@ export const funcoesObj = {
   ADMINISTRADOR: Funcoes.ADMINISTRADOR,
   OPERACOES: Funcoes.OPERACOES,
 };
+
+/** TODO(@julianobrasil): ADICIONADO => DAQUI PRA BAIXO */
+export interface PermissaoDoUsuario {
+  appID: string;
+  unidade: string;
+  permissoes: string;
+}
+
+export interface FuncaoDoUsuario {
+  appID: string;
+  unidade: string;
+  funcoes: string;
+}

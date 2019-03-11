@@ -46,14 +46,15 @@ export class EventoEffects {
                                          action.payload.paginacao.page : 0,
                                      action.payload.paginacao &&
                                          action.payload.paginacao.pageSize ?
-                                         action.payload.paginacao.pageSize : 10)
+                                         action.payload.paginacao.pageSize :
+                                             10)
                   .pipe(catchError(
                       () => observableOf({content: [], totalElements: 0})))),
-      map((pagina: EventoPaginado |
-           {
-             content: any[];
-             totalElements: number
-           }) => new fromActions.ObtemEventosPaginadosSuccess({
+      map((pagina: | EventoPaginado |
+               {
+                 content: any[];
+                 totalElements: number;
+               }) => new fromActions.ObtemEventosPaginadosSuccess({
         eventos: pagina.content,
         totalElements: pagina.totalElements,
       })));
@@ -80,29 +81,30 @@ export class EventoEffects {
   @Effect()
   alteraTipoEvento$ = this._actions$.pipe(
       ofType(fromActions.ALTERA_TIPO_EVENTO.RUN),
-      switchMap((action: fromActions.AlteraTipoDeEventoRun) =>
-                    this._eventoService.alteraTipoDeEvento(
-                        action.payload.eventoId,
-                        action.payload.descricaoTipoEvento,
-                        action.payload.descricaoSubTipoEvento)),
+      switchMap(
+          (action: fromActions.AlteraTipoDeEventoRun) =>
+              this._eventoService.alteraTipoDeEvento(
+                  action.payload.eventoId, action.payload.descricaoTipoEvento,
+                  action.payload.descricaoSubTipoEvento)),
       map((evento: Evento) =>
               new fromActions.AlteraTipoDeEventoSuccess({evento})));
 
   @Effect({dispatch: false})
   excluiEvento$ = this._actions$.pipe(
       ofType(fromActions.EXCLUI_EVENTO.RUN),
-      switchMap((action: fromActions.ExcluiEventoRun) =>
-                    this._eventoService.removeEvento(action.payload.eventoId)),
+      switchMap(
+          (action: fromActions.ExcluiEventoRun) =>
+              this._eventoService.removeEvento(action.payload.eventoId)),
       tap(() => this._router.navigate(['../'], {relativeTo: this._route})));
 
   @Effect()
   reabreEvento$ = this._actions$.pipe(
       ofType(fromActions.REABRE_EVENTO.RUN),
-      switchMap(
-          (action: fromActions.ReabreEventoRun) =>
-              this._eventoService.reabreEvento(
-                  action.payload.eventoId, action.payload.textoComentario ?
-                                           action.payload.textoComentario : '')),
+      switchMap((action: fromActions.ReabreEventoRun) =>
+                    this._eventoService.reabreEvento(
+                        action.payload.eventoId,
+                        action.payload.textoComentario ?
+                        action.payload.textoComentario : '')),
       tap((evento: Evento) =>
               this._ocorrenciaStatusGravacaoService.statusGravacao$.next({
                 sucesso: true,
@@ -113,17 +115,18 @@ export class EventoEffects {
   @Effect()
   encerraEvento$ = this._actions$.pipe(
       ofType(fromActions.ENCERRA_EVENTO.RUN),
-      switchMap(
-          (action: fromActions.EncerraEventoRun) =>
-              this._eventoService.encerraEvento(
-                  action.payload.eventoId, action.payload.textoComentario ?
-                                           action.payload.textoComentario : '')),
+      switchMap((action: fromActions.EncerraEventoRun) =>
+                    this._eventoService.encerraEvento(
+                        action.payload.eventoId,
+                        action.payload.textoComentario ?
+                        action.payload.textoComentario : '')),
       tap((evento: Evento) =>
               this._ocorrenciaStatusGravacaoService.statusGravacao$.next({
                 sucesso: true,
                 operacaoExecutada: OcorrenciaOperacao.ENCERRA_E_COMENTA,
               })),
-      map((evento: Evento) => new fromActions.EncerraEventoSuccess({evento})));
+      map((evento: Evento) =>
+              new fromActions.EncerraEventoSuccess({evento})));
 
   @Effect()
   insereComentario$ = this._actions$.pipe(
@@ -132,14 +135,16 @@ export class EventoEffects {
           (action: fromActions.InsereComentarioRun) =>
               this._eventoService.insereComentario(
                                      action.payload.eventoId,
-                                     action.payload.textoComentario)
+                                     action.payload.textoComentario,
+                                     action.payload.visibilidade)
                   .pipe(catchError((e: any) => {
-                    this._ocorrenciaStatusGravacaoService.statusGravacao$.next({
-                      sucesso: false,
-                      operacaoExecutada: OcorrenciaOperacao.COMENTA,
-                    });
-                    return observableOf(null);
-                  }))),
+                          this._ocorrenciaStatusGravacaoService.statusGravacao$
+                              .next({
+                                sucesso: false,
+                                operacaoExecutada: OcorrenciaOperacao.COMENTA,
+                              });
+                          return observableOf(null);
+                        }))),
       tap((evento: Evento | null) =>
               evento ?
               this._ocorrenciaStatusGravacaoService.statusGravacao$.next({
@@ -172,8 +177,8 @@ export class EventoEffects {
                   })),
       map((item: Evento | NovoEventoRequest) =>
               item.hasOwnProperty('tipoEventoId') ?
-              new fromActions.CriaEventoFail({error: item}) :
-                  new fromActions.CriaEventoSuccess({evento: item as Evento})));
+              new fromActions.CriaEventoFail({error: item}) : new fromActions
+                  .CriaEventoSuccess({evento: item as Evento})));
 
   @Effect()
   alteraLocalEvento$ = this._actions$.pipe(
@@ -268,7 +273,8 @@ export class EventoEffects {
                     evento: item as Evento,
                   })),
       map((evento: Evento) =>
-              new fromActions.AlteraVisibilidadeDaInteracaoSuccess({evento})));
+              new fromActions.AlteraVisibilidadeDaInteracaoSuccess(
+                  {evento})));
 
   @Effect()
   alteraTextoDeComentario$ = this._actions$.pipe(
@@ -295,4 +301,29 @@ export class EventoEffects {
                   })),
       map((evento: Evento) =>
               new fromActions.AlteraTextoDeComentarioSuccess({evento})));
+
+  @Effect()
+  alteraParecerDaInteracao$ = this._actions$.pipe(
+      ofType(fromActions.ALTERA_PARECER_DA_INTERACAO.RUN),
+      switchMap((action: fromActions.AlteraParecerDaInteracaoRun) =>
+                    this._eventoService.alteraParecerDaInteracao(
+                                           action.payload.eventoId,
+                                           action.payload.textoFormatado)
+                        .pipe(catchError((e) => observableOf('erro')))),
+      tap((item: Evento | string) =>
+              typeof item ===
+              'string' ? this._ocorrenciaStatusGravacaoService.statusGravacao$
+                  .next({
+                    sucesso: false,
+                    operacaoExecutada:
+                        OcorrenciaOperacao.ALTERA_PARECER_DA_INTERACAO,
+                  }) : this._ocorrenciaStatusGravacaoService.statusGravacao$
+                  .next({
+                    sucesso: true,
+                    operacaoExecutada:
+                        OcorrenciaOperacao.ALTERA_PARECER_DA_INTERACAO,
+                    evento: item as Evento,
+                  })),
+      map((evento: Evento) =>
+              new fromActions.AlteraParecerDaInteracaoSuccess({evento})));
 }

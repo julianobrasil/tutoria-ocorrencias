@@ -87,6 +87,11 @@ export enum ALTERA_TEXTO_DE_COMENTARIO {
   SUCCESS = '[DIÁRIO DE TUTORIA:EVENTOS]: Altera texto de comentário success',
 }
 
+export enum ALTERA_PARECER_DA_INTERACAO {
+  RUN = '[DIÁRIO DE TUTORIA:EVENTOS]: Altera parecer da interação run',
+  SUCCESS = '[DIÁRIO DE TUTORIA:EVENTOS]: Altera parecer da interação success',
+}
+
 export class ObtemEventosPaginadosRun implements Action {
   readonly type = OBTEM_EVENTOS_PAGINADOS.RUN;
   constructor(public payload: {
@@ -190,6 +195,7 @@ export class InsereComentarioRun implements Action {
   constructor(public payload: {
     eventoId: string;
     textoComentario?: string;
+    visibilidade?: Visibilidade;
   }) {}
 }
 
@@ -285,8 +291,22 @@ export class AlteraTextoDeComentarioSuccess implements Action {
   constructor(public payload: { evento: Evento; }) {}
 }
 
+export class AlteraParecerDaInteracaoRun implements Action {
+  readonly type = ALTERA_PARECER_DA_INTERACAO.RUN;
+  constructor(public payload: {
+    eventoId: string;
+    textoFormatado: TextoFormatado;
+  }) {}
+}
+
+export class AlteraParecerDaInteracaoSuccess implements Action {
+  readonly type = ALTERA_PARECER_DA_INTERACAO.SUCCESS;
+  constructor(public payload: { evento: Evento; }) {}
+}
+
 export type EventoAction =
     | AlteraLocalDoEventoRun | AlteraLocalDoEventoSuccess |
+    AlteraParecerDaInteracaoRun | AlteraParecerDaInteracaoSuccess |
     AlteraTextoDeComentarioRun | AlteraTextoDeComentarioSuccess |
     AlteraTituloDoEventoRun | AlteraTituloDoEventoSuccess |
     AlteraTipoDeEventoRun | AlteraTipoDeEventoSuccess |

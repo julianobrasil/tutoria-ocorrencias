@@ -29,6 +29,7 @@
       <!-- MENU NA BARRA DE TÍTULO-->
       <section class="comentario-visualizacao-menu">
         <app-ocorrencia-menu (alteraTexto)="_alteraTextoDoComentario()"
+                             (menuAberto)="_interrompeAtualizacaoDaTela($event)"
                              (tornaVisivel)="_alteraVisibilidadeDoComentario($event)"
                              [comentario]="comentario"
                              [ocorrencia]="ocorrencia">

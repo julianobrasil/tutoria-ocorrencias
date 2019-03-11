@@ -23,14 +23,28 @@ export class TempoDecorridoPipe implements PipeTransform {
 
     const horaMilliseconds = 60 * 60 * 1000;
 
-    const data = horaMilliseconds > milliseconds ?
-        'agora mesmo' :
-        diaMilliseconds > milliseconds ?
-        `há  ${milliseconds / (1000 * 60 * 60)} horas` :
-        mesMilliseconds > milliseconds ?
-        `há ${milliseconds / (1000 * 60 * 60 * 24)} dias` :
-        `em ${moment(dia).format('DD MMM YYYY')}`;
+    const minutoMilliseconds = 60 * 1000;
+    // tslint:disable: max-line-length
+    const data =
+        minutoMilliseconds > milliseconds ?
+            'agora mesmo' :
+            horaMilliseconds > milliseconds ?
+            this._formata(milliseconds / minutoMilliseconds, 'minuto') :
+            diaMilliseconds > milliseconds ?
+            this._formata(milliseconds / horaMilliseconds, 'hora') :
+            mesMilliseconds > milliseconds ?
+            this._formata(milliseconds / diaMilliseconds, 'dia') :
+            `em ${moment(dia).format('DD MMM YYYY')}`;
 
     return data;
+  }
+
+  private _formata(quantidade: number, unidade: string): string {
+    return `há  ${Math.floor(quantidade)} ${unidade}${this._plural(Math.floor(quantidade))}`;
+  }
+
+  /** retorna um se a quantidade for maior que 1 */
+  private _plural(quantidade: number): string {
+    return quantidade > 1 ? 's' : '';
   }
 }

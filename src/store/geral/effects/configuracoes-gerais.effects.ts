@@ -1,18 +1,10 @@
 import {Injectable} from '@angular/core';
-import {Actions, Effect, ofType} from '@ngrx/effects';
-import {interval, of as observableOf, timer} from 'rxjs';
-import {
-  catchError,
-  concatMap,
-  map,
-  mapTo,
-  repeatWhen,
-  switchMap,
-} from 'rxjs/operators';
 
-import {
-  ConfiguracoesService,
-} from '../../../app/model/servicos/dao/configuracoes.service';
+import {Actions, Effect, ofType} from '@ngrx/effects';
+import {of as observableOf, timer} from 'rxjs';
+import {catchError, concatMap, map, switchMap} from 'rxjs/operators';
+
+import {ConfiguracoesService} from '../../../app/model/servicos/dao/configuracoes.service';
 import {Config} from '../../../app/model/transport-objects';
 import * as fromActions from '../actions/configuracoes-gerais.action';
 
@@ -20,16 +12,17 @@ import * as fromActions from '../actions/configuracoes-gerais.action';
   providedIn: 'root',
 })
 export class ConfiguracoesGeraisEffects {
-  constructor(private _actions$: Actions,
-              private _configuracoesService: ConfiguracoesService) {}
+  constructor(
+      private _actions$: Actions,
+      private _configuracoesService: ConfiguracoesService) {}
 
   @Effect()
   obtemConfig$ = this._actions$.pipe(
       ofType(fromActions.OBTEM_CONFIG.RUN),
-      switchMap(() => this._configuracoesService.findUnique().pipe(
-                    catchError(() => observableOf([])))),
-      map((config: Config) =>
-              new fromActions.ObtemConfigSuccess({config})));
+      switchMap(
+          () => this._configuracoesService.findUnique().pipe(
+              catchError(() => observableOf([])))),
+      map((config: Config) => new fromActions.ObtemConfigSuccess({config})));
 
   /*
    * Observe que o horário do servidor é renovado a cada 2 minutos. Isso visa

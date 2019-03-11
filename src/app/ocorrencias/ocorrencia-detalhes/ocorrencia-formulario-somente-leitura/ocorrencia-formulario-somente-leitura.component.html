@@ -1,5 +1,5 @@
 <section *ngIf="ocorrencia"
-         class="formulario-somente-leitura-container">
+         class="formulario-somente-leitura-container mat-typography">
   <section class="formulario-somente-leitura-avatar">
     <app-ocorrencia-avatar [corDoAvatar]="corDoAvatar"
                            [identificacaoTooltip]="ocorrencia?.autorEvento?.description"
@@ -20,7 +20,9 @@
 
       <section class="formulario-somente-leitura-acoes">
         <app-ocorrencia-menu (alteraLocal)="_mostaDialogoDeAlterarLocal()"
+                             (alteraTexto)="mostraEditor = true"
                              (alteraUnidade)="_mostaDialogoDeAlterarUnidade()"
+                             (menuAberto)="_suspendeAtualizacaoPeriodicaDaTela($event)"
                              [isCabecalhoEvento]="true"
                              [ocorrencia]="ocorrencia">
         </app-ocorrencia-menu>
@@ -57,10 +59,24 @@
           </button>
         </div>
       </div>
-      <div [innerHTML]="ocorrencia?.tutoria | tutoriaTurmas"></div>
 
-      <div [innerHTML]="ocorrencia?.textoFormatado?.html">
-      </div>
+      <div [innerHTML]="ocorrencia?.tutoria | tutoriaTurmas"
+           class="formulario-somente-leitura-corpo-tutorias"></div>
+
+      <section class="ocorrencia-formulario-somente-leitura-parecer">
+        <ng-template #visualizacao>
+          <div [innerHTML]="ocorrencia?.textoFormatado?.html"></div>
+        </ng-template>
+
+
+        <app-ocorrencia-comentario-edicao *ngIf="mostraEditor; else visualizacao"
+                                          (cancelaEdicao)="mostraEditor = false"
+                                          (comentarioChanged)="_alteraComentario($event)"
+                                          [comentarioMarkdown]="ocorrencia?.textoFormatado?.markdown"
+                                          [mostraBotoesDeAcao]="true"
+                                          [ocorrencia]="ocorrencia">
+        </app-ocorrencia-comentario-edicao>
+      </section>
     </section>
   </section>
 </section>

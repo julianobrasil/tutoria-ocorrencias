@@ -1,14 +1,14 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable, of as observableOf, throwError} from 'rxjs';
-import {
-  FormatadorDeTextoService,
-} from '../../../ocorrencias/shared/utilitarios/formatador-de-texto.service';
 
 import {EVENTOS_EXISTENTES} from '../../../../data/eventos';
 import {TIPOS_EVENTOS_DISPONIVEIS} from '../../../../data/tipos_eventos';
 import {TUTORIAS_EXISTENTES} from '../../../../data/tutorias';
 import {AuthService} from '../../../auth/auth.service';
+import {
+  FormatadorDeTextoService,
+} from '../../../ocorrencias/shared/utilitarios/formatador-de-texto.service';
 import {Funcoes} from '../../helper-objects/funcoes-sistema';
 import * as fromDocuments from '../../transport-objects';
 
@@ -481,8 +481,9 @@ export class EventoRestService {
    * @returns {Observable<fromDocuments.Evento>}
    * @memberof TutoriaService
    */
-  insereComentario(eventoId: string,
-                   textoComentario: string): Observable<fromDocuments.Evento> {
+  insereComentario(eventoId: string, textoComentario: string,
+                   visibilidade: fromDocuments.Visibilidade):
+      Observable<fromDocuments.Evento> {
     if (!textoComentario) {
       return throwError(eventoId);
     }
@@ -513,6 +514,7 @@ export class EventoRestService {
           },
         },
       ],
+      visibilidade,
     };
 
     evento.interacoes.push(comentario);
@@ -553,7 +555,8 @@ export class EventoRestService {
    * @memberof EventoRestService
    */
   alteraTextoDeComentario(eventoId: string, interacaoId: string,
-                          textoFormatado: fromDocuments.TextoFormatado): any {
+                          textoFormatado: fromDocuments.TextoFormatado):
+      Observable<fromDocuments.Evento> {
     const evento = EVENTOS_EXISTENTES.find((evt: fromDocuments.Evento) =>
                                                evt.id === eventoId);
 
@@ -566,6 +569,27 @@ export class EventoRestService {
     };
 
     comentario.historicoInteracoes.push(historico);
+
+    return observableOf(JSON.parse(JSON.stringify(evento)));
+  }
+
+  /**
+   * Altera o parecer do evento
+   *
+   * @param {string} eventoId
+   * @param {fromDocuments.TextoFormatado} textoFormatado
+   * @returns {Observable<fromDocuments.Evento>}
+   * @memberof EventoRestService
+   */
+  alteraParecerDaInteracao(eventoId: string,
+                           textoFormatado: fromDocuments.TextoFormatado):
+      Observable<fromDocuments.Evento> {
+    const evento = EVENTOS_EXISTENTES.find((evt: fromDocuments.Evento) =>
+                                               evt.id === eventoId);
+
+    evento.parecer = textoFormatado.markdown;
+
+    evento.textoFormatado = textoFormatado;
 
     return observableOf(JSON.parse(JSON.stringify(evento)));
   }

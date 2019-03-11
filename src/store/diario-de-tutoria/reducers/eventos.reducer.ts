@@ -134,6 +134,7 @@ function _acoesQueAtualizamUmEvento(
     action: fromActions.EVENTO.EventoAction): EventoState {
   switch (action.type) {
     case fromActions.EVENTO.ALTERA_LOCAL_DO_EVENTO.SUCCESS:
+    case fromActions.EVENTO.ALTERA_PARECER_DA_INTERACAO.SUCCESS:
     case fromActions.EVENTO.ALTERA_TEXTO_DE_COMENTARIO.SUCCESS:
     case fromActions.EVENTO.ALTERA_TIPO_EVENTO.SUCCESS:
     case fromActions.EVENTO.ALTERA_TITULO_DO_EVENTO.SUCCESS:

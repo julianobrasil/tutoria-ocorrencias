@@ -1,21 +1,28 @@
-import {Injectable} from '@angular/core';
-
+import {Injectable, OnDestroy} from '@angular/core';
 import {select, Store} from '@ngrx/store';
-import * as fromDiarioDeTutoriaStore from '../../../store/diario-de-tutoria';
-
-import {combineLatest, Observable, Subject, timer} from 'rxjs';
-import {first, map, takeUntil} from 'rxjs/operators';
+import {combineLatest, interval, Observable, Subject, timer} from 'rxjs';
+import {
+  bufferWhen,
+  debounceTime,
+  filter,
+  first,
+  map,
+  takeUntil,
+  tap,
+} from 'rxjs/operators';
 
 import {environment} from '../../../environments/environment';
-
+import * as fromDiarioDeTutoriaStore from '../../../store/diario-de-tutoria';
+import * as fromGeralStore from '../../../store/geral';
 import {AuthService} from '../../auth/auth.service';
-
 import {Funcoes} from '../../model/helper-objects/funcoes-sistema';
 import {ImodbService} from '../../model/servicos/imodb.service';
 import {
+  Interacao,
   ObjectReference,
   Participante,
   TextoFormatado,
+  TipoInteracao,
   TipoParticipacao,
   Visibilidade,
 } from '../../model/transport-objects';
@@ -25,6 +32,9 @@ import {
   Responsavel,
   Tutor,
 } from '../../model/transport-objects/';
+import {
+  FormatadorDeTextoService,
+} from '../shared/utilitarios/formatador-de-texto.service';
 import {
   GeradorDeCoresService,
 } from '../shared/utilitarios/gerador-de-cores.service';
@@ -41,6 +51,7 @@ export enum OcorrenciaDetalhesOperation {
   ALTERA_LOCAL,
   ALTERA_TITULO,
   ALTERA_UNIDADE,
+  ALTERA_PARECER,
 }
 
 export interface OcorrenciaDetalhesSavingStatus {
@@ -51,10 +62,33 @@ export interface OcorrenciaDetalhesSavingStatus {
 @Injectable({
   providedIn: 'root',
 })
-export class OcorrenciaDetalhesComponentService {
+export class OcorrenciaDetalhesComponentService implements OnDestroy {
+  /** emite true quando houver uma inteção de edição em andamento */
+  private _interromperAtualizacaoPeriodica = 0;
+  private _interromperAtualizacaoPeriodica$: Subject<boolean> =
+      new Subject<boolean>();
+
   constructor(private _authService: AuthService,
+              private _formatadorDeTextoService: FormatadorDeTextoService,
               private _geradorDeCoresService: GeradorDeCoresService,
-              private _store$: Store<{}>, public _imodb: ImodbService) {}
+              private _store$: Store<{}>, public _imodb: ImodbService) {
+    this._setupAtualizacaoPeriodica();
+  }
+
+  ngOnDestroy() {
+    if (this._interromperAtualizacaoPeriodica$ &&
+        !this._interromperAtualizacaoPeriodica$.closed) {
+      this._interromperAtualizacaoPeriodica$.complete();
+    }
+  }
+
+  /** informa que uma está em andamento */
+  interrompeAtualizacaoPeriodica(interrompeAtualizacaoPeriodica: boolean) {
+    this._interromperAtualizacaoPeriodica$.next(interrompeAtualizacaoPeriodica);
+  }
+
+  /** reinicializa a autalização períodica */
+  resetaAtualizacaoPeriodica() { this._interromperAtualizacaoPeriodica = 0; }
 
   /** obtém o úlgimo valor emitido pelo observable passado como parâmetro */
   getLatestValue<T>(value$: Observable<T>): Observable<T> {
@@ -69,8 +103,9 @@ export class OcorrenciaDetalhesComponentService {
 
   /** obtém evento direto do banco de dados */
   obtemEventoDoBancoPeriodicamente(id: string, destroy$: Subject<void>): void {
-    timer(0, environment.production ? 5000 : 600000)
-        .pipe(takeUntil(destroy$))
+    timer(0, environment.production ? 5000 : 5000)
+        .pipe(filter((_) => !this._interromperAtualizacaoPeriodica),
+              takeUntil(destroy$))
         .subscribe(
             (_) => this._store$.dispatch(
                 new fromDiarioDeTutoriaStore.ACTIONS.EVENTO.ObtemEventoPorIdRun(
@@ -219,6 +254,21 @@ export class OcorrenciaDetalhesComponentService {
         }));
   }
 
+  alteraParecer(eventoId: string, parecerMarkdown: string): void {
+    const textoFormatado: TextoFormatado = {
+      markdown: parecerMarkdown,
+      html: this._formatadorDeTextoService.markdownToHtml(parecerMarkdown),
+      semFormatacao:
+          this._formatadorDeTextoService.limpaMarkdown(parecerMarkdown),
+    };
+
+    this._store$.dispatch(
+        new fromDiarioDeTutoriaStore.ACTIONS.EVENTO.AlteraParecerDaInteracaoRun(
+            {
+                eventoId, textoFormatado,
+            }));
+  }
+
   /**
    * Torna um comentário visível para todos
    *
@@ -273,11 +323,13 @@ export class OcorrenciaDetalhesComponentService {
    * @param {string} textoComentario
    * @memberof OcorrenciaDetalhesComponentService
    */
-  insereComentario(ocorrencia: Evento, textoComentario: string): void {
+  insereComentario(ocorrencia: Evento, textoComentario: string,
+                   visibilidade: Visibilidade): void {
     this._store$.dispatch(
         new fromDiarioDeTutoriaStore.ACTIONS.EVENTO.InsereComentarioRun({
           eventoId: ocorrencia.id,
           textoComentario,
+          visibilidade,
         }));
   }
 
@@ -293,10 +345,38 @@ export class OcorrenciaDetalhesComponentService {
                         textoFormatado: TextoFormatado): void {
     this._store$.dispatch(
         new fromDiarioDeTutoriaStore.ACTIONS.EVENTO.AlteraTextoDeComentarioRun({
-          eventoId,
-          interacaoId,
-          textoFormatado,
+            eventoId, interacaoId, textoFormatado,
         }));
+  }
+
+  /**
+   * Vefirica qual a última visibilidade do usuário logado
+   *
+   * @param {Evento} ocorrencia
+   * @returns {Observable<Visibilidade>}
+   * @memberof OcorrenciaDetalhesComponentService
+   */
+  verificaVisibilidadeDoUltimoComentario$(ocorrencia: Evento):
+      Observable<Visibilidade> {
+    return this._store$.pipe(
+        select(fromGeralStore.SELECTORS.DADOS_DO_USUARIO_LOGADO.getUsuarioRef),
+        map((usuarioRef: ObjectReference) => {
+          if (!usuarioRef) {
+            return null;
+          }
+
+          const interacoes: Interacao[] =
+              ocorrencia.interacoes.filter((i: Interacao) =>
+                                               i.tipoInteracao ===
+                                                   TipoInteracao.COMENTARIO &&
+                                               i.autorRef.code ===
+                                                   usuarioRef.code)
+                  .sort((a, b) => new Date(b.dataCriacao).getTime() -
+                                  new Date(a.dataCriacao).getTime());
+
+          return interacoes.length ? interacoes[0].visibilidade : null;
+        }),
+        first());
   }
 
   /** verifica se ou usuário logado é tutor */
@@ -337,5 +417,24 @@ export class OcorrenciaDetalhesComponentService {
         (participante: Participante) =>
             participante.usuarioRef.code === this._authService.email &&
             participante.tipoParticipacao === TipoParticipacao.CONVIDADO);
+  }
+
+  /**
+   * Toda vez que um evento true é recebido em
+   * _interromperAtualizacaoPeriodica$, o contador
+   * this._interromperAtualizacaoPeriodica é incrementado. Quando um evento
+   * false é recebido, ele é decrementado.
+   *
+   * @private
+   * @memberof OcorrenciaDetalhesComponentService
+   */
+  private _setupAtualizacaoPeriodica() {
+    // não há necessidade do takeUntil aqui porque o subject
+    // _interromperAtualizacaoPeriodica$ completa no OnDestroy
+    this._interromperAtualizacaoPeriodica$
+        .pipe(tap((interrompe: boolean) =>
+                      interrompe ? this._interromperAtualizacaoPeriodica++ :
+                                   this._interromperAtualizacaoPeriodica--))
+        .subscribe();
   }
 }

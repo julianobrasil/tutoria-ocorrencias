@@ -34,9 +34,10 @@
           <ng-container *ngFor="let comentario of (_ocorrencia$ | async)?.interacoes | interacoesPorOrdemCronologica; last as isLast">
             <app-ocorrencia-comentario *ngIf="comentario?.tipoInteracao === _tipoInteracaoExistente.COMENTARIO"
                                        (comentarioChanged)="_processaAlteracaoNoComentario(comentario, $event)"
+                                       [comentario]="comentario"
                                        [corDoAvatar]="comentario?.autorRef?.code | obtemCorDoAvatar: _coresDosParticipantes"
                                        [isTextoDoAvatarBranco]="comentario?.autorRef?.code | isTextoDoAvatarBranco: _coresDosParticipantes"
-                                       [comentario]="comentario">
+                                       [somenteEdicao]="false">
             </app-ocorrencia-comentario>
 
             <app-ocorrencia-acao *ngIf="comentario?.tipoInteracao === _tipoInteracaoExistente.ACAO"
@@ -61,10 +62,11 @@
                                    [comentario]="_novoComentario"
                                    [corDoAvatar]="_novoComentario?.autorRef?.code | obtemCorDoAvatar: _coresDosParticipantes"
                                    [hidden]="!(_ocorrencia$ | async)"
-                                   [isTextoDoAvatarBranco]="_novoComentario?.autorRef?.code | isTextoDoAvatarBranco: _coresDosParticipantes"
                                    [isEditando]="true"
+                                   [isTextoDoAvatarBranco]="_novoComentario?.autorRef?.code | isTextoDoAvatarBranco: _coresDosParticipantes"
+                                   [mostraBotoesDeAcao]="false"
                                    [roles]="_roles"
-                                   [mostraBotoesDeAcao]="false">
+                                   [somenteEdicao]="true">
         </app-ocorrencia-comentario>
 
         <section class="ocorrencia-detalhes-actions">

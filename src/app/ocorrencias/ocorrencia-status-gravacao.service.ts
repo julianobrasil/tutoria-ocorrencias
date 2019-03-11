@@ -6,6 +6,7 @@ import {Evento} from '../model/transport-objects';
 
 export enum OcorrenciaOperacao {
   ALTERA_LOCAL,
+  ALTERA_PARECER_DA_INTERACAO,
   ALTERA_TEXTO_DE_COMENTARIO,
   ALTERA_TITULO,
   ALTERA_UNIDADE,
@@ -92,5 +93,16 @@ export class OcorrenciaStatusGravacaoService {
         filter((status: OcorrenciaDadosDaGravacao) =>
                    status.operacaoExecutada ===
                    OcorrenciaOperacao.ALTERA_TEXTO_DE_COMENTARIO));
+  }
+
+  /**
+   * emite quando ococorre uma operação de alteração no texto principal da
+   * ocorrência
+   */
+  getStatusAlteracaoDeParecerDoEvento$() {
+    return this.statusGravacao$.pipe(
+        filter((status: OcorrenciaDadosDaGravacao) =>
+                   status.operacaoExecutada ===
+                   OcorrenciaOperacao.ALTERA_PARECER_DA_INTERACAO));
   }
 }

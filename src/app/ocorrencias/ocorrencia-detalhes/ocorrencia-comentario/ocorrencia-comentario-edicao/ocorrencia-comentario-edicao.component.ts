@@ -40,31 +40,24 @@ export interface TextareaEvent {
 export class OcorrenciaComentarioEdicaoComponent implements OnDestroy {
   /** comentário a ser mostrado */
   private _markdownDoUltimoComentario: string;
-  private _comentario: Interacao;
+  private _comentarioMarkdown: string;
   @Input()
-  get comentario(): Interacao {
-    return this._comentario;
+  get comentarioMarkdown(): string {
+    return this._comentarioMarkdown;
   }
-  set comentario(i: Interacao) {
-    this._comentario = i;
+  set comentarioMarkdown(i: string) {
+    this._comentarioMarkdown = i ? i : '';
 
-    this._comentario.historicoInteracoes.sort(
-      (a, b) => new Date(b.data).getTime() - new Date(a.data).getTime(),
-    );
+    this._markdownDoUltimoComentario = this._comentarioMarkdown;
 
-    this._comentarioEmEdicaoCtrl.setValue(
-      i.historicoInteracoes[0].texto.markdown ? i.historicoInteracoes[0].texto.markdown : '',
-    );
-
-    this._markdownDoUltimoComentario = i.historicoInteracoes[0].texto.markdown;
+    this._comentarioEmEdicaoCtrl.setValue(this._markdownDoUltimoComentario);
   }
 
   /** ocorrência dona do comentário */
   @Input() ocorrencia: Evento;
 
   /** mostra os botões de ação no rodapé do componente */
-  @Input()
-  mostraBotoesDeAcao = true;
+  @Input() mostraBotoesDeAcao = true;
 
   /** cancela edição do comentário */
   @Output() cancelaEdicao: EventEmitter<void> = new EventEmitter<void>();
@@ -75,12 +68,12 @@ export class OcorrenciaComentarioEdicaoComponent implements OnDestroy {
 
   /** Emite quando há alterações no comentário. */
   @Output()
-  comentarioChanged: EventEmitter<OcorrenciaComentarioChanged> = new EventEmitter<
-    OcorrenciaComentarioChanged
-  >();
+  comentarioChanged: EventEmitter<OcorrenciaComentarioChanged> =
+      new EventEmitter<OcorrenciaComentarioChanged>();
 
   /** controle do comentário que estiver sendo criado/editado */
-  _comentarioEmEdicaoCtrl: FormControl = new FormControl(['', Validators.required]);
+  _comentarioEmEdicaoCtrl: FormControl =
+      new FormControl(['', Validators.required]);
 
   /** quando o botão de gravar deve ser desabilitado */
   _botaoGravarDesabilitado = true;
@@ -109,28 +102,27 @@ export class OcorrenciaComentarioEdicaoComponent implements OnDestroy {
   ];
 
   /** configurações do CkEditor */
-  _config: {[key: string]: string | string[]} = {language: 'pt-br', toolbar: this._botoesDaToolbar};
+  _config: {[key: string]: string | string[]} = {
+    language: 'pt-br',
+    toolbar: this._botoesDaToolbar,
+  };
 
   /** destrói todas as assinaturas em observables */
   private _destroy$: Subject<void> = new Subject<void>();
 
-  constructor(
-    private _cd: ChangeDetectorRef,
-    private _statusGravacao: OcorrenciaStatusGravacaoService,
-  ) {
-    this._comentarioEmEdicaoCtrl.valueChanges
-      .pipe(
-        debounceTime(300),
-        takeUntil(this._destroy$),
-      )
-      .subscribe((value: string) => {
-        this.textoDoComentarioChange.emit(value);
+  constructor(private _cd: ChangeDetectorRef,
+              private _statusGravacao: OcorrenciaStatusGravacaoService) {
+    this._comentarioEmEdicaoCtrl.valueChanges.pipe(debounceTime(300),
+                                                   takeUntil(this._destroy$))
+        .subscribe((value: string) => {
+          this.textoDoComentarioChange.emit(value);
 
-        this._botaoGravarDesabilitado =
-          this._comentarioEmEdicaoCtrl.invalid ||
-          this._comentarioEmEdicaoCtrl.value === this._markdownDoUltimoComentario;
-        this._cd.markForCheck();
-      });
+          this._botaoGravarDesabilitado =
+              this._comentarioEmEdicaoCtrl.invalid ||
+              this._comentarioEmEdicaoCtrl.value ===
+                  this._markdownDoUltimoComentario;
+          this._cd.markForCheck();
+        });
 
     this._setupMonitoraStatusGravacao();
   }
@@ -162,13 +154,11 @@ export class OcorrenciaComentarioEdicaoComponent implements OnDestroy {
 
   /** monitora o status da gravação */
   private _setupMonitoraStatusGravacao() {
-    merge(
-      this._statusGravacao.getStatusReaberturaFechamento$(),
-      this._statusGravacao.getStatusInsercaoDeComentario$(),
-    )
-      .pipe(takeUntil(this._destroy$))
-      .subscribe((status: OcorrenciaDadosDaGravacao) =>
-        status.sucesso ? this._comentarioEmEdicaoCtrl.reset() : null,
-      );
+    merge(this._statusGravacao.getStatusReaberturaFechamento$(),
+          this._statusGravacao.getStatusInsercaoDeComentario$())
+        .pipe(takeUntil(this._destroy$))
+        .subscribe(
+            (status: OcorrenciaDadosDaGravacao) =>
+                status.sucesso ? this._comentarioEmEdicaoCtrl.reset() : null);
   }
 }

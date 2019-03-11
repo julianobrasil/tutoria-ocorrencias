@@ -12,7 +12,7 @@
                                       (cancelaEdicao)="isEditando = false"
                                       (comentarioChanged)="comentarioChanged.emit($event)"
                                       (textoDoComentarioChange)="textoDoComentarioChange.emit($event)"
-                                      [comentario]="comentario"
+                                      [comentarioMarkdown]="(comentario | obtemHistoricoComentarioMaisRecente)?.texto?.markdown"
                                       [mostraBotoesDeAcao]="mostraBotoesDeAcao"
                                       [ocorrencia]="ocorrencia">
     </app-ocorrencia-comentario-edicao>

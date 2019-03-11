@@ -1,35 +1,25 @@
+// tslint:disable: max-line-length
 import {ChangeDetectionStrategy, Component, OnDestroy} from '@angular/core';
 import {MatDialog} from '@angular/material';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {combineLatest, Observable, of as observableOf, Subject} from 'rxjs';
-import {
-  debounceTime,
-  delay,
-  filter,
-  first,
-  map,
-  switchMapTo,
-  takeUntil,
-  tap,
-} from 'rxjs/operators';
-import {
-  ConfirmationDialogComponent,
-  ConfirmationDialogComponentData,
-} from '../../shared/dialogs/confirmation-dialog/confirmation-dialog.component';
+import {debounceTime, delay, filter, first, map, switchMapTo, takeUntil, tap} from 'rxjs/operators';
 
 import {
   Evento,
   Interacao,
   TextoFormatado,
   TipoInteracao,
+  TipoVisibilidade,
+  Visibilidade,
 } from '../../model/transport-objects';
+import {
+  ConfirmationDialogComponent,
+  ConfirmationDialogComponentData,
+} from '../../shared/dialogs/confirmation-dialog/confirmation-dialog.component';
+import {OcorrenciaFormularioComponentTipo} from '../ocorrencia-formulario/ocorrencia-formulario-component.service';
+import {FormatadorDeTextoService} from '../shared/utilitarios/formatador-de-texto.service';
 
-import {
-  OcorrenciaFormularioComponentTipo,
-} from '../ocorrencia-formulario/ocorrencia-formulario-component.service';
-import {
-  FormatadorDeTextoService,
-} from '../shared/utilitarios/formatador-de-texto.service';
 import {
   OcorrenciaComentarioChanged,
   OcorrenciaComentarioChangedType,
@@ -39,12 +29,9 @@ import {
   OcorrenciaDetalhesComponentService,
   OcorrenciaDetalhesOperation,
 } from './ocorrencia-detalhes-component.service';
-import {
-  OcorrenciaDetalhesTituloChanged,
-} from './ocorrencia-detalhes-titulo/ocorrencia-detalhes-titulo.component';
-import {
-  OcorrenciaFormularioSomenteLeituraChanged,
-} from './ocorrencia-formulario-somente-leitura/ocorrencia-formulario-somente-leitura.component';
+import {OcorrenciaDetalhesTituloChanged} from './ocorrencia-detalhes-titulo/ocorrencia-detalhes-titulo.component';
+import {OcorrenciaFormularioSomenteLeituraChanged} from './ocorrencia-formulario-somente-leitura/ocorrencia-formulario-somente-leitura.component';
+// tslint:enable: max-line-length
 
 @Component({
   selector: 'app-ocorrencia-detalhes',
@@ -79,11 +66,13 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
   /** destrói todas as assinaturas em observables */
   private _destroy$: Subject<void> = new Subject<void>();
 
-  constructor(private _activatedRoute: ActivatedRoute,
-              private _componentService: OcorrenciaDetalhesComponentService,
-              private _dialog: MatDialog,
-              private _formatadorDeTextoService: FormatadorDeTextoService,
-              private _router: Router) {
+  constructor(
+    private _activatedRoute: ActivatedRoute,
+    private _componentService: OcorrenciaDetalhesComponentService,
+    private _dialog: MatDialog,
+    private _formatadorDeTextoService: FormatadorDeTextoService,
+    private _router: Router,
+  ) {
     this._monitoraIdInexistente();
 
     this._obtemOcorrenciaAPartirDaRota();
@@ -96,14 +85,18 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
       this._destroy$.next();
       this._destroy$.complete();
     }
+
+    this._componentService.resetaAtualizacaoPeriodica();
   }
 
   /** exclui o evento corrente */
   _excluiEvento() {
     combineLatest(this._ocorrencia$.pipe(filter(Boolean)))
-        .pipe(first(), map(([evento]) => evento))
-        .subscribe((ocorrencia: Evento) =>
-                       this._componentService.excluiEvento(ocorrencia.id));
+      .pipe(
+        first(),
+        map(([evento]) => evento),
+      )
+      .subscribe((ocorrencia: Evento) => this._componentService.excluiEvento(ocorrencia.id));
   }
 
   /** altera tipo de evento */
@@ -112,22 +105,32 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
   }
 
   /** trata alterações na ocorrência originadas do formulário somente leitura */
-  _ocorrenciaAlteradaNoFormularioSomenteLeitura(
-      evt: OcorrenciaFormularioSomenteLeituraChanged) {
+  _ocorrenciaAlteradaNoFormularioSomenteLeitura(evt: OcorrenciaFormularioSomenteLeituraChanged) {
     switch (evt.type) {
       case OcorrenciaDetalhesOperation.ALTERA_LOCAL: {
-        this._componentService.getLatestValue(this._ocorrencia$)
-            .subscribe((ocorrencia: Evento) =>
-                           this._componentService.alteraLocal(ocorrencia.id,
-                                                              evt.valor));
+        this._componentService
+          .getLatestValue(this._ocorrencia$)
+          .subscribe((ocorrencia: Evento) =>
+            this._componentService.alteraLocal(ocorrencia.id, evt.valor),
+          );
         break;
       }
 
       case OcorrenciaDetalhesOperation.ALTERA_UNIDADE: {
-        this._componentService.getLatestValue(this._ocorrencia$)
-            .subscribe((ocorrencia: Evento) =>
-                           this._componentService.alteraUnidade(ocorrencia.id,
-                                                                evt.valor));
+        this._componentService
+          .getLatestValue(this._ocorrencia$)
+          .subscribe((ocorrencia: Evento) =>
+            this._componentService.alteraUnidade(ocorrencia.id, evt.valor),
+          );
+        break;
+      }
+
+      case OcorrenciaDetalhesOperation.ALTERA_PARECER: {
+        this._componentService
+          .getLatestValue(this._ocorrencia$)
+          .subscribe((ocorrencia: Evento) =>
+            this._componentService.alteraParecer(ocorrencia.id, evt.valor),
+          );
         break;
       }
     }
@@ -137,10 +140,11 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
   _tituloDaOcorrenciaAlterado(evt: OcorrenciaDetalhesTituloChanged) {
     switch (evt.type) {
       case OcorrenciaDetalhesOperation.ALTERA_TITULO: {
-        this._componentService.getLatestValue(this._ocorrencia$)
-            .subscribe((ocorrencia: Evento) =>
-                           this._componentService.alteraTitulo(ocorrencia.id,
-                                                               evt.valor));
+        this._componentService
+          .getLatestValue(this._ocorrencia$)
+          .subscribe((ocorrencia: Evento) =>
+            this._componentService.alteraTitulo(ocorrencia.id, evt.valor),
+          );
         break;
       }
     }
@@ -152,9 +156,13 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
    */
   _reabreEvento(textoDoComentario: string) {
     combineLatest(this._ocorrencia$.pipe(filter(Boolean)))
-        .pipe(first(), map(([evento]) => evento))
-        .subscribe((ocorrencia: Evento) => this._componentService.reabreEvento(
-                       ocorrencia, textoDoComentario));
+      .pipe(
+        first(),
+        map(([evento]) => evento),
+      )
+      .subscribe((ocorrencia: Evento) =>
+        this._componentService.reabreEvento(ocorrencia, textoDoComentario),
+      );
   }
 
   /**
@@ -163,54 +171,71 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
    */
   _encerraEvento(textoDoComentario: string) {
     combineLatest(this._ocorrencia$.pipe(filter(Boolean)))
-        .pipe(first(), map(([evento]) => evento))
-        .subscribe((ocorrencia: Evento) => this._componentService.encerraEvento(
-                       ocorrencia, textoDoComentario));
+      .pipe(
+        first(),
+        map(([evento]) => evento),
+      )
+      .subscribe((ocorrencia: Evento) =>
+        this._componentService.encerraEvento(ocorrencia, textoDoComentario),
+      );
   }
 
   /** insere novo comentário */
   _comenta(textoDoComentario: string) {
     combineLatest(this._ocorrencia$.pipe(filter(Boolean)))
-        .pipe(first(), map(([evento]) => evento))
-        .subscribe((ocorrencia: Evento) =>
-                       this._componentService.insereComentario(
-                           ocorrencia, textoDoComentario));
+      .pipe(
+        first(),
+        map(([evento]) => evento),
+      )
+      .subscribe((ocorrencia: Evento) => {
+        this._componentService
+          .verificaVisibilidadeDoUltimoComentario$(ocorrencia)
+          .subscribe((visibilidade: Visibilidade | null) => {
+            if (!visibilidade) {
+              this._escolheVisibilidade(ocorrencia, textoDoComentario);
+            } else {
+              this._componentService.insereComentario(ocorrencia, textoDoComentario, visibilidade);
+            }
+          });
+      });
   }
 
   /** roteia para o formulário de nova ocorrência */
-  _trataNovaOcorrencia(tipoDeNovaOcorrencia:
-                           OcorrenciaFormularioComponentTipo) {
-    this._router.navigate(['../nova-ocorrencia', tipoDeNovaOcorrencia],
-                          {relativeTo: this._activatedRoute});
+  _trataNovaOcorrencia(tipoDeNovaOcorrencia: OcorrenciaFormularioComponentTipo) {
+    this._router.navigate(['../nova-ocorrencia', tipoDeNovaOcorrencia], {
+      relativeTo: this._activatedRoute,
+    });
   }
 
   /** processa solicitações de alteração no comentário */
-  _processaAlteracaoNoComentario(comentario: Interacao,
-                                 alteracao: OcorrenciaComentarioChanged) {
-    this._componentService.getLatestValue(this._ocorrencia$)
-        .subscribe((ocorrencia: Evento) => {
-          switch (alteracao.type) {
-            case OcorrenciaComentarioChangedType.VISIBILIDADE: {
-              this._componentService.alteraVisibilidade(
-                  ocorrencia.id, comentario.id, alteracao.visibilidade);
-              break;
-            }
+  _processaAlteracaoNoComentario(comentario: Interacao, alteracao: OcorrenciaComentarioChanged) {
+    this._componentService.getLatestValue(this._ocorrencia$).subscribe((ocorrencia: Evento) => {
+      switch (alteracao.type) {
+        case OcorrenciaComentarioChangedType.VISIBILIDADE: {
+          this._componentService.alteraVisibilidade(
+            ocorrencia.id,
+            comentario.id,
+            alteracao.visibilidade,
+          );
+          break;
+        }
 
-            case OcorrenciaComentarioChangedType.TEXTO_COMENTARIO: {
-              const textoFormatado: TextoFormatado = {
-                markdown: alteracao.texto,
-                html: this._formatadorDeTextoService.markdownToHtml(
-                    alteracao.texto),
-                semFormatacao: this._formatadorDeTextoService.limpaMarkdown(
-                    alteracao.texto),
-              };
+        case OcorrenciaComentarioChangedType.TEXTO_COMENTARIO: {
+          const textoFormatado: TextoFormatado = {
+            markdown: alteracao.texto,
+            html: this._formatadorDeTextoService.markdownToHtml(alteracao.texto),
+            semFormatacao: this._formatadorDeTextoService.limpaMarkdown(alteracao.texto),
+          };
 
-              this._componentService.alteraTextoComentario(
-                  ocorrencia.id, comentario.id, textoFormatado);
-              break;
-            }
-          }
-        });
+          this._componentService.alteraTextoComentario(
+            ocorrencia.id,
+            comentario.id,
+            textoFormatado,
+          );
+          break;
+        }
+      }
+    });
   }
 
   /**
@@ -242,10 +267,14 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
    * @memberof OcorrenciaDetalhesComponent
    */
   private _monitoraIdInexistente() {
-    this._componentService.getEventoByIdErro()
-        .pipe(filter((_) => !!_), first(), takeUntil(this._destroy$))
-        .subscribe((erro: boolean) =>
-                       erro ? this._showDialogAndNavigateAway() : null);
+    this._componentService
+      .getEventoByIdErro()
+      .pipe(
+        filter((_) => !!_),
+        first(),
+        takeUntil(this._destroy$),
+      )
+      .subscribe((erro: boolean) => (erro ? this._showDialogAndNavigateAway() : null));
   }
 
   /**
@@ -278,14 +307,15 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
       botaoTrueVisible: false,
     };
 
-    const dialogRef =
-        this._dialog.open<ConfirmationDialogComponent,
-                          ConfirmationDialogComponentData, boolean>(
-            ConfirmationDialogComponent, {data});
+    const dialogRef = this._dialog.open<
+      ConfirmationDialogComponent,
+      ConfirmationDialogComponentData,
+      boolean
+    >(ConfirmationDialogComponent, {data});
 
-    dialogRef.afterClosed().subscribe(
-        (_) =>
-            this._router.navigate(['../'], {relativeTo: this._activatedRoute}));
+    dialogRef
+      .afterClosed()
+      .subscribe((_) => this._router.navigate(['../'], {relativeTo: this._activatedRoute}));
   }
 
   /**
@@ -297,24 +327,30 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
    */
   private _obtemOcorrenciaAPartirDaRota() {
     this._activatedRoute.paramMap
-        .pipe(map((p: ParamMap) => p.get('id')), tap((id: string) => {
-                this._ocorrencia$ = this._componentService.getEventoById$(id)
-                                        .pipe(debounceTime(300));
-                this._atrasaAposCargaDeOcorrencia$ = this._ocorrencia$.pipe(
-                    switchMapTo(observableOf(true)), delay(500));
-              }),
-              first(), takeUntil(this._destroy$))
-        .subscribe((id: string) => {
-          this._componentService.getEventoById$(id).pipe(first()).subscribe(
-              (evt: Evento) => {
-                this._componentService.obtemEventoDoBancoPeriodicamente(
-                    id, this._destroy$);
+      .pipe(
+        map((p: ParamMap) => p.get('id')),
+        tap((id: string) => {
+          this._ocorrencia$ = this._componentService.getEventoById$(id).pipe(debounceTime(300));
+          this._atrasaAposCargaDeOcorrencia$ = this._ocorrencia$.pipe(
+            switchMapTo(observableOf(true)),
+            delay(500),
+          );
+        }),
+        first(),
+        takeUntil(this._destroy$),
+      )
+      .subscribe((id: string) => {
+        this._componentService
+          .getEventoById$(id)
+          .pipe(first())
+          .subscribe((evt: Evento) => {
+            this._componentService.obtemEventoDoBancoPeriodicamente(id, this._destroy$);
 
-                this._setupNovoComentario();
-                this._roles = this._componentService.getUsuarioLogadoRoles(evt);
-                this._coresDosParticipantes = [];
-              });
-        });
+            this._setupNovoComentario();
+            this._roles = this._componentService.getUsuarioLogadoRoles(evt);
+            this._coresDosParticipantes = [];
+          });
+      });
   }
 
   /**
@@ -325,10 +361,62 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
    * @memberof OcorrenciaDetalhesComponent
    */
   private _configuraCoresDosAvataresDosParticipantes() {
-    this._ocorrencia$.pipe(filter(Boolean), first(), takeUntil(this._destroy$))
-        .subscribe((evt: Evento) =>
-                       (this._coresDosParticipantes =
-                            this._componentService.setCoresDosParticipantes(
-                                evt.participantes)));
+    this._ocorrencia$
+      .pipe(
+        filter(Boolean),
+        first(),
+        takeUntil(this._destroy$),
+      )
+      .subscribe(
+        (evt: Evento) =>
+          (this._coresDosParticipantes = this._componentService.setCoresDosParticipantes(
+            evt.participantes,
+          )),
+      );
+  }
+
+  /**
+   * Diálogo que permite ao usuário escolher a visibilidade dentre 2 opções:
+   *
+   *     1 - Visível a todos
+   *     2 - Visível somente aos gestores
+   *
+   * @private
+   * @param {Evento} ocorrencia
+   * @param {string} textoDoComentario
+   * @memberof OcorrenciaDetalhesComponent
+   */
+  private _escolheVisibilidade(ocorrencia: Evento, textoDoComentario: string): void {
+    const titulo = 'Visibilidade do comentário';
+    const mensagem = `Deseja criar um comentário visível a todos?`;
+
+    const data: ConfirmationDialogComponentData = {
+      titulo,
+      mensagem,
+      botaoFalseDisabled: false,
+      botaoFalseText: 'Não, visível somente para os gestores',
+      botaoFalseVisible: true,
+      botaoTrueDisabled: false,
+      botaoTrueText: 'Sim',
+      botaoTrueVisible: true,
+    };
+
+    const dialogRef = this._dialog.open<
+      ConfirmationDialogComponent,
+      ConfirmationDialogComponentData,
+      boolean
+    >(ConfirmationDialogComponent, {data});
+
+    dialogRef.afterClosed().subscribe((visivelATodos: boolean) => {
+      const visibilidade: Visibilidade = visivelATodos
+        ? {
+            tipo: TipoVisibilidade.TODOS,
+          }
+        : {
+            tipo: TipoVisibilidade.SOMENTE_GESTORES,
+          };
+
+      this._componentService.insereComentario(ocorrencia, textoDoComentario, visibilidade);
+    });
   }
 }

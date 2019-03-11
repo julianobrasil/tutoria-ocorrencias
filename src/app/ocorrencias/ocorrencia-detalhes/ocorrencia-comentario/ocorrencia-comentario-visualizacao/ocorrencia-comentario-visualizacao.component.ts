@@ -17,6 +17,9 @@ import {
   TipoVisibilidade,
 } from '../../../../model/transport-objects';
 import {
+  OcorrenciaDetalhesComponentService,
+} from '../../ocorrencia-detalhes-component.service';
+import {
   OcorrenciaComentarioChanged,
   OcorrenciaComentarioChangedType,
 } from '../ocorrencia-comentario.component';
@@ -54,11 +57,19 @@ export class OcorrenciaComentarioVisualizacaoComponent implements OnDestroy {
   /** destrói todas as assinaturas em observables */
   private _destroy$: Subject<void> = new Subject<void>();
 
+  constructor(private _ocorrenciaDetalhesComponentService:
+                  OcorrenciaDetalhesComponentService) {}
+
   ngOnDestroy() {
     if (this._destroy$ && !this._destroy$.closed) {
       this._destroy$.next();
       this._destroy$.complete();
     }
+  }
+
+  _interrompeAtualizacaoDaTela(isMenuAberto: boolean) {
+    this._ocorrenciaDetalhesComponentService.interrompeAtualizacaoPeriodica(
+        isMenuAberto);
   }
 
   /** altera visibilidade do comentário */

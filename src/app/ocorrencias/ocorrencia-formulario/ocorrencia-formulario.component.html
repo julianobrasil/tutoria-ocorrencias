@@ -145,30 +145,20 @@
                  fxFlex.xs="100%">
 
           <div fxLayout="column">
+            <!-- PARECER -->
             <div fxFlex="noshrink"
                  tabindex="-1"
                  #elementToFocusAfterDate>
-              <!-- OCORRÊNICA -->
-              <mat-form-field @enterForm
-                              *ngIf="_parecerVisible"
-                              appearance="fill"
-                              class="full-width"
-                              hintLabel="Max 3000 caracteres">
-                <mat-label>Ocorrência</mat-label>
-                <textarea #parecer
-                          class="text-uppercase"
-                          formControlName="parecer"
-                          matInput
-                          maxlength="3000"
-                          required
-                          rows="14">
-                </textarea>
-                <mat-hint align="end">{{parecer.value?.length || 0}}/3000</mat-hint>
-              </mat-form-field>
+              <ckeditor @enterForm
+                        *ngIf="_parecerVisible"
+                        [config]="_config"
+                        [editor]="_editor"
+                        formControlName="parecer">
+              </ckeditor>
             </div>
 
+            <!-- LOCAL -->
             <div fxFlex="noshrink">
-              <!-- LOCAL -->
               <mat-form-field @enterForm
                               *ngIf="_parecerValidoEVisivel"
                               appearance="fill"
@@ -186,6 +176,7 @@
               </mat-form-field>
             </div>
 
+            <!-- RADIO BUTTONS -->
             <section @enterForm
                      *ngIf="_parecerValidoEVisivel && !disabled"
                      class="ocorrencia-formulario-radio-buttons"
@@ -204,6 +195,7 @@
         </section>
       </section>
 
+      <!-- BOTÕES DE AÇÃO -->
       <section class="ocorrencia-formulario-botoes-acao"
                fxLayout="row"
                fxLayout.xs="column"
