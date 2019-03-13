@@ -19,10 +19,11 @@ import {
 import {
   OcorrenciaDetalhesComponentService,
 } from '../../ocorrencia-detalhes-component.service';
+
 import {
-  OcorrenciaComentarioChanged,
-  OcorrenciaComentarioChangedType,
-} from '../ocorrencia-comentario.component';
+  OcorrenciaChange,
+  OcorrenciaChangeType,
+} from '../../../public_api';
 
 @Component({
   selector: 'app-ocorrencia-comentario-visualizacao',
@@ -48,8 +49,8 @@ export class OcorrenciaComentarioVisualizacaoComponent implements OnDestroy {
 
   /** Emite quando há alterações no comentário. */
   @Output()
-  comentarioChanged: EventEmitter<OcorrenciaComentarioChanged> =
-      new EventEmitter<OcorrenciaComentarioChanged>();
+  comentarioChanged: EventEmitter<OcorrenciaChange> =
+      new EventEmitter<OcorrenciaChange>();
 
   /** elemento que contém o texto */
   @ViewChild('sectionComTexto') _sectionComTexto: ElementRef;
@@ -75,7 +76,7 @@ export class OcorrenciaComentarioVisualizacaoComponent implements OnDestroy {
   /** altera visibilidade do comentário */
   _alteraVisibilidadeDoComentario(tornaVisivel: boolean) {
     this.comentarioChanged.emit({
-      type: OcorrenciaComentarioChangedType.VISIBILIDADE,
+      type: OcorrenciaChangeType.VISIBILIDADE_COMENTARIO,
       visibilidade: {
         ...this.comentario.visibilidade,
         tipo: tornaVisivel ? TipoVisibilidade.TODOS :

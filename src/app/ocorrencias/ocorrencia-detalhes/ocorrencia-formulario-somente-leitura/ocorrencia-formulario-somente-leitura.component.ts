@@ -12,7 +12,11 @@ import {MatDialog} from '@angular/material';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
-import {Evento} from '../../../model/transport-objects';
+import {
+  Evento,
+  TipoVisibilidade,
+  Visibilidade,
+} from '../../../model/transport-objects';
 import {
   OcorrenciaDadosDaGravacao,
   OcorrenciaStatusGravacaoService,
@@ -26,17 +30,20 @@ import {
   UnidadeDialogComponentData,
 } from '../../shared/componentes/dialogos/unidade-dialog/unidade-dialog.component';
 import {
-  OcorrenciaComentarioChanged,
-} from '../ocorrencia-comentario/ocorrencia-comentario.component';
-import {
   OcorrenciaDetalhesComponentService,
-  OcorrenciaDetalhesOperation,
 } from '../ocorrencia-detalhes-component.service';
+
+import {
+  ConfirmationDialogComponent,
+  ConfirmationDialogComponentData,
+} from '../../../shared/dialogs/confirmation-dialog/confirmation-dialog.component';
+import {OcorrenciaChange, OcorrenciaChangeType} from '../../public_api';
 // tslint:enable: max-line-length
 
 export interface OcorrenciaFormularioSomenteLeituraChanged {
-  type: OcorrenciaDetalhesOperation;
-  valor: string;
+  type: OcorrenciaChangeType;
+  valor?: string;
+  visibilidade?: Visibilidade;
 }
 
 @Component({
@@ -100,9 +107,9 @@ export class OcorrenciaFormularioSomenteLeituraComponent implements OnDestroy {
   }
 
   /** altera o parecer da ocorrência */
-  _alteraComentario(change: OcorrenciaComentarioChanged) {
+  _alteraComentario(change: OcorrenciaChange) {
     this.ocorrenciaChanged.emit({
-      type: OcorrenciaDetalhesOperation.ALTERA_PARECER,
+      type: OcorrenciaChangeType.ALTERA_PARECER,
       valor: change.texto,
     });
   }
@@ -114,12 +121,13 @@ export class OcorrenciaFormularioSomenteLeituraComponent implements OnDestroy {
     };
 
     const dialogRef =
-        this._dialog.open<LocalDialogComponent, LocalDialogComponentData,
-                          string>(LocalDialogComponent, {data, width: '400px'});
+        this._dialog
+            .open<LocalDialogComponent, LocalDialogComponentData, string>(
+                LocalDialogComponent, {data, width: '400px'});
 
     dialogRef.afterClosed().subscribe(
         (local: string) => this.ocorrenciaChanged.emit({
-          type: OcorrenciaDetalhesOperation.ALTERA_LOCAL,
+          type: OcorrenciaChangeType.ALTERA_LOCAL,
           valor: local,
         }));
   }
@@ -137,9 +145,61 @@ export class OcorrenciaFormularioSomenteLeituraComponent implements OnDestroy {
 
     dialogRef.afterClosed().subscribe(
         (unidade: string) => this.ocorrenciaChanged.emit({
-          type: OcorrenciaDetalhesOperation.ALTERA_UNIDADE,
+          type: OcorrenciaChangeType.ALTERA_UNIDADE,
           valor: unidade,
         }));
+  }
+
+  _abreDialogoAlteraVisibilidade(tornaVisivel: boolean) {
+    if (!tornaVisivel) {
+      this._alteraVisibilidadeEvento(tornaVisivel);
+
+      return;
+    }
+
+    const titulo = 'Alteração de visibilidade';
+
+    const mensagem = `
+      <p>Esta ocorrência ficará visível para todos.</p>
+      <p class="app-text-center">Deseja Continuar?</p>
+    `;
+    const data: ConfirmationDialogComponentData = {
+      titulo,
+      mensagem,
+      botaoFalseDisabled: false,
+      botaoFalseText: 'Não, mudei de ideia',
+      botaoFalseVisible: true,
+      botaoTrueDisabled: false,
+      botaoTrueText: 'Sim, quero',
+      botaoTrueVisible: true,
+    };
+
+    const dialogRef =
+        this._dialog.open<ConfirmationDialogComponent,
+                          ConfirmationDialogComponentData, boolean>(
+            ConfirmationDialogComponent, {data});
+
+    dialogRef.afterClosed().subscribe(
+        (isContinuar: boolean) =>
+            isContinuar ? this._alteraVisibilidadeEvento(tornaVisivel) :
+                          null);
+  }
+
+  /**
+   * Altera a visibilidade do evento
+   *
+   * @private
+   * @param {boolean} tornaVisivel
+   * @memberof OcorrenciaFormularioSomenteLeituraComponent
+   */
+  private _alteraVisibilidadeEvento(tornaVisivel: boolean): void {
+    this.ocorrenciaChanged.emit({
+      type: OcorrenciaChangeType.VISIBILIDADE_EVENTO,
+      visibilidade: {
+        tipo: tornaVisivel ? TipoVisibilidade.TODOS :
+                             TipoVisibilidade.SOMENTE_PARTICIPANTES,
+      },
+    });
   }
 
   /** a unidade não pode ser alterada no caso de tutoria */
@@ -147,11 +207,17 @@ export class OcorrenciaFormularioSomenteLeituraComponent implements OnDestroy {
     return !this.ocorrencia.tutoria && this._mostraBotaoAlterarUnidade;
   }
 
+  /** Muda a cor da barra de título se a visibilidade estiver limitada */
+  get _isVisibilidadeLimitada(): boolean {
+    return (this.ocorrencia && this.ocorrencia.visibilidade &&
+            this.ocorrencia.visibilidade.tipo !== TipoVisibilidade.TODOS);
+  }
+
   /** monitora a gravação do comentário */
   private _setupMonitoraStatusGravacao() {
     this._ocorrenciaStatusGravacaoService.getStatusAlteracaoDeParecerDoEvento$()
         .pipe(takeUntil(this._destroy$))
-        .subscribe((status: OcorrenciaDadosDaGravacao) => this.mostraEditor =
-                       !status.sucesso);
+        .subscribe((status: OcorrenciaDadosDaGravacao) =>
+                       (this.mostraEditor = !status.sucesso));
   }
 }

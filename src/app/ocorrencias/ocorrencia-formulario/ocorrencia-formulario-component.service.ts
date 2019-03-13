@@ -13,11 +13,12 @@ import {
   Tutor,
   Tutoria,
   Unidade,
+  Visibilidade,
 } from '../../model/transport-objects/';
 
 export enum OcorrenciaFormularioComponentTipo {
-  TUTORIA,
-  OCORRENCIA_COMUM,
+  TUTORIA = 'TUTORIA',
+  OCORRENCIA_COMUM = 'OCORRENCIA_COMUM',
 }
 
 export interface OcorrenciaFormularioComponentData {
@@ -31,6 +32,7 @@ export interface OcorrenciaFormularioComponentData {
   parecer: string;
   local: string;
   isResolvido: boolean;
+  visibilidade: Visibilidade;
 }
 
 export class TutoriaNome {

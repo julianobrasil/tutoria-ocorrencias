@@ -3,10 +3,17 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnDestroy,
   Output,
 } from '@angular/core';
 
+import {merge, Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 import {Evento} from '../../../model/transport-objects';
+import {
+  OcorrenciaDadosDaGravacao,
+  OcorrenciaStatusGravacaoService,
+} from '../../ocorrencia-status-gravacao.service';
 
 @Component({
   selector: 'app-acoes-ligadas-a-novo-comentario',
@@ -14,7 +21,7 @@ import {Evento} from '../../../model/transport-objects';
   styleUrls: ['./acoes-ligadas-a-novo-comentario.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AcoesLigadasANovoComentarioComponent {
+export class AcoesLigadasANovoComentarioComponent implements OnDestroy {
   /** ocorrencia */
   @Input() ocorrencia: Evento;
 
@@ -45,4 +52,61 @@ export class AcoesLigadasANovoComentarioComponent {
 
   /** texto do botão Encerrar */
   _textoBotaoEncerrar = 'Encerrar';
+
+  /** true quando estiver acessando o banco */
+  _isAcessandoBanco = false;
+
+  /** destrói todas as assinaturas em observables */
+  private _destroy$: Subject<void> = new Subject<void>();
+
+  constructor(private _statusGravacao: OcorrenciaStatusGravacaoService) {
+    this._setupMonitoraStatusGravacao();
+  }
+
+  ngOnDestroy() {
+    if (this._destroy$ && !this._destroy$.closed) {
+      this._destroy$.next();
+      this._destroy$.complete();
+    }
+  }
+
+  /** reabre evento */
+  _reabreEvento() {
+    if (this._isAcessandoBanco) {
+      return;
+    }
+
+    this._isAcessandoBanco = true;
+    this.reabrirEvento.emit(this.textoNovoComentario);
+  }
+
+  /** encerra evento */
+  _encerraEvento() {
+    if (this._isAcessandoBanco) {
+      return;
+    }
+
+    this._isAcessandoBanco = true;
+    this.encerrarEvento.emit(this.textoNovoComentario);
+  }
+
+  /** insere novo comentário */
+  _comenta() {
+    if (this._isAcessandoBanco || !this.textoNovoComentario) {
+      return;
+    }
+
+    this._isAcessandoBanco = true;
+
+    this.comentar.emit(this.textoNovoComentario);
+  }
+
+  /** monitora o status da gravação */
+  private _setupMonitoraStatusGravacao() {
+    merge(this._statusGravacao.getStatusReaberturaFechamento$(),
+          this._statusGravacao.getStatusInsercaoDeComentario$())
+        .pipe(takeUntil(this._destroy$))
+        .subscribe((status: OcorrenciaDadosDaGravacao) =>
+                       (this._isAcessandoBanco = false));
+  }
 }

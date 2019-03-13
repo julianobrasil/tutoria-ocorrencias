@@ -39,24 +39,17 @@ import {
   GeradorDeCoresService,
 } from '../shared/utilitarios/gerador-de-cores.service';
 
+import {OcorrenciaChangeType} from '../public_api';
+
 export interface CorDoParticipante {
   usuarioRef: ObjectReference;
   codigoCorHexadecimal: string;
   isTextoDoAvatarBranco: boolean;
 }
 
-export enum OcorrenciaDetalhesOperation {
-  REABRE_E_COMENTA,
-  ENCERRA_E_COMENTA,
-  ALTERA_LOCAL,
-  ALTERA_TITULO,
-  ALTERA_UNIDADE,
-  ALTERA_PARECER,
-}
-
 export interface OcorrenciaDetalhesSavingStatus {
   success: boolean;
-  operationExecuted: OcorrenciaDetalhesOperation;
+  operationExecuted: OcorrenciaChangeType;
 }
 
 @Injectable({
@@ -130,14 +123,41 @@ export class OcorrenciaDetalhesComponentService implements OnDestroy {
   }
 
   /** configura as cores dos participantes */
-  setCoresDosParticipantes(participantes: Participante[]): CorDoParticipante[] {
+  setCoresDosParticipantes(participantes: Participante[],
+                           coresAtuaisDosParticipantes?: CorDoParticipante[]):
+      CorDoParticipante[] {
     if (!participantes) {
       return [];
     }
 
-    const coresUsadas: Set<string> = new Set<string>();
+    // Descobre quais Cores de participantes não são mais usadas...
+    coresAtuaisDosParticipantes =
+        coresAtuaisDosParticipantes ?
+            coresAtuaisDosParticipantes.filter(
+                (c: CorDoParticipante) => !participantes.some(
+                    (p: Participante) =>
+                        c.usuarioRef.code === p.usuarioRef.code)) :
+            [];
+
+    // Descobre quais são as cores já usadas
+    const coresUsadas: Set<string> =
+        coresAtuaisDosParticipantes ?
+            new Set<string>(
+                coresAtuaisDosParticipantes.map((c: CorDoParticipante) =>
+                                                    c.codigoCorHexadecimal)) :
+            new Set<string>();
+
+    // Descobre quais os participantes ainda não tem cores...
+    const participantesAindaSemCores: Participante[] =
+        coresAtuaisDosParticipantes ?
+            participantes.filter(
+                (p: Participante) => !coresAtuaisDosParticipantes.some(
+                    (c: CorDoParticipante) =>
+                        c.usuarioRef.code === p.usuarioRef.code)) :
+            [];
+
     const coresDosParticipantes: CorDoParticipante[] =
-        participantes.map((p: Participante) => {
+        participantesAindaSemCores.map((p: Participante) => {
           let codigoCorHexadecimal = '';
           do {
             codigoCorHexadecimal = this._geradorDeCoresService.materialColor();
@@ -157,7 +177,7 @@ export class OcorrenciaDetalhesComponentService implements OnDestroy {
           };
         });
 
-    return coresDosParticipantes;
+    return [...coresDosParticipantes, ...coresAtuaisDosParticipantes];
   }
 
   /** obtém os papéis desempenhados pelo usuário logado */
@@ -203,13 +223,34 @@ export class OcorrenciaDetalhesComponentService implements OnDestroy {
   }
 
   /** altera evento */
-  alteraTipoEvento(ocorrencia: Evento): any {
+  alteraTipoEvento(eventoId: string, descricaoTipoEvento: string,
+                   descricaoSubTipoEvento: string): void {
     this._store$.dispatch(
         new fromDiarioDeTutoriaStore.ACTIONS.EVENTO.AlteraTipoDeEventoRun({
-          eventoId: ocorrencia.id,
-          descricaoTipoEvento: ocorrencia.descricaoTipoEvento,
-          descricaoSubTipoEvento: ocorrencia.descricaoSubTipoEvento,
+            eventoId, descricaoTipoEvento, descricaoSubTipoEvento,
         }));
+  }
+
+  /** Altera os participantes do evento */
+  alteraParticipantesEvento(eventoId: string,
+                            participantesAdicionados: ObjectReference[],
+                            participantesRemovidos: ObjectReference[]): void {
+    this._store$.dispatch(
+        new fromDiarioDeTutoriaStore.ACTIONS.EVENTO
+            .AlteraParticipantesDoEventoRun({
+                eventoId, participantesAdicionados, participantesRemovidos,
+            }));
+  }
+
+  /** Altera os responsáveis do evento */
+  alteraResponsaveisEvento(eventoId: string,
+                           participantesAdicionados: ObjectReference[],
+                           participantesRemovidos: ObjectReference[]): void {
+    this._store$.dispatch(
+        new fromDiarioDeTutoriaStore.ACTIONS.EVENTO
+            .AlteraResponsaveisDoEventoRun({
+                eventoId, participantesAdicionados, participantesRemovidos,
+            }));
   }
 
   /**
@@ -263,10 +304,9 @@ export class OcorrenciaDetalhesComponentService implements OnDestroy {
     };
 
     this._store$.dispatch(
-        new fromDiarioDeTutoriaStore.ACTIONS.EVENTO.AlteraParecerDaInteracaoRun(
-            {
-                eventoId, textoFormatado,
-            }));
+        new fromDiarioDeTutoriaStore.ACTIONS.EVENTO.AlteraParecerDoEventoRun({
+            eventoId, textoFormatado,
+        }));
   }
 
   /**
@@ -277,11 +317,25 @@ export class OcorrenciaDetalhesComponentService implements OnDestroy {
    * @param {boolean} tornaComentarioVisivel
    * @memberof OcorrenciaDetalhesComponentService
    */
-  alteraVisibilidade(eventoId: string, interacaoId: string,
-                     visibilidade: Visibilidade): void {
+  alteraVisibilidadeComentario(eventoId: string, interacaoId: string,
+                               visibilidade: Visibilidade): void {
     this._store$.dispatch(new fromDiarioDeTutoriaStore.ACTIONS.EVENTO
                               .AlteraVisibilidadeDaInteracaoRun({
                                   eventoId, interacaoId, visibilidade,
+                              }));
+  }
+
+  /**
+   * Altera a visibilidade de um comentário
+   *
+   * @param {string} id
+   * @param {Visibilidade} visibilidade
+   * @memberof OcorrenciaDetalhesComponentService
+   */
+  alteraVisibilidadeEvento(eventoId: string, visibilidade: Visibilidade): void {
+    this._store$.dispatch(new fromDiarioDeTutoriaStore.ACTIONS.EVENTO
+                              .AlteraVisibilidadeDoEventoRun({
+                                  eventoId, visibilidade,
                               }));
   }
 
@@ -381,22 +435,23 @@ export class OcorrenciaDetalhesComponentService implements OnDestroy {
 
   /** verifica se ou usuário logado é tutor */
   private _isTutor(historicoTutores: Tutor[]): boolean {
-    return historicoTutores.some((tutor: Tutor) =>
-                                     !tutor.dataFim &&
-                                     tutor.email === this._authService.email);
+    return historicoTutores.some(
+        (tutor: Tutor) =>
+            !tutor.dataFim && tutor.email === this._authService.email);
   }
 
   /** verifica se ou usuário logado é coordenador */
   private _isCoordenador(coordenadores: Coordenador[]): boolean {
-    return coordenadores.some((coordenador: Coordenador) =>
-                                  coordenador.email ===
-                                  this._authService.email);
+    return coordenadores.some(
+        (coordenador: Coordenador) =>
+            coordenador.email === this._authService.email);
   }
 
   /** verifica se ou usuário logado é responsável */
   private _isResponsavel(responsaveis: Responsavel[]): boolean {
-    return responsaveis.some((responsavel: Responsavel) =>
-                                 responsavel.email === this._authService.email);
+    return responsaveis.some(
+        (responsavel: Responsavel) =>
+            responsavel.email === this._authService.email);
   }
 
   /** verifica se ou usuário logado é da qualidade */

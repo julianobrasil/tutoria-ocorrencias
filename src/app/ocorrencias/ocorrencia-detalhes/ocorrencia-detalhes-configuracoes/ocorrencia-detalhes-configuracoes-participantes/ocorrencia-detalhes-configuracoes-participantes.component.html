@@ -1,5 +1,7 @@
 <section class="ocorrencia-detalhes-configuracoes-participantes-container">
-  <section [ngClass]="_classesDoCabecalho">
+  <section (click)="popover.open()"
+           [ngClass]="_classesDoCabecalho"
+           [satPopoverAnchorFor]="popover">
     <span>{{participantes?.length | numeroDeParticipantes}}</span>
 
     <mat-icon *ngIf="podeAdicionarParticipantes">settings</mat-icon>
@@ -15,3 +17,15 @@
     </app-ocorrencia-avatar>
   </section>
 </section>
+
+<sat-popover #popover
+             (afterClose)="_monitoraAberturaFechamentoDoPopover(false)"
+             (afterOpen)="_monitoraAberturaFechamentoDoPopover(true)"
+             hasBackdrop>
+  <div class="ocorrencia-detalhes-confirguracoes-participantes-popover mat-elevation-z8">
+    <app-selecao-de-pessoas [usuariosEscolhidos]="participantes | participantesToObjectReferences"
+                            [usuariosImexiveis]="participantes | usuariosImexiveis"
+                            [matTooltipDisabled]="_matUsusarioTooltipDisabled">
+    </app-selecao-de-pessoas>
+  </div>
+</sat-popover>

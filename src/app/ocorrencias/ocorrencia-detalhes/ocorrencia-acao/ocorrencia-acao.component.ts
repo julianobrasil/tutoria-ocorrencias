@@ -70,7 +70,7 @@ export class OcorrenciaAcaoComponent {
         break;
       }
 
-      case TipoAcao.ALTERA_VISIBILIDADE_INTERACAO: {
+      case TipoAcao.ALTERA_VISIBILIDADE_EVENTO: {
         this._theme = 'primary';
         this._icon = 'visibility';
         break;

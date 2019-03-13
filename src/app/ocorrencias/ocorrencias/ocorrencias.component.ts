@@ -126,7 +126,7 @@ export class OcorrenciasComponent implements OnDestroy {
     this._activatedRoute.paramMap.pipe(
                                      map((p: ParamMap) =>
                                              p.get('tipoNovaOcorrencia') ?
-                                                 +p.get('tipoNovaOcorrencia') :
+                                                 p.get('tipoNovaOcorrencia') :
                                                  null),
                                      takeUntil(this._destroy$))
         .subscribe((tipoNovaOcorrencia: OcorrenciaFormularioComponentTipo) => {

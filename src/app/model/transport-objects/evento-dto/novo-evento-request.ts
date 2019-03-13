@@ -2,6 +2,7 @@ import {
   OcorrenciaFormularioComponentData,
 } from '../../../ocorrencias/ocorrencia-formulario/ocorrencia-formulario-component.service';
 import {ClassificacaoEvento} from '../evento';
+import {TipoVisibilidade, Visibilidade} from '../interacao';
 import {TextoFormatado} from '../texto-formatado';
 
 export class NovoEventoRequest {
@@ -18,6 +19,7 @@ export class NovoEventoRequest {
   local: string;
   isResolvido: boolean;
   classificacaoEvento?: ClassificacaoEvento;
+  visibilidade?: Visibilidade;
 
   /** importa dados do formulário de ocorrência (criação de um evento novo) */
   importFromDadosDeFormularioDeOcorrencia(
@@ -38,5 +40,7 @@ export class NovoEventoRequest {
     };
     this.local = dados.local ? dados.local : '';
     this.isResolvido = !!dados.isResolvido;
+
+    this.visibilidade = dados.visibilidade;
   }
 }

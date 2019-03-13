@@ -9,10 +9,18 @@
   </section>
 
   <section class="formulario-somente-leitura-resumo  mat-elevation-z4">
-    <section class="formulario-somente-leitura-titulo">
+    <section [class.darker]="_isVisibilidadeLimitada"
+             class="formulario-somente-leitura-titulo">
       <section class="formulario-somente-leitura-tipo-subtipo">
-        <strong>{{ocorrencia?.descricaoTipoEvento}}:</strong> {{ocorrencia?.descricaoSubTipoEvento}}
+        <div><strong>{{ocorrencia?.descricaoTipoEvento}}:</strong> {{ocorrencia?.descricaoSubTipoEvento}}</div>
+
+        <div *ngIf="_isVisibilidadeLimitada"
+             class="icone-de-visibilidade-limitada"
+             matTooltip="Este comentário não está visível para todos">
+          <mat-icon>visibility_off</mat-icon>
+        </div>
       </section>
+
 
       <section class="formulario-somente-leitura-data">
         <strong>Data da ocorrência:</strong> {{ocorrencia?.data | date: 'dd/MM/y'}}
@@ -22,6 +30,7 @@
         <app-ocorrencia-menu (alteraLocal)="_mostaDialogoDeAlterarLocal()"
                              (alteraTexto)="mostraEditor = true"
                              (alteraUnidade)="_mostaDialogoDeAlterarUnidade()"
+                             (tornaVisivel)="_abreDialogoAlteraVisibilidade($event)"
                              (menuAberto)="_suspendeAtualizacaoPeriodicaDaTela($event)"
                              [isCabecalhoEvento]="true"
                              [ocorrencia]="ocorrencia">

@@ -2,7 +2,8 @@
          class="ocorrencia-detalhes-configuracoes-container">
 
   <section class="ocorrencia-detalhes-configuracoes-responsaveis">
-    <app-ocorrencia-detalhes-configuracoes-responsaveis [coresDosParticipantes]="coresDosParticipantes"
+    <app-ocorrencia-detalhes-configuracoes-responsaveis (alteracaoDeResponsaveis)="_alteraResponsaveis($event)"
+                                                        [coresDosParticipantes]="coresDosParticipantes"
                                                         [responsaveis]="ocorrencia?.participantes | filtraResponsaveis: _tipoDeParticipacao.RESPONSAVEL">
     </app-ocorrencia-detalhes-configuracoes-responsaveis>
   </section>
@@ -15,9 +16,10 @@
   </section>
 
   <mat-divider></mat-divider>
-  
+
   <section class="ocorrencia-detalhes-configuracoes-participantes">
-    <app-ocorrencia-detalhes-configuracoes-participantes [coresDosParticipantes]="coresDosParticipantes"
+    <app-ocorrencia-detalhes-configuracoes-participantes (alteracaoDeParticipantes)="_alteraParticipantes($event)"
+                                                         [coresDosParticipantes]="coresDosParticipantes"
                                                          [participantes]="ocorrencia?.participantes | filtraParticipantesRepetidos">
     </app-ocorrencia-detalhes-configuracoes-participantes>
   </section>

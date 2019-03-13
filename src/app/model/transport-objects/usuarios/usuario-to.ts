@@ -1,0 +1,4 @@
+export class UsuarioTo {
+  constructor(public nome: string, public sobrenome: string,
+              public email: string) {}
+}

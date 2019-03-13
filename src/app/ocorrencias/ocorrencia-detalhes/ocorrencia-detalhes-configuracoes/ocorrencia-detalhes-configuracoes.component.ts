@@ -18,9 +18,13 @@ import {
 } from '../../shared/componentes/tipo-subtipo-de-evento/tipo-subtipo-de-evento.component';
 import {CorDoParticipante} from '../ocorrencia-detalhes-component.service';
 
+import {OcorrenciaChange, OcorrenciaChangeType} from '../../public_api';
 import {
   OcorrenciaDetalhesConfiguracoesComponentService,
 } from './ocorrencia-detalhes-configuracoes-component.service';
+import {
+  OcorrenciaDetalhesConfiguracoesParticipantesChange,
+} from './ocorrencia-detalhes-configuracoes-participantes/ocorrencia-detalhes-configuracoes-participantes.component';
 // tslint:enable:max-line-length
 
 @Component({
@@ -49,7 +53,12 @@ export class OcorrenciaDetalhesConfiguracoesComponent implements OnDestroy {
   @Output() excluiEvento: EventEmitter<void> = new EventEmitter<void>();
 
   /** emite quando o usuário escolhe excluir o evento */
-  @Output() alteraTipoEvento: EventEmitter<Evento> = new EventEmitter<Evento>();
+  // @Output() alteraTipoEvento: EventEmitter<Evento> = new
+  // EventEmitter<Evento>();
+
+  @Output()
+  eventoChange: EventEmitter<OcorrenciaChange> =
+      new EventEmitter<OcorrenciaChange>();
 
   /** true se for permitido alterar participantes */
   _temPermissaoParaAlterarTipoDeEvento = false;
@@ -120,8 +129,41 @@ export class OcorrenciaDetalhesConfiguracoesComponent implements OnDestroy {
             descricaoTipoEvento: dado.descricaoTipoEvento,
           };
 
-          this.alteraTipoEvento.emit(ocorrencia);
+          this.eventoChange.emit({
+            eventoId: ocorrencia.id,
+            type: OcorrenciaChangeType.ALTERA_TIPO_SUBTIPO,
+            descricaoSubTipoEvento: dado.descricaoSubTipoEvento,
+            descricaoTipoEvento: dado.descricaoTipoEvento,
+          });
         });
+  }
+
+  /**
+   * Trata eventos de alteração de participantes (não oriundos do painel de
+   * reponsáveis)
+   */
+  _alteraParticipantes(change:
+                           OcorrenciaDetalhesConfiguracoesParticipantesChange) {
+    this.eventoChange.emit({
+      type: OcorrenciaChangeType.ALTERA_PARTICIPANTES,
+      eventoId: this.ocorrencia.id,
+      participantesAdicionados: change.participantesAdicionados,
+      participantesRemovidos: change.participantesRemovidos,
+    });
+  }
+
+  /**
+   * Trata eventos de alteração de participantes (não oriundos do painel de
+   * reponsáveis)
+   */
+  _alteraResponsaveis(change:
+                          OcorrenciaDetalhesConfiguracoesParticipantesChange) {
+    this.eventoChange.emit({
+      type: OcorrenciaChangeType.ALTERA_RESPONSAVEIS,
+      eventoId: this.ocorrencia.id,
+      participantesAdicionados: change.participantesAdicionados,
+      participantesRemovidos: change.participantesRemovidos,
+    });
   }
 
   /**

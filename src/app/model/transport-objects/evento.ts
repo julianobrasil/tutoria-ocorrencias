@@ -1,6 +1,6 @@
 import {AbstractDocument} from './abstract-document';
 import {Etapa} from './etapa';
-import {Interacao} from './interacao';
+import {Interacao, Visibilidade} from './interacao';
 import {ObjectReference} from './object-reference';
 import {Participante} from './participante';
 import {Responsavel} from './responsavel';
@@ -41,6 +41,7 @@ export class Evento extends AbstractDocument {
   textoFormatado?: TextoFormatado;
   cidadeUnidade?: string;
   local?: string;
+  visibilidade?: Visibilidade;
 
   constructor() {
     super();

@@ -19,10 +19,8 @@ import {
   OcorrenciaDadosDaGravacao,
   OcorrenciaStatusGravacaoService,
 } from '../../../ocorrencia-status-gravacao.service';
-import {
-  OcorrenciaComentarioChanged,
-  OcorrenciaComentarioChangedType,
-} from '../ocorrencia-comentario.component';
+
+import {OcorrenciaChange, OcorrenciaChangeType} from '../../../public_api';
 
 // tslint:enable: max-line-length
 export interface TextareaEvent {
@@ -68,8 +66,8 @@ export class OcorrenciaComentarioEdicaoComponent implements OnDestroy {
 
   /** Emite quando há alterações no comentário. */
   @Output()
-  comentarioChanged: EventEmitter<OcorrenciaComentarioChanged> =
-      new EventEmitter<OcorrenciaComentarioChanged>();
+  comentarioChanged: EventEmitter<OcorrenciaChange> =
+      new EventEmitter<OcorrenciaChange>();
 
   /** controle do comentário que estiver sendo criado/editado */
   _comentarioEmEdicaoCtrl: FormControl =
@@ -147,7 +145,7 @@ export class OcorrenciaComentarioEdicaoComponent implements OnDestroy {
     }
 
     this.comentarioChanged.emit({
-      type: OcorrenciaComentarioChangedType.TEXTO_COMENTARIO,
+      type: OcorrenciaChangeType.TEXTO_COMENTARIO,
       texto: this._comentarioEmEdicaoCtrl.value,
     });
   }

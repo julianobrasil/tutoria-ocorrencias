@@ -128,3 +128,10 @@ export const valorTutoriaBySemestreDeTrabalhoPOSTPath =
   '/api/valor-tutoria/busca-por-semestre-de-trabalho';
 
 export const loginPath = '/login';
+
+
+export const SERVER_PAGINATION_PAGE_INDEX = 'page';
+export const SERVER_PAGINATION_PAGE_SIZE = 'size';
+export const SERVER_PAGINATION_PAGE_SORT = 'sort';
+export const SERVER_PAGINATION_PAGE_SORT_ASC = 'asc';
+export const SERVER_PAGINATION_PAGE_SORT_DESC = 'desc';

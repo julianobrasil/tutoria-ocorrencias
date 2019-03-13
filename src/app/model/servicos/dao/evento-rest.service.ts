@@ -6,16 +6,17 @@ import {EVENTOS_EXISTENTES} from '../../../../data/eventos';
 import {TIPOS_EVENTOS_DISPONIVEIS} from '../../../../data/tipos_eventos';
 import {TUTORIAS_EXISTENTES} from '../../../../data/tutorias';
 import {AuthService} from '../../../auth/auth.service';
-import {
-  FormatadorDeTextoService,
-} from '../../../ocorrencias/shared/utilitarios/formatador-de-texto.service';
+import {FormatadorDeTextoService} from '../../../ocorrencias/shared/utilitarios/formatador-de-texto.service';
 import {Funcoes} from '../../helper-objects/funcoes-sistema';
 import * as fromDocuments from '../../transport-objects';
+import {TipoVisibilidade} from '../../transport-objects';
 
 @Injectable({providedIn: 'root'})
 export class EventoRestService {
-  constructor(private _authService: AuthService,
-              private _formatadorDeTextoService: FormatadorDeTextoService) {}
+  constructor(
+    private _authService: AuthService,
+    private _formatadorDeTextoService: FormatadorDeTextoService,
+  ) {}
 
   /**
    * Apaga um evento
@@ -25,8 +26,7 @@ export class EventoRestService {
    * @memberof EventoService
    */
   removeEvento(id: string): Observable<boolean> {
-    const index = EVENTOS_EXISTENTES.findIndex((evt: fromDocuments.Evento) =>
-                                                   evt.id === id);
+    const index = EVENTOS_EXISTENTES.findIndex((evt: fromDocuments.Evento) => evt.id === id);
 
     EVENTOS_EXISTENTES.splice(index, 1);
 
@@ -40,35 +40,34 @@ export class EventoRestService {
    * @returns {Observable<fromDocuments.Evento>}
    * @memberof EventoService
    */
-  criaEvento(novoEventoRequest: fromDocuments.NovoEventoRequest):
-      Observable<fromDocuments.Evento> {
+  criaEvento(novoEventoRequest: fromDocuments.NovoEventoRequest): Observable<fromDocuments.Evento> {
     const agora: Date = new Date();
 
     const tipoEvento = TIPOS_EVENTOS_DISPONIVEIS.find(
-        (t: fromDocuments.TipoEvento) =>
-            t.id === novoEventoRequest.tipoEventoId);
+      (t: fromDocuments.TipoEvento) => t.id === novoEventoRequest.tipoEventoId,
+    );
     const subTipoEvento = tipoEvento.listaSubTipoEvento.find(
-        (s: fromDocuments.SubTipoEvento) =>
-            s.nomeSubTipoEvento === novoEventoRequest.subTipoEventoNome);
+      (s: fromDocuments.SubTipoEvento) =>
+        s.nomeSubTipoEvento === novoEventoRequest.subTipoEventoNome,
+    );
 
-    const responsaveis: fromDocuments.Responsavel[] =
-        JSON.parse(JSON.stringify(subTipoEvento.responsaveis));
+    const responsaveis: fromDocuments.Responsavel[] = JSON.parse(
+      JSON.stringify(subTipoEvento.responsaveis),
+    );
 
-    const tutoria: fromDocuments.Tutoria =
-        novoEventoRequest.tutoriaId ?
-            TUTORIAS_EXISTENTES.find((t: fromDocuments.Tutoria) =>
-                                         t.id === novoEventoRequest.tutoriaId) :
-            null;
+    const tutoria: fromDocuments.Tutoria = novoEventoRequest.tutoriaId
+      ? TUTORIAS_EXISTENTES.find((t: fromDocuments.Tutoria) => t.id === novoEventoRequest.tutoriaId)
+      : null;
 
     let classificacaoEvento: fromDocuments.ClassificacaoEvento = null;
     if (tutoria) {
-      const tutorAtual: fromDocuments.Tutor =
-          tutoria.historicoTutores.find((t: fromDocuments.Tutor) => !t.dataFim);
+      const tutorAtual: fromDocuments.Tutor = tutoria.historicoTutores.find(
+        (t: fromDocuments.Tutor) => !t.dataFim,
+      );
       classificacaoEvento =
-          tutorAtual && tutorAtual.email === this._authService.email ?
-              fromDocuments.ClassificacaoEvento.TUTORIA_TUTOR :
-              classificacaoEvento =
-                  fromDocuments.ClassificacaoEvento.TUTORIA_GERAL;
+        tutorAtual && tutorAtual.email === this._authService.email
+          ? fromDocuments.ClassificacaoEvento.TUTORIA_TUTOR
+          : (classificacaoEvento = fromDocuments.ClassificacaoEvento.TUTORIA_GERAL);
     } else if (novoEventoRequest.classificacaoEvento) {
       classificacaoEvento = novoEventoRequest.classificacaoEvento;
     } else {
@@ -87,7 +86,8 @@ export class EventoRestService {
         code: this._authService.email,
         description: this._authService.nomeUsuario,
       },
-      interacoes: [], classificacaoEvento,
+      interacoes: [],
+      classificacaoEvento,
       isEtapaNova: false,
       isResolvido: novoEventoRequest.isResolvido,
       etapas: [],
@@ -105,11 +105,10 @@ export class EventoRestService {
         },
       ],
       responsaveis,
-      titulo: novoEventoRequest.titulo, tutoria,
+      titulo: novoEventoRequest.titulo,
+      tutoria,
       textoFormatado: novoEventoRequest.textoFormatado,
-      cidadeUnidade: novoEventoRequest.cidadeUnidade ?
-                         novoEventoRequest.cidadeUnidade :
-                         '',
+      cidadeUnidade: novoEventoRequest.cidadeUnidade ? novoEventoRequest.cidadeUnidade : '',
     };
 
     EVENTOS_EXISTENTES.push(evento);
@@ -126,14 +125,14 @@ export class EventoRestService {
    * @returns {Observable<fromDocuments.Evento>}
    * @memberof TutoriaService
    */
-  alteraTipoDeEvento(eventoId: string, descricaoTipoEvento: string,
-                     descricaoSubTipoEvento: string):
-      Observable<fromDocuments.Evento> {
-    const evento = EVENTOS_EXISTENTES.find((evt: fromDocuments.Evento) =>
-                                               evt.id === eventoId);
+  alteraTipoDeEvento(
+    eventoId: string,
+    descricaoTipoEvento: string,
+    descricaoSubTipoEvento: string,
+  ): Observable<fromDocuments.Evento> {
+    const evento = EVENTOS_EXISTENTES.find((evt: fromDocuments.Evento) => evt.id === eventoId);
 
-    const valorAntigo =
-        `${evento.descricaoTipoEvento}:${evento.descricaoSubTipoEvento}`;
+    const valorAntigo = `${evento.descricaoTipoEvento}:${evento.descricaoSubTipoEvento}`;
     evento.descricaoTipoEvento = descricaoTipoEvento;
     evento.descricaoSubTipoEvento = descricaoSubTipoEvento;
 
@@ -154,8 +153,7 @@ export class EventoRestService {
           tipoAcao: fromDocuments.TipoAcao.ALTERA_TIPO,
           auditoriaAcao: {
             valorAntigo,
-            valorCorrente: `${evento.descricaoTipoEvento}:${
-                evento.descricaoSubTipoEvento}`,
+            valorCorrente: `${evento.descricaoTipoEvento}:${evento.descricaoSubTipoEvento}`,
           },
         },
       ],
@@ -174,10 +172,8 @@ export class EventoRestService {
    * @returns {Observable<fromDocuments.Evento>}
    * @memberof EventoRestService
    */
-  alteraLocalDoEvento(eventoId: string,
-                      local: string): Observable<fromDocuments.Evento> {
-    const evento = EVENTOS_EXISTENTES.find((evt: fromDocuments.Evento) =>
-                                               evt.id === eventoId);
+  alteraLocalDoEvento(eventoId: string, local: string): Observable<fromDocuments.Evento> {
+    const evento = EVENTOS_EXISTENTES.find((evt: fromDocuments.Evento) => evt.id === eventoId);
 
     const valorAntigo = evento.local;
     evento.local = local;
@@ -218,10 +214,8 @@ export class EventoRestService {
    * @returns {Observable<fromDocuments.Evento>}
    * @memberof EventoRestService
    */
-  alteraUnidadeDoEvento(eventoId: string,
-                        unidade: string): Observable<fromDocuments.Evento> {
-    const evento = EVENTOS_EXISTENTES.find((evt: fromDocuments.Evento) =>
-                                               evt.id === eventoId);
+  alteraUnidadeDoEvento(eventoId: string, unidade: string): Observable<fromDocuments.Evento> {
+    const evento = EVENTOS_EXISTENTES.find((evt: fromDocuments.Evento) => evt.id === eventoId);
 
     const valorAntigo = evento.cidadeUnidade;
     evento.cidadeUnidade = unidade;
@@ -262,10 +256,8 @@ export class EventoRestService {
    * @returns {Observable<fromDocuments.Evento>}
    * @memberof EventoRestService
    */
-  alteraTituloDoEvento(eventoId: string,
-                       titulo: string): Observable<fromDocuments.Evento> {
-    const evento = EVENTOS_EXISTENTES.find((evt: fromDocuments.Evento) =>
-                                               evt.id === eventoId);
+  alteraTituloDoEvento(eventoId: string, titulo: string): Observable<fromDocuments.Evento> {
+    const evento = EVENTOS_EXISTENTES.find((evt: fromDocuments.Evento) => evt.id === eventoId);
 
     const valorAntigo = evento.titulo;
     evento.titulo = titulo;
@@ -306,8 +298,7 @@ export class EventoRestService {
    * @memberof TutoriaService
    */
   findEventoById(id: string): Observable<fromDocuments.Evento> {
-    const evento =
-        EVENTOS_EXISTENTES.find((evt: fromDocuments.Evento) => evt.id === id);
+    const evento = EVENTOS_EXISTENTES.find((evt: fromDocuments.Evento) => evt.id === id);
 
     if (!evento) {
       return throwError(id);
@@ -326,22 +317,22 @@ export class EventoRestService {
    * @returns {Observable<fromDocuments.EventoPaginado>}
    * @memberof TutoriaService
    */
-  findEventosByUsuarioLogado(termToFilter?: string, page?: number,
-                             pageSize?: number):
-      Observable<fromDocuments.EventoPaginado> {
+  findEventosByUsuarioLogado(
+    termToFilter?: string,
+    page?: number,
+    pageSize?: number,
+  ): Observable<fromDocuments.EventoPaginado> {
     let eventos: fromDocuments.Evento[] =
-        // tslint:disable-next-line: no-use-before-declare
-        TutoriaUtils.filtraEventos(termToFilter);
+      // tslint:disable-next-line: no-use-before-declare
+      TutoriaUtils.filtraEventos(termToFilter);
 
-    eventos.sort((a, b) => new Date(b.dataRegistro).getTime() -
-                           new Date(a.dataRegistro).getTime());
+    eventos.sort((a, b) => new Date(b.dataRegistro).getTime() - new Date(a.dataRegistro).getTime());
 
     const totalElements = eventos.length;
 
     const startIndex = page * pageSize;
     const endIndex = page * pageSize + pageSize;
-    eventos = eventos.slice(
-        startIndex, endIndex > eventos.length ? eventos.length : endIndex);
+    eventos = eventos.slice(startIndex, endIndex > eventos.length ? eventos.length : endIndex);
 
     const pagina: fromDocuments.EventoPaginado = {
       content: eventos,
@@ -351,10 +342,10 @@ export class EventoRestService {
     return observableOf(pagina);
   }
 
-  reabreEvento(eventoId: string,
-               textoComentario?: string): Observable<fromDocuments.Evento> {
+  reabreEvento(eventoId: string, textoComentario?: string): Observable<fromDocuments.Evento> {
     const evento: fromDocuments.Evento = EVENTOS_EXISTENTES.find(
-        (evt: fromDocuments.Evento) => evt.id === eventoId);
+      (evt: fromDocuments.Evento) => evt.id === eventoId,
+    );
 
     let agora: Date = new Date();
     evento.isResolvido = false;
@@ -376,10 +367,8 @@ export class EventoRestService {
             data: new Date(agora),
             texto: {
               markdown: textoComentario,
-              semFormatacao:
-                  this._formatadorDeTextoService.limpaMarkdown(textoComentario),
-              html: this._formatadorDeTextoService.markdownToHtml(
-                  textoComentario),
+              semFormatacao: this._formatadorDeTextoService.limpaMarkdown(textoComentario),
+              html: this._formatadorDeTextoService.markdownToHtml(textoComentario),
             },
           },
         ],
@@ -412,10 +401,10 @@ export class EventoRestService {
     return observableOf(JSON.parse(JSON.stringify(evento)));
   }
 
-  encerraEvento(eventoId: string,
-                textoComentario: string): Observable<fromDocuments.Evento> {
+  encerraEvento(eventoId: string, textoComentario: string): Observable<fromDocuments.Evento> {
     const evento: fromDocuments.Evento = EVENTOS_EXISTENTES.find(
-        (evt: fromDocuments.Evento) => evt.id === eventoId);
+      (evt: fromDocuments.Evento) => evt.id === eventoId,
+    );
 
     let agora: Date = new Date();
     evento.isResolvido = true;
@@ -437,10 +426,8 @@ export class EventoRestService {
             data: new Date(agora),
             texto: {
               markdown: textoComentario,
-              semFormatacao:
-                  this._formatadorDeTextoService.limpaMarkdown(textoComentario),
-              html: this._formatadorDeTextoService.markdownToHtml(
-                  textoComentario),
+              semFormatacao: this._formatadorDeTextoService.limpaMarkdown(textoComentario),
+              html: this._formatadorDeTextoService.markdownToHtml(textoComentario),
             },
           },
         ],
@@ -481,15 +468,18 @@ export class EventoRestService {
    * @returns {Observable<fromDocuments.Evento>}
    * @memberof TutoriaService
    */
-  insereComentario(eventoId: string, textoComentario: string,
-                   visibilidade: fromDocuments.Visibilidade):
-      Observable<fromDocuments.Evento> {
+  insereComentario(
+    eventoId: string,
+    textoComentario: string,
+    visibilidade: fromDocuments.Visibilidade,
+  ): Observable<fromDocuments.Evento> {
     if (!textoComentario) {
       return throwError(eventoId);
     }
 
     const evento: fromDocuments.Evento = EVENTOS_EXISTENTES.find(
-        (evt: fromDocuments.Evento) => evt.id === eventoId);
+      (evt: fromDocuments.Evento) => evt.id === eventoId,
+    );
 
     const agora: Date = new Date();
 
@@ -507,10 +497,8 @@ export class EventoRestService {
           data: new Date(agora),
           texto: {
             markdown: textoComentario,
-            semFormatacao:
-                this._formatadorDeTextoService.limpaMarkdown(textoComentario),
-            html:
-                this._formatadorDeTextoService.markdownToHtml(textoComentario),
+            semFormatacao: this._formatadorDeTextoService.limpaMarkdown(textoComentario),
+            html: this._formatadorDeTextoService.markdownToHtml(textoComentario),
           },
         },
       ],
@@ -518,6 +506,25 @@ export class EventoRestService {
     };
 
     evento.interacoes.push(comentario);
+
+    if (
+      !evento.participantes.some(
+        (p: fromDocuments.Participante) => p.usuarioRef.code === this._authService.email,
+      )
+    ) {
+      // no servidor é preciso verificar o real papel do participante antes de
+      // colocá-lo como convidado
+      const participante: fromDocuments.Participante = {
+        isAutor: false,
+        tipoParticipacao: fromDocuments.TipoParticipacao.CONVIDADO,
+        usuarioRef: {
+          code: this._authService.email,
+          description: this._authService.nomeUsuario,
+        },
+      };
+
+      evento.participantes.push(participante);
+    }
 
     return observableOf(JSON.parse(JSON.stringify(evento)));
   }
@@ -532,16 +539,49 @@ export class EventoRestService {
    * @returns {Observable<fromDocuments.Evento>}
    * @memberof EventoRestService
    */
-  alteraVisibilidadeDaInteracao(eventoId: string, interacaoId: string,
-                                visibilidade: fromDocuments.Visibilidade):
-      Observable<fromDocuments.Evento> {
-    const evento = EVENTOS_EXISTENTES.find((evt: fromDocuments.Evento) =>
-                                               evt.id === eventoId);
+  alteraVisibilidadeDaInteracao(
+    eventoId: string,
+    interacaoId: string,
+    visibilidade: fromDocuments.Visibilidade,
+  ): Observable<fromDocuments.Evento> {
+    const evento = EVENTOS_EXISTENTES.find((evt: fromDocuments.Evento) => evt.id === eventoId);
 
     const comentario: fromDocuments.Interacao = evento.interacoes.find(
-        (interacao: fromDocuments.Interacao) => interacao.id === interacaoId);
+      (interacao: fromDocuments.Interacao) => interacao.id === interacaoId,
+    );
 
     comentario.visibilidade = visibilidade;
+
+    return observableOf(JSON.parse(JSON.stringify(evento)));
+  }
+
+  alteraVisibilidadeDoEvento(eventoId: string, visibilidade: fromDocuments.Visibilidade): any {
+    const evento = EVENTOS_EXISTENTES.find((evt: fromDocuments.Evento) => evt.id === eventoId);
+
+    const valorAntigo = JSON.stringify(evento.visibilidade);
+    evento.visibilidade = visibilidade;
+
+    const agora: Date = new Date();
+    // AÇÃO
+    const comentario: fromDocuments.Interacao = {
+      autorRef: {
+        code: this._authService.email,
+        description: this._authService.nomeUsuario,
+      },
+      dataCriacao: new Date(agora),
+      tipoInteracao: fromDocuments.TipoInteracao.ACAO,
+      id: '' + new Date(agora).getTime(),
+      role: Funcoes.ADMINISTRADOR.funcaoSistema,
+      historicoInteracoes: [
+        {
+          data: new Date(agora),
+          tipoAcao: fromDocuments.TipoAcao.ALTERA_VISIBILIDADE_EVENTO,
+          auditoriaAcao: {valorAntigo, valorCorrente: JSON.stringify(evento.visibilidade)},
+        },
+      ],
+    };
+
+    evento.interacoes.push(comentario);
 
     return observableOf(JSON.parse(JSON.stringify(evento)));
   }
@@ -554,14 +594,16 @@ export class EventoRestService {
    * @param {fromDocuments.TextoFormatado} textoFormatado texto formatado
    * @memberof EventoRestService
    */
-  alteraTextoDeComentario(eventoId: string, interacaoId: string,
-                          textoFormatado: fromDocuments.TextoFormatado):
-      Observable<fromDocuments.Evento> {
-    const evento = EVENTOS_EXISTENTES.find((evt: fromDocuments.Evento) =>
-                                               evt.id === eventoId);
+  alteraTextoDeComentario(
+    eventoId: string,
+    interacaoId: string,
+    textoFormatado: fromDocuments.TextoFormatado,
+  ): Observable<fromDocuments.Evento> {
+    const evento = EVENTOS_EXISTENTES.find((evt: fromDocuments.Evento) => evt.id === eventoId);
 
     const comentario: fromDocuments.Interacao = evento.interacoes.find(
-        (interacao: fromDocuments.Interacao) => interacao.id === interacaoId);
+      (interacao: fromDocuments.Interacao) => interacao.id === interacaoId,
+    );
 
     const historico: fromDocuments.HistoricoInteracao = {
       data: new Date(),
@@ -581,15 +623,120 @@ export class EventoRestService {
    * @returns {Observable<fromDocuments.Evento>}
    * @memberof EventoRestService
    */
-  alteraParecerDaInteracao(eventoId: string,
-                           textoFormatado: fromDocuments.TextoFormatado):
-      Observable<fromDocuments.Evento> {
-    const evento = EVENTOS_EXISTENTES.find((evt: fromDocuments.Evento) =>
-                                               evt.id === eventoId);
+  alteraParecerDoEvento(
+    eventoId: string,
+    textoFormatado: fromDocuments.TextoFormatado,
+  ): Observable<fromDocuments.Evento> {
+    const evento = EVENTOS_EXISTENTES.find((evt: fromDocuments.Evento) => evt.id === eventoId);
 
     evento.parecer = textoFormatado.markdown;
 
     evento.textoFormatado = textoFormatado;
+
+    return observableOf(JSON.parse(JSON.stringify(evento)));
+  }
+
+  /**
+   * Altera os participantes de um evento
+   *
+   * @param {string} eventoId
+   * @param {fromDocuments.ObjectReference[]} participantesAdicionados
+   * @param {fromDocuments.ObjectReference[]} participantesRemovidos
+   * @returns {Observable<fromDocuments.Evento>}
+   * @memberof EventoRestService
+   */
+  alteraParticipantesDoEvento(
+    eventoId: string,
+    participantesAdicionados: fromDocuments.ObjectReference[],
+    participantesRemovidos: fromDocuments.ObjectReference[],
+  ): Observable<fromDocuments.Evento> {
+    const evento = EVENTOS_EXISTENTES.find((evt: fromDocuments.Evento) => evt.id === eventoId);
+    participantesAdicionados.forEach((or: fromDocuments.ObjectReference) => {
+      if (
+        !evento.participantes.some((p: fromDocuments.Participante) => p.usuarioRef.code === or.code)
+      ) {
+        // se for um evento de tutoria, é preciso verificar se o usuário não é
+        // algum gestor  que tenha saído da conversa, antes de classificá-lo
+        // como um convidado: isso será feito no backend
+        const participante: fromDocuments.Participante = {
+          isAutor: false,
+          tipoParticipacao: fromDocuments.TipoParticipacao.CONVIDADO,
+          usuarioRef: or,
+        };
+
+        evento.participantes.push(participante);
+      }
+    });
+
+    participantesRemovidos.forEach((or: fromDocuments.ObjectReference) => {
+      let index = evento.participantes.findIndex(
+        (p: fromDocuments.Participante) => p.usuarioRef.code === or.code,
+      );
+      if (index > -1) {
+        evento.participantes.splice(index, 1);
+      }
+
+      index = evento.responsaveis.findIndex((p: fromDocuments.Responsavel) => p.email === or.code);
+      if (index > -1) {
+        evento.responsaveis.splice(index, 1);
+      }
+    });
+
+    return observableOf(JSON.parse(JSON.stringify(evento)));
+  }
+
+  /**
+   * Altera os responsáveis por um evento
+   *
+   * @param {string} eventoId
+   * @param {fromDocuments.ObjectReference[]} participantesAdicionados
+   * @param {fromDocuments.ObjectReference[]} participantesRemovidos
+   * @returns {Observable<fromDocuments.Evento>}
+   * @memberof EventoRestService
+   */
+  alteraResponsaveisDoEvento(
+    eventoId: string,
+    participantesAdicionados: fromDocuments.ObjectReference[],
+    participantesRemovidos: fromDocuments.ObjectReference[],
+  ): Observable<fromDocuments.Evento> {
+    const evento = EVENTOS_EXISTENTES.find((evt: fromDocuments.Evento) => evt.id === eventoId);
+    participantesAdicionados.forEach((or: fromDocuments.ObjectReference) => {
+      if (!evento.responsaveis.some((p: fromDocuments.Responsavel) => p.email === or.code)) {
+        // se for um evento de tutoria, é preciso verificar se o usuário não é
+        // algum gestor  que tenha saído da conversa, antes de classificá-lo
+        // como um convidado: isso será feito no backend
+        const responsavel: fromDocuments.Responsavel = {
+          email: or.code,
+          nomeResponsavel: or.description,
+        };
+
+        evento.responsaveis.push(responsavel);
+      }
+    });
+
+    participantesAdicionados.forEach((or: fromDocuments.ObjectReference) => {
+      if (
+        !evento.participantes.some((p: fromDocuments.Participante) => p.usuarioRef.code === or.code)
+      ) {
+        // se o responsável não for participante, é preciso incluí-lo como tal
+        const participante: fromDocuments.Participante = {
+          isAutor: false,
+          tipoParticipacao: fromDocuments.TipoParticipacao.RESPONSAVEL,
+          usuarioRef: or,
+        };
+
+        evento.participantes.push(participante);
+      }
+    });
+
+    participantesRemovidos.forEach((or: fromDocuments.ObjectReference) => {
+      const index = evento.responsaveis.findIndex(
+        (p: fromDocuments.Responsavel) => p.email === or.code,
+      );
+      if (index > -1) {
+        evento.responsaveis.splice(index, 1);
+      }
+    });
 
     return observableOf(JSON.parse(JSON.stringify(evento)));
   }
@@ -606,28 +753,24 @@ class TutoriaUtils {
     }
 
     return EVENTOS_EXISTENTES.filter(
-        (evt: fromDocuments.Evento) =>
-            TutoriaUtils._tutorContem(evt, termToFilter) ||
-            TutoriaUtils._responsavelContem(evt, termToFilter) ||
-            TutoriaUtils._observacaoContem(evt, termToFilter) ||
-            TutoriaUtils._ocorrenciaContem(evt, termToFilter) ||
-            TutoriaUtils._comentarioContem(evt, termToFilter));
+      (evt: fromDocuments.Evento) =>
+        TutoriaUtils._tutorContem(evt, termToFilter) ||
+        TutoriaUtils._responsavelContem(evt, termToFilter) ||
+        TutoriaUtils._observacaoContem(evt, termToFilter) ||
+        TutoriaUtils._ocorrenciaContem(evt, termToFilter) ||
+        TutoriaUtils._comentarioContem(evt, termToFilter),
+    );
   }
 
-  private static _observacaoContem(evt: fromDocuments.Evento,
-                                   termToFilter: string): boolean {
-    return evt.observacao &&
-           evt.observacao.toUpperCase().includes(termToFilter.toUpperCase());
+  private static _observacaoContem(evt: fromDocuments.Evento, termToFilter: string): boolean {
+    return evt.observacao && evt.observacao.toUpperCase().includes(termToFilter.toUpperCase());
   }
 
-  private static _ocorrenciaContem(evt: fromDocuments.Evento,
-                                   termToFilter: string): boolean {
-    return evt.parecer &&
-           evt.parecer.toUpperCase().includes(termToFilter.toUpperCase());
+  private static _ocorrenciaContem(evt: fromDocuments.Evento, termToFilter: string): boolean {
+    return evt.parecer && evt.parecer.toUpperCase().includes(termToFilter.toUpperCase());
   }
 
-  private static _comentarioContem(evt: fromDocuments.Evento,
-                                   termToFilter: string): boolean {
+  private static _comentarioContem(evt: fromDocuments.Evento, termToFilter: string): boolean {
     if (!evt.interacoes || !evt.interacoes.length) {
       return false;
     }
@@ -635,27 +778,23 @@ class TutoriaUtils {
     return evt.interacoes.some((c: fromDocuments.Interacao) => {
       termToFilter = termToFilter.toUpperCase();
 
-      c.historicoInteracoes.sort((a, b) => new Date(a.data).getTime() -
-                                           new Date(b.data).getTime());
-      return c.historicoInteracoes[0]
-          .texto.semFormatacao.toUpperCase()
-          .includes(termToFilter);
+      c.historicoInteracoes.sort((a, b) => new Date(a.data).getTime() - new Date(b.data).getTime());
+      return c.historicoInteracoes[0].texto.semFormatacao.toUpperCase().includes(termToFilter);
     });
   }
 
-  private static _responsavelContem(evt: fromDocuments.Evento,
-                                    termToFilter: string): boolean {
+  private static _responsavelContem(evt: fromDocuments.Evento, termToFilter: string): boolean {
     termToFilter = termToFilter.toUpperCase();
 
     return evt.responsaveis.some(
-        (r) =>
-            !!r && (r.email.toUpperCase().includes(termToFilter) ||
-                    (!!r.nomeResponsavel &&
-                     r.nomeResponsavel.toUpperCase().includes(termToFilter))));
+      (r) =>
+        !!r &&
+        (r.email.toUpperCase().includes(termToFilter) ||
+          (!!r.nomeResponsavel && r.nomeResponsavel.toUpperCase().includes(termToFilter))),
+    );
   }
 
-  private static _tutorContem(evt: fromDocuments.Evento,
-                              termToFilter: string): boolean {
+  private static _tutorContem(evt: fromDocuments.Evento, termToFilter: string): boolean {
     if (!evt.tutoria.historicoTutores && !evt.tutoria.historicoTutores.length) {
       return false;
     }
@@ -668,8 +807,9 @@ class TutoriaUtils {
 
     termToFilter = termToFilter.toUpperCase();
 
-    return (tutor[0].email.toUpperCase().includes(termToFilter) ||
-            (!!tutor[0].nomeTutor &&
-             tutor[0].nomeTutor.toUpperCase().includes(termToFilter)));
+    return (
+      tutor[0].email.toUpperCase().includes(termToFilter) ||
+      (!!tutor[0].nomeTutor && tutor[0].nomeTutor.toUpperCase().includes(termToFilter))
+    );
   }
 }

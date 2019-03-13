@@ -1,9 +1,43 @@
 import {Injectable} from '@angular/core';
 
-import {TextoFormatado} from '../../model/transport-objects';
 import {
   FormatadorDeTextoService,
 } from '../shared/utilitarios/formatador-de-texto.service';
+
+import {
+  ObjectReference,
+  TextoFormatado,
+  Visibilidade,
+} from '../../model/transport-objects';
+
+export enum OcorrenciaChangeType {
+  ALTERA_LOCAL,
+  ALTERA_PARECER,
+  ALTERA_PARTICIPANTES,
+  ALTERA_RESPONSAVEIS,
+  ALTERA_TIPO_SUBTIPO,
+  ALTERA_TITULO,
+  ALTERA_UNIDADE,
+  COMENTA,
+  ENCERRA_E_COMENTA,
+  NOVO_EVENTO,
+  REABRE_E_COMENTA,
+  TEXTO_COMENTARIO,
+  VISIBILIDADE_COMENTARIO,
+  VISIBILIDADE_EVENTO,
+}
+
+export interface OcorrenciaChange {
+  type: OcorrenciaChangeType;
+  eventoId?: string;
+  comentarioId?: string;
+  visibilidade?: Visibilidade;
+  texto?: string;
+  descricaoTipoEvento?: string;
+  descricaoSubTipoEvento?: string;
+  participantesAdicionados?: ObjectReference[];
+  participantesRemovidos?: ObjectReference[];
+}
 
 @Injectable({providedIn: 'root'})
 export class OcorrenciaComponentService {

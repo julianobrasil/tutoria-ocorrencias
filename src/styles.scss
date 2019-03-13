@@ -27,6 +27,10 @@ textarea {
   resize: none;
 }
 
+.app-color-primary {
+  color: mat-color($app-primary);
+}
+
 .app-color-red {
   color: mat-color($app-warn);
 }

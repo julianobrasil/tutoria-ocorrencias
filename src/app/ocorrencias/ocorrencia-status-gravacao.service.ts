@@ -4,22 +4,11 @@ import {filter} from 'rxjs/operators';
 
 import {Evento} from '../model/transport-objects';
 
-export enum OcorrenciaOperacao {
-  ALTERA_LOCAL,
-  ALTERA_PARECER_DA_INTERACAO,
-  ALTERA_TEXTO_DE_COMENTARIO,
-  ALTERA_TITULO,
-  ALTERA_UNIDADE,
-  ALTERA_VISIBILIDADE_INTERACAO,
-  COMENTA,
-  ENCERRA_E_COMENTA,
-  NOVO_EVENTO,
-  REABRE_E_COMENTA,
-}
+import {OcorrenciaChangeType} from './public_api';
 
 export interface OcorrenciaDadosDaGravacao {
   evento?: Evento;
-  operacaoExecutada: OcorrenciaOperacao;
+  operacaoExecutada: OcorrenciaChangeType;
   sucesso: boolean;
 }
 
@@ -28,50 +17,67 @@ export interface OcorrenciaDadosDaGravacao {
 })
 export class OcorrenciaStatusGravacaoService {
   /** status da gravação */
-  statusGravacao$: Subject<OcorrenciaDadosDaGravacao> =
-      new Subject<OcorrenciaDadosDaGravacao>();
+  statusGravacao$: Subject<OcorrenciaDadosDaGravacao> = new Subject<OcorrenciaDadosDaGravacao>();
 
   /** emite quando ococorre uma operação de reabertura/fechamento */
   getStatusReaberturaFechamento$() {
-    return this.statusGravacao$.pipe(filter(
+    return this.statusGravacao$.pipe(
+      filter(
         (status: OcorrenciaDadosDaGravacao) =>
-            status.operacaoExecutada === OcorrenciaOperacao.ENCERRA_E_COMENTA ||
-            status.operacaoExecutada === OcorrenciaOperacao.REABRE_E_COMENTA));
+          status.operacaoExecutada === OcorrenciaChangeType.ENCERRA_E_COMENTA ||
+          status.operacaoExecutada === OcorrenciaChangeType.REABRE_E_COMENTA,
+      ),
+    );
   }
 
   /** emite quando ococorre uma operação de criação de novo comentário */
   getStatusInsercaoDeComentario$() {
     return this.statusGravacao$.pipe(
-        filter((status: OcorrenciaDadosDaGravacao) =>
-                   status.operacaoExecutada === OcorrenciaOperacao.COMENTA));
+      filter(
+        (status: OcorrenciaDadosDaGravacao) =>
+          status.operacaoExecutada === OcorrenciaChangeType.COMENTA,
+      ),
+    );
   }
 
   /** emite quando ococorre uma operação de criação de evento */
   getStatusCriacaoDeEvento$() {
-    return this.statusGravacao$.pipe(filter(
+    return this.statusGravacao$.pipe(
+      filter(
         (status: OcorrenciaDadosDaGravacao) =>
-            status.operacaoExecutada === OcorrenciaOperacao.NOVO_EVENTO));
+          status.operacaoExecutada === OcorrenciaChangeType.NOVO_EVENTO,
+      ),
+    );
   }
 
   /** emite quando ococorre uma operação de alteração do local do evento */
   getStatusAlteracaoDoLocalDoEvento$() {
-    return this.statusGravacao$.pipe(filter(
+    return this.statusGravacao$.pipe(
+      filter(
         (status: OcorrenciaDadosDaGravacao) =>
-            status.operacaoExecutada === OcorrenciaOperacao.ALTERA_LOCAL));
+          status.operacaoExecutada === OcorrenciaChangeType.ALTERA_LOCAL,
+      ),
+    );
   }
 
   /** emite quando ococorre uma operação de alteração da unidade do evento */
   getStatusAlteracaoDoUnidadeDoEvento$() {
-    return this.statusGravacao$.pipe(filter(
+    return this.statusGravacao$.pipe(
+      filter(
         (status: OcorrenciaDadosDaGravacao) =>
-            status.operacaoExecutada === OcorrenciaOperacao.ALTERA_UNIDADE));
+          status.operacaoExecutada === OcorrenciaChangeType.ALTERA_UNIDADE,
+      ),
+    );
   }
 
   /** emite quando ococorre uma operação de alteração do título do evento */
   getStatusAlteracaoDoTituloDoEvento$() {
-    return this.statusGravacao$.pipe(filter(
+    return this.statusGravacao$.pipe(
+      filter(
         (status: OcorrenciaDadosDaGravacao) =>
-            status.operacaoExecutada === OcorrenciaOperacao.ALTERA_TITULO));
+          status.operacaoExecutada === OcorrenciaChangeType.ALTERA_TITULO,
+      ),
+    );
   }
 
   /**
@@ -80,9 +86,23 @@ export class OcorrenciaStatusGravacaoService {
    */
   getStatusAlteracaoDaVisibilidadeDaInteracao$() {
     return this.statusGravacao$.pipe(
-        filter((status: OcorrenciaDadosDaGravacao) =>
-                   status.operacaoExecutada ===
-                   OcorrenciaOperacao.ALTERA_VISIBILIDADE_INTERACAO));
+      filter(
+        (status: OcorrenciaDadosDaGravacao) =>
+          status.operacaoExecutada === OcorrenciaChangeType.VISIBILIDADE_COMENTARIO,
+      ),
+    );
+  }
+
+  /**
+   * Emite quando ococorre uma operação de alteração da visibilidade do evento
+   */
+  getStatusAlteracaoDaVisibilidadeDoEvento$() {
+    return this.statusGravacao$.pipe(
+      filter(
+        (status: OcorrenciaDadosDaGravacao) =>
+          status.operacaoExecutada === OcorrenciaChangeType.VISIBILIDADE_EVENTO,
+      ),
+    );
   }
 
   /**
@@ -90,9 +110,11 @@ export class OcorrenciaStatusGravacaoService {
    */
   getStatusAlteracaoDeTextoDoComentario$() {
     return this.statusGravacao$.pipe(
-        filter((status: OcorrenciaDadosDaGravacao) =>
-                   status.operacaoExecutada ===
-                   OcorrenciaOperacao.ALTERA_TEXTO_DE_COMENTARIO));
+      filter(
+        (status: OcorrenciaDadosDaGravacao) =>
+          status.operacaoExecutada === OcorrenciaChangeType.TEXTO_COMENTARIO,
+      ),
+    );
   }
 
   /**
@@ -101,8 +123,36 @@ export class OcorrenciaStatusGravacaoService {
    */
   getStatusAlteracaoDeParecerDoEvento$() {
     return this.statusGravacao$.pipe(
-        filter((status: OcorrenciaDadosDaGravacao) =>
-                   status.operacaoExecutada ===
-                   OcorrenciaOperacao.ALTERA_PARECER_DA_INTERACAO));
+      filter(
+        (status: OcorrenciaDadosDaGravacao) =>
+          status.operacaoExecutada === OcorrenciaChangeType.ALTERA_PARECER,
+      ),
+    );
+  }
+
+  /**
+   * emite quando ococorre uma operação de alteração dos participantes da
+   * ocorrência
+   */
+  getStatusAlteracaoDeParticipantesDoEvento$() {
+    return this.statusGravacao$.pipe(
+      filter(
+        (status: OcorrenciaDadosDaGravacao) =>
+          status.operacaoExecutada === OcorrenciaChangeType.ALTERA_PARTICIPANTES,
+      ),
+    );
+  }
+
+  /**
+   * emite quando ococorre uma operação de alteração dos responsaveis da
+   * ocorrência
+   */
+  getStatusAlteracaoDeResponsaveisDoEvento$() {
+    return this.statusGravacao$.pipe(
+      filter(
+        (status: OcorrenciaDadosDaGravacao) =>
+          status.operacaoExecutada === OcorrenciaChangeType.ALTERA_RESPONSAVEIS,
+      ),
+    );
   }
 }

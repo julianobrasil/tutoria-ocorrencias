@@ -1,21 +1,23 @@
 <div *ngIf="ocorrencia"
      class="acoes-ligadas-a-novo-comentario-container">
   <button *ngIf="ocorrencia?.isResolvido"
-          (click)="reabrirEvento.emit(textoNovoComentario)"
+          (click)="_reabreEvento()"
+          [disabled]="_isAcessandoBanco"
           mat-raised-button
           tipo="button">
     {{_textoBotaoReabrir}}
   </button>
 
   <button *ngIf="!ocorrencia?.isResolvido"
-          (click)="encerrarEvento.emit(textoNovoComentario)"
+          (click)="_encerraEvento()"
+          [disabled]="_isAcessandoBanco"
           mat-raised-button
           tipo="button">
     {{_textoBotaoEncerrar}}
   </button>
 
-  <button (click)="textoNovoComentario && comentar.emit(textoNovoComentario)"
-          [disabled]="!textoNovoComentario"
+  <button (click)="_comenta()"
+          [disabled]="!textoNovoComentario || _isAcessandoBanco"
           color="primary"
           mat-raised-button
           type="button">

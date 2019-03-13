@@ -78,22 +78,23 @@ export class OcorrenciaMenuComponent implements AfterViewInit,
 
   /** mostra o botão de esconder */
   get _mostraBotaoDeEsconder(): boolean {
-    return !this.isCabecalhoEvento && !!this.comentario &&
-           !!this.comentario.visibilidade &&
-           this.comentario.visibilidade.tipo === TipoVisibilidade.TODOS;
+    return (this.ocorrencia && this.ocorrencia.visibilidade &&
+            this.ocorrencia.visibilidade.tipo === TipoVisibilidade.TODOS) ||
+           (!!this.comentario && !!this.comentario.visibilidade &&
+            this.comentario.visibilidade.tipo === TipoVisibilidade.TODOS);
   }
 
   /** mostra o botão de mostrar */
   get _mostraBotaoDeMostrar(): boolean {
-    return !this.isCabecalhoEvento && !!this.comentario &&
-           !!this.comentario.visibilidade &&
-           this.comentario.visibilidade.tipo !== TipoVisibilidade.TODOS;
+    return (this.ocorrencia && this.ocorrencia.visibilidade &&
+            this.ocorrencia.visibilidade.tipo !== TipoVisibilidade.TODOS) ||
+           (!!this.comentario && !!this.comentario.visibilidade &&
+            this.comentario.visibilidade.tipo !== TipoVisibilidade.TODOS);
   }
 
   /** mostra o divider logo abaixo dos botões de visibilidade */
   get _mostraDividerAbaixoDeVisibilidade(): boolean {
-    return !this.isCabecalhoEvento &&
-           (this._mostraBotaoDeEsconder || this._mostraBotaoDeMostrar);
+    return (this._mostraBotaoDeEsconder || this._mostraBotaoDeMostrar);
   }
 
   /** TODO(@julianobrasil) retorna true se o texto puder ser alterado */

@@ -1,0 +1,29 @@
+<section class="selecao-de-pessoas-container">
+  <!-- BARRA DE TÍTULO -->
+  <section class="selecao-de-pessoas-titulo">
+    {{usuariosEscolhidos | textoDeLimiteDeParticipantesEscolhidos: maxUsuarios}}
+  </section>
+
+  <!-- COMPONENTE DE SELEÇÃO DE USUÁRIOS (AUTOCOMPLETAR) -->
+  <section class="selecao-de-pessoas-input">
+    <mat-form-field appearance="fill">
+      <input [formControl]="_filtroCtrl"
+             matInput
+             placeholder="FILTRAR PESSOAS...">
+    </mat-form-field>
+  </section>
+
+  <section class="selecao-de-pessoas-lista">
+    <mat-selection-list (selectionChange)="_alteracaoNaListaEscolhida($event)">
+      <mat-list-option *ngFor="let usuario of _usuariosDisponiveis"
+                       [disabled]="usuario | isUsuarioImexivel: usuariosImexiveis"
+                       [matTooltip]="usuario?.description"
+                       [matTooltipDisabled]="matTooltipDisabled"
+                       [value]="usuario"
+                       matTooltipPosition="left">
+        {{usuario?.code}}
+      </mat-list-option>
+    </mat-selection-list>
+  </section>
+
+</section>

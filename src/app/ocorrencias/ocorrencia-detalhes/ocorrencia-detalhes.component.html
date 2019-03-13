@@ -81,7 +81,7 @@
       </section>
 
       <section class="ocorrencia-detalhes-coluna-da-direita">
-        <app-ocorrencia-detalhes-configuracoes (alteraTipoEvento)="_alteraTipoEvento($event)"
+        <app-ocorrencia-detalhes-configuracoes (eventoChange)="_alteraEventoNoPainelDeConfiguracoes($event)"
                                                (excluiEvento)="_excluiEvento()"
                                                [coresDosParticipantes]="_coresDosParticipantes"
                                                [ocorrencia]="_ocorrencia$ | async">

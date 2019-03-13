@@ -36,11 +36,25 @@
 
       background-color: rgba(0, 0, 0, 0.05);
 
+      &.darker {
+        background-color: mat-color($app-accent, 300);
+      }
+
       .formulario-somente-leitura-tipo-subtipo {
         flex: 1;
+        display: flex;
+
 
         padding-top: 10px;
         padding-bottom: 10px;
+
+        .icone-de-visibilidade-limitada {
+          margin-left: 10px;
+          height: 20px;
+          .mat-icon {
+            font-size: 20px;
+          }
+        }
       }
     }
 

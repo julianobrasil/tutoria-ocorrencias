@@ -10,29 +10,14 @@ import {
 import {combineLatest, Subject} from 'rxjs';
 import {debounceTime, filter, map, takeUntil} from 'rxjs/operators';
 
-import {
-  Evento,
-  Interacao,
-  Visibilidade,
-} from '../../../model/transport-objects';
+import {Evento, Interacao, Visibilidade} from '../../../model/transport-objects';
 import {
   OcorrenciaDadosDaGravacao,
   OcorrenciaStatusGravacaoService,
 } from '../../ocorrencia-status-gravacao.service';
-import {
-  OcorrenciaDetalhesComponentService,
-} from '../ocorrencia-detalhes-component.service';
+import {OcorrenciaDetalhesComponentService} from '../ocorrencia-detalhes-component.service';
 
-export enum OcorrenciaComentarioChangedType {
-  TEXTO_COMENTARIO,
-  VISIBILIDADE,
-}
-
-export interface OcorrenciaComentarioChanged {
-  type: OcorrenciaComentarioChangedType;
-  visibilidade?: Visibilidade;
-  texto?: string;
-}
+import {OcorrenciaChange} from '../../public_api';
 
 @Component({
   selector: 'app-ocorrencia-comentario',
@@ -91,24 +76,27 @@ export class OcorrenciaComentarioComponent implements OnDestroy {
 
   /** Emite quando há alterações no comentário. */
   @Output()
-  comentarioChanged: EventEmitter<OcorrenciaComentarioChanged> =
-      new EventEmitter<OcorrenciaComentarioChanged>();
+  comentarioChanged: EventEmitter<OcorrenciaChange> = new EventEmitter<OcorrenciaChange>();
 
   /** destrói todas as assinaturas em observables */
   private _destroy$: Subject<void> = new Subject<void>();
 
-  constructor(private _ocorrenciaDetalhesComponentService:
-                  OcorrenciaDetalhesComponentService,
-              private _statusGravacao: OcorrenciaStatusGravacaoService) {
+  constructor(
+    private _ocorrenciaDetalhesComponentService: OcorrenciaDetalhesComponentService,
+    private _statusGravacao: OcorrenciaStatusGravacaoService,
+  ) {
     this._setupMonitoraStatusGravacao();
 
     combineLatest(this._isEditando$, this._somenteEdicao$)
-        .pipe(filter(([isEditando, justForEdit]) => !justForEdit),
-              debounceTime(300), map(([isEditando, justForEdit]) => isEditando),
-              takeUntil(this._destroy$))
-        .subscribe((isEditando: boolean) =>
-                       this._ocorrenciaDetalhesComponentService
-                           .interrompeAtualizacaoPeriodica(isEditando));
+      .pipe(
+        filter(([isEditando, justForEdit]) => !justForEdit),
+        debounceTime(300),
+        map(([isEditando, justForEdit]) => isEditando),
+        takeUntil(this._destroy$),
+      )
+      .subscribe((isEditando: boolean) =>
+        this._ocorrenciaDetalhesComponentService.interrompeAtualizacaoPeriodica(isEditando),
+      );
   }
 
   ngOnDestroy() {
@@ -128,9 +116,9 @@ export class OcorrenciaComentarioComponent implements OnDestroy {
 
   /** monitora o status da gravação */
   private _setupMonitoraStatusGravacao() {
-    this._statusGravacao.getStatusAlteracaoDeTextoDoComentario$()
-        .pipe(takeUntil(this._destroy$))
-        .subscribe((status: OcorrenciaDadosDaGravacao) =>
-                       (this.isEditando = !status.sucesso));
+    this._statusGravacao
+      .getStatusAlteracaoDeTextoDoComentario$()
+      .pipe(takeUntil(this._destroy$))
+      .subscribe((status: OcorrenciaDadosDaGravacao) => (this.isEditando = !status.sucesso));
   }
 }

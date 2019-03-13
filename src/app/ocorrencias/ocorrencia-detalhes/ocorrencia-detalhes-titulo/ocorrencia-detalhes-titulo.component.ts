@@ -1,5 +1,11 @@
 // tslint:disable: max-line-length
-import {Component, EventEmitter, Input, Output, ViewEncapsulation} from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewEncapsulation,
+} from '@angular/core';
 import {MatDialog} from '@angular/material';
 
 import {Evento} from '../../../model/transport-objects';
@@ -10,15 +16,9 @@ import {
   TituloDialogComponent,
   TituloDialogComponentData,
 } from '../../shared/componentes/dialogos/titulo-dialog/titulo-dialog.component';
-import {
-  OcorrenciaDetalhesOperation,
-} from '../ocorrencia-detalhes-component.service';
-// tslint:enable: max-line-length
 
-export interface OcorrenciaDetalhesTituloChanged {
-  type: OcorrenciaDetalhesOperation;
-  valor: string;
-}
+import {OcorrenciaChange, OcorrenciaChangeType} from '../../public_api';
+// tslint:enable: max-line-length
 
 @Component({
   selector: 'app-ocorrencia-detalhes-titulo',
@@ -32,8 +32,8 @@ export class OcorrenciaDetalhesTituloComponent {
 
   /** emite quando o título é alterado */
   @Output()
-  ocorrenciaChanged: EventEmitter<OcorrenciaDetalhesTituloChanged> =
-      new EventEmitter<OcorrenciaDetalhesTituloChanged>();
+  ocorrenciaChanged: EventEmitter<OcorrenciaChange> =
+      new EventEmitter<OcorrenciaChange>();
 
   /** emite quando o usuário clica no botão de nova ocorrência */
   @Output()
@@ -58,8 +58,8 @@ export class OcorrenciaDetalhesTituloComponent {
 
     dialogRef.afterClosed().subscribe(
         (titulo: string) => this.ocorrenciaChanged.emit({
-          type: OcorrenciaDetalhesOperation.ALTERA_TITULO,
-          valor: titulo,
+          type: OcorrenciaChangeType.ALTERA_TITULO,
+          texto: titulo,
         }));
   }
 
