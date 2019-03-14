@@ -11,7 +11,7 @@ import {first, map, takeUntil, tap} from 'rxjs/operators';
 
 import {
   OcorrenciaStoreFacadeService,
-  Paginacao,
+  IssueTrackerPagination,
 } from '../ocorrencia-facade.service';
 import {
   OcorrenciaFormularioComponentData,
@@ -24,7 +24,7 @@ import {
   NovoEventoRequest,
   Unidade,
 } from '../../model/transport-objects/';
-import {IssueConfiguration} from '../model';
+import {IssueTrackerConfiguration} from '../model';
 
 @Component({
   selector: 'app-ocorrencias',
@@ -34,14 +34,14 @@ import {IssueConfiguration} from '../model';
   encapsulation: ViewEncapsulation.None,
 })
 export class OcorrenciasComponent implements OnDestroy {
-  _config$: Observable<IssueConfiguration> =
+  _config$: Observable<IssueTrackerConfiguration> =
       this._ocorrenciaStoreFacade.getIssueTrackerConfiguration$().pipe(tap((_) => console.log(_)));
 
   /** dados de eventos paginados */
   _eventos$: Observable<Evento[]> = this._ocorrenciaStoreFacade.getEventos$();
 
   /** dados de paginação */
-  _paginacao$: Observable<Paginacao> =
+  _paginacao$: Observable<IssueTrackerPagination> =
       this._ocorrenciaStoreFacade.getPaginacao$();
 
   /** quando estiver criando nova ocorrência, é true */
@@ -68,7 +68,7 @@ export class OcorrenciasComponent implements OnDestroy {
 
     combineLatest(this._paginacao$)
         .pipe(first(), map((_) => _[0]) )
-        .subscribe((paginacao: Paginacao) => {
+        .subscribe((paginacao: IssueTrackerPagination) => {
           if (!paginacao) {
             this._ocorrenciaStoreFacade.setPaginacao({
               page: 0,
@@ -102,7 +102,7 @@ export class OcorrenciasComponent implements OnDestroy {
   }
 
   /** atualiza os dados de paginação */
-  _atualizaPaginacao(paginacao: Paginacao) {
+  _atualizaPaginacao(paginacao: IssueTrackerPagination) {
     this._ocorrenciaStoreFacade.setPaginacaoEBusca(paginacao);
   }
 

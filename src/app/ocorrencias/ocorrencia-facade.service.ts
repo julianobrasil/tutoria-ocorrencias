@@ -5,9 +5,9 @@ import {first, map} from 'rxjs/operators';
 
 import * as fromStore from '../../store';
 import {Evento, NovoEventoRequest, Unidade} from '../model/transport-objects';
-import {IssueConfiguration as IssueTrackerConfiguration} from './model';
+import {IssueTrackerConfiguration} from './model';
 
-export interface Paginacao {
+export interface IssueTrackerPagination {
   page: number;
   pageSize: number;
   pageSizeOptions?: number[];
@@ -43,7 +43,7 @@ export class OcorrenciaStoreFacadeService {
   }
 
   /** obtém a paginação corrente */
-  getPaginacao$(): Observable<Paginacao> {
+  getPaginacao$(): Observable<IssueTrackerPagination> {
     return this._store$.pipe(select(fromStore.DIARIO_DE_TUTORIA.SELECTORS.EVENTO.getPaginacao));
   }
 
@@ -74,14 +74,14 @@ export class OcorrenciaStoreFacadeService {
   }
 
   /** configura a paginação atual */
-  setPaginacao(paginacao: Paginacao) {
+  setPaginacao(paginacao: IssueTrackerPagination) {
     this._store$.dispatch(
       new fromStore.DIARIO_DE_TUTORIA.ACTIONS.EVENTO.ConfiguraDadosDePaginacaoRun({paginacao}),
     );
   }
 
   /** configura a paginação atual e dispara uma busca */
-  setPaginacaoEBusca(paginacao?: Paginacao) {
+  setPaginacaoEBusca(paginacao?: IssueTrackerPagination) {
     combineLatest(
       this._store$.pipe(select(fromStore.DIARIO_DE_TUTORIA.SELECTORS.EVENTO.getTermoDeBusca)),
     )

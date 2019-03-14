@@ -8,7 +8,7 @@ import {
 } from '../../../app/model/transport-objects';
 import {TipoEvento} from '../../../app/model/transport-objects/';
 import {ObjectReference} from '../../../app/ocorrencias/model';
-import {Paginacao} from '../../../app/ocorrencias/ocorrencia-facade.service';
+import {IssueTrackerPagination} from '../../../app/ocorrencias/ocorrencia-facade.service';
 
 export enum OBTEM_EVENTOS_PAGINADOS {
   RUN = '[DIÁRIO DE TUTORIA:EVENTOS]: Obtém eventos paginados run',
@@ -118,7 +118,7 @@ export class ObtemEventosPaginadosRun implements Action {
   constructor(
     public payload: {
       termoDeBusca?: string;
-      paginacao: Paginacao;
+      paginacao: IssueTrackerPagination;
     },
   ) {}
 }
@@ -135,7 +135,7 @@ export class ObtemEventosPaginadosSuccess implements Action {
 
 export class ConfiguraDadosDePaginacaoRun implements Action {
   readonly type = CONFIGURA_DADOS_PAGINACAO.RUN;
-  constructor(public payload: {paginacao: Paginacao}) {}
+  constructor(public payload: {paginacao: IssueTrackerPagination}) {}
 }
 
 export class ObtemTiposDeEventosRun implements Action {

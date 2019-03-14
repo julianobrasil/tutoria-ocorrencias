@@ -26,10 +26,14 @@ export enum OcorrenciaChangeType {
   TEXTO_COMENTARIO,
   VISIBILIDADE_COMENTARIO,
   VISIBILIDADE_EVENTO,
+
+  /** Used when dealing with the update of data in the custom form */
+  CUSTOM_TYPE,
 }
 
 export interface OcorrenciaChange {
   type: OcorrenciaChangeType;
+  customType?: string;
   eventoId?: string;
   comentarioId?: string;
   visibilidade?: Visibilidade;

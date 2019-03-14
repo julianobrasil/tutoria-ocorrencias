@@ -1,10 +1,10 @@
 import {Evento} from '../../../app/model/transport-objects';
-import {Paginacao} from '../../../app/ocorrencias/ocorrencia-facade.service';
+import {IssueTrackerPagination} from '../../../app/ocorrencias/ocorrencia-facade.service';
 import * as fromActions from '../actions';
 
 export interface EventoState {
   eventos: Evento[];
-  paginacao: Paginacao;
+  paginacao: IssueTrackerPagination;
   termoDeBusca: string;
   eventoPorIdErro: boolean;
 }

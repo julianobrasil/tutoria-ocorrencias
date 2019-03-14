@@ -1,10 +1,10 @@
-import {ObjectReference} from './object-reference';
 import {
   FuncaoDoUsuario,
-  Funcoes
-} from 'src/app/model/helper-objects/funcoes-sistema';
+  Funcoes,
+} from '../../model/helper-objects/funcoes-sistema';
+import {ObjectReference} from './object-reference';
 
-export class IssueConfiguration {
+export class IssueTrackerConfiguration {
   usuarioLogado?: {
     usuarioRef?: ObjectReference;
     isAdministrador?: boolean;
