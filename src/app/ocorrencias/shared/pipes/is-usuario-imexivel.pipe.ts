@@ -1,6 +1,6 @@
 import {Pipe, PipeTransform} from '@angular/core';
 
-import {ObjectReference} from '../../../model/transport-objects';
+import {ObjectReference} from '../../model';
 
 @Pipe({name: 'isUsuarioImexivel'})
 export class IsUsuarioImexivelPipe implements PipeTransform {

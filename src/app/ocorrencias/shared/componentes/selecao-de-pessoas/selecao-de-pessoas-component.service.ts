@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
-
-import {ObjectReference} from '../../../../model/transport-objects';
+import {ObjectReference} from '../../../model';
 
 @Injectable({providedIn: 'root'})
 export class SelecaoDePessoasComponentService {

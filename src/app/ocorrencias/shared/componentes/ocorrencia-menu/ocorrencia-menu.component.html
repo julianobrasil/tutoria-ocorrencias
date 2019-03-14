@@ -51,6 +51,7 @@
   </button>
 
   <button *ngIf="!isCabecalhoEvento"
+          (click)="excluiInteracao.emit()"
           color="warn"
           mat-menu-item
           type="button">

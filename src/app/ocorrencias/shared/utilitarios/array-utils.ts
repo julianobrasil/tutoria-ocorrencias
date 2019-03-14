@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 
-import {ObjectReference, Participante} from '../../../model/transport-objects';
+import {Participante} from '../../../model/transport-objects';
+import {ObjectReference} from '../../model';
 
 export interface DifferenceArrays<T> {
   addedElements: T[];

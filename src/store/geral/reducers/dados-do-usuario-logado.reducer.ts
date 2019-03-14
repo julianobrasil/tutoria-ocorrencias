@@ -2,8 +2,9 @@ import {
   FuncaoDoUsuario,
   PermissaoDoUsuario,
 } from '../../../app/model/helper-objects/funcoes-sistema';
-import {ObjectReference} from '../../../app/model/transport-objects';
 import * as fromActions from '../actions';
+
+import {ObjectReference} from '../../../app/ocorrencias/model';
 
 export interface DadosDoUsuarioLogadoState {
   usuarioRef: ObjectReference;

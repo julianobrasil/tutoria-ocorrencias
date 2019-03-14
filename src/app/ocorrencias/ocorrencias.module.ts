@@ -28,7 +28,6 @@ import {OcorrenciaFormularioComponent} from './ocorrencia-formulario/ocorrencia-
 import {OcorrenciasRoutingComponent} from './ocorrencias-routing-component.component';
 import {OcorrenciasRoutingModule} from './ocorrencias-routing.module';
 import {OcorrenciasComponent} from './ocorrencias/ocorrencias.component';
-import {AutocompleteUsuariosComponent} from './shared/componentes/autocomplete-usuarios/autocomplete-usuarios.component';
 import {LocalDialogComponent} from './shared/componentes/dialogos/local-dialog/local-dialog.component';
 import {TipoSubtipoDeEventoDialogComponent} from './shared/componentes/dialogos/tipo-subtipo-de-evento-dialog/tipo-subtipo-de-evento-dialog.component';
 import {TituloDialogComponent} from './shared/componentes/dialogos/titulo-dialog/titulo-dialog.component';
@@ -44,6 +43,7 @@ import {TipoSubtipoDeEventoComponent} from './shared/componentes/tipo-subtipo-de
 import {AcaoRealizadaPipe} from './shared/pipes/acao-realizada.pipe';
 import {CompilaMarkdownPipe} from './shared/pipes/compila-markdown.pipe';
 import {CorDeFundoPorTipoPipe} from './shared/pipes/cor-de-fundo-por-tipo.pipe';
+import {ExtraiVisibilidadeEventoPipe} from './shared/pipes/extrai-visibilidade-evento.pipe';
 import {FiltraParticipantesRepetidosPipe} from './shared/pipes/filtra-participantes-repetidos.pipe';
 import {FiltraResponsaveisPipe} from './shared/pipes/filtra-responsaveis.pipe';
 import {InteracaoMaisRecentePipe} from './shared/pipes/interacao-mais-recente.pipe';
@@ -70,7 +70,6 @@ import {UsuariosImexiveisPipe} from './shared/pipes/usuarios-imexiveis.pipe';
   declarations: [
     /** COMPONENTES */
     AcoesLigadasANovoComentarioComponent,
-    AutocompleteUsuariosComponent,
     FiltroDeOcorrenciasComponent,
     ListaDeOcorrenciasComponent,
     OcorrenciaAcaoComponent,
@@ -108,6 +107,7 @@ import {UsuariosImexiveisPipe} from './shared/pipes/usuarios-imexiveis.pipe';
     AcaoRealizadaPipe,
     CompilaMarkdownPipe,
     CorDeFundoPorTipoPipe,
+    ExtraiVisibilidadeEventoPipe,
     FiltraParticipantesRepetidosPipe,
     FiltraResponsaveisPipe,
     InteracaoMaisRecentePipe,

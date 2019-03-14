@@ -2,6 +2,7 @@
                           (novaOcorrencia)="_mostraFormularioDeOcorrencia($event)"
                           (paginacaoChange)="_atualizaPaginacao($event)"
                           (termoDeBuscaChange)="_filtraEventos($event)"
+                          [config]="_config$ | async"
                           [eventos]="_eventos$ | async"
                           [paginacao]="_paginacao$ | async">
 </app-lista-de-ocorrencias>

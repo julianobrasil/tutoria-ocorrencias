@@ -1,8 +1,13 @@
-import {ChangeDetectionStrategy, Component, OnDestroy, ViewEncapsulation} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  ViewEncapsulation,
+} from '@angular/core';
 import {ActivatedRoute, ParamMap} from '@angular/router';
 
 import {combineLatest, Observable, Subject} from 'rxjs';
-import {filter, first, map, takeUntil} from 'rxjs/operators';
+import {first, map, takeUntil, tap} from 'rxjs/operators';
 
 import {
   OcorrenciaStoreFacadeService,
@@ -19,6 +24,7 @@ import {
   NovoEventoRequest,
   Unidade,
 } from '../../model/transport-objects/';
+import {IssueConfiguration} from '../model';
 
 @Component({
   selector: 'app-ocorrencias',
@@ -28,6 +34,8 @@ import {
   encapsulation: ViewEncapsulation.None,
 })
 export class OcorrenciasComponent implements OnDestroy {
+  _config$: Observable<IssueConfiguration> =
+      this._ocorrenciaStoreFacade.getIssueTrackerConfiguration$().pipe(tap((_) => console.log(_)));
 
   /** dados de eventos paginados */
   _eventos$: Observable<Evento[]> = this._ocorrenciaStoreFacade.getEventos$();
@@ -55,11 +63,11 @@ export class OcorrenciasComponent implements OnDestroy {
 
   constructor(private _activatedRoute: ActivatedRoute,
               private _ocorrenciaStoreFacade: OcorrenciaStoreFacadeService,
-              private _componentService: OcorrenciaComponentService) {
+              private _componentService: OcorrenciaComponentService ) {
     this._obtemOcorrenciaAPartirDaRota();
 
     combineLatest(this._paginacao$)
-        .pipe(first(), map((_) => _[0]))
+        .pipe(first(), map((_) => _[0]) )
         .subscribe((paginacao: Paginacao) => {
           if (!paginacao) {
             this._ocorrenciaStoreFacade.setPaginacao({
@@ -123,12 +131,11 @@ export class OcorrenciasComponent implements OnDestroy {
    * @memberof OcorrenciaDetalhesComponent
    */
   private _obtemOcorrenciaAPartirDaRota() {
-    this._activatedRoute.paramMap.pipe(
-                                     map((p: ParamMap) =>
-                                             p.get('tipoNovaOcorrencia') ?
-                                                 p.get('tipoNovaOcorrencia') :
-                                                 null),
-                                     takeUntil(this._destroy$))
+    this._activatedRoute.paramMap.pipe(map((p: ParamMap) => (
+                                               p.get('tipoNovaOcorrencia') ?
+                                                   p.get('tipoNovaOcorrencia') :
+                                                   null)),
+                                       takeUntil(this._destroy$) )
         .subscribe((tipoNovaOcorrencia: OcorrenciaFormularioComponentTipo) => {
           if (tipoNovaOcorrencia) {
             this._ocorrenciaFormularioComponentTipo = tipoNovaOcorrencia;

@@ -3,11 +3,11 @@ import {Action} from '@ngrx/store';
 import {
   Evento,
   NovoEventoRequest,
-  ObjectReference,
   TextoFormatado,
   Visibilidade,
 } from '../../../app/model/transport-objects';
 import {TipoEvento} from '../../../app/model/transport-objects/';
+import {ObjectReference} from '../../../app/ocorrencias/model';
 import {Paginacao} from '../../../app/ocorrencias/ocorrencia-facade.service';
 
 export enum OBTEM_EVENTOS_PAGINADOS {
@@ -54,6 +54,12 @@ export enum INSERE_COMENTARIO_EVENTO {
   RUN = '[DIÁRIO DE TUTORIA:EVENTOS]: Insere comentário no evento run',
   SUCCESS = '[DIÁRIO DE TUTORIA:EVENTOS]: Insere comentário no evento success',
   FAIL = '[DIÁRIO DE TUTORIA:EVENTOS]: Insere comentário no evento fail',
+}
+
+export enum EXCLUI_INTERACAO_EVENTO {
+  RUN = '[DIÁRIO DE TUTORIA:EVENTOS]: Exclui comentário de evento run',
+  SUCCESS = '[DIÁRIO DE TUTORIA:EVENTOS]: Exclui comentário de evento success',
+  FAIL = '[DIÁRIO DE TUTORIA:EVENTOS]: Exclui comentário de evento fail',
 }
 
 export enum CRIA_EVENTO {
@@ -238,6 +244,26 @@ export class InsereComentarioFail implements Action {
   constructor(public payload: {error: any}) {}
 }
 
+export class ExcluiInteracaoDoEventoRun implements Action {
+  readonly type = EXCLUI_INTERACAO_EVENTO.RUN;
+  constructor(
+    public payload: {
+      eventoId: string;
+      interacaoId?: string;
+    },
+  ) {}
+}
+
+export class ExcluiInteracaoDoEventoSuccess implements Action {
+  readonly type = EXCLUI_INTERACAO_EVENTO.SUCCESS;
+  constructor(public payload: {evento: Evento}) {}
+}
+
+export class ExcluiInteracaoDoEventoFail implements Action {
+  readonly type = EXCLUI_INTERACAO_EVENTO.FAIL;
+  constructor(public payload: {error: any}) {}
+}
+
 export class CriaEventoRun implements Action {
   readonly type = CRIA_EVENTO.RUN;
   constructor(public payload: {novoEventoRequest: NovoEventoRequest}) {}
@@ -416,6 +442,9 @@ export type EventoAction =
   | ConfiguraDadosDePaginacaoRun
   | EncerraEventoRun
   | EncerraEventoSuccess
+  | ExcluiInteracaoDoEventoFail
+  | ExcluiInteracaoDoEventoRun
+  | ExcluiInteracaoDoEventoSuccess
   | ExcluiEventoRun
   | ExcluiEventoSuccess
   | InsereComentarioRun

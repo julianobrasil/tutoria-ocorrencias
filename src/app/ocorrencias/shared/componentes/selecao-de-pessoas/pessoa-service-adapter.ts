@@ -2,7 +2,7 @@ import {InjectionToken} from '@angular/core';
 
 import {Observable} from 'rxjs';
 
-import {ObjectReference} from '../../../../model/transport-objects';
+import {ObjectReference} from '../../../model';
 
 /** Token para injetar o serviço de obtenção de pessoas */
 export const PESSOAS_SERVICE_ADAPTER: InjectionToken<PessoaServiceAdapter> =

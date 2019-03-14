@@ -18,6 +18,7 @@ import {Evento} from '../../model/transport-objects';
 import {
   MatPaginatorIntlListaDeOcorrenciasPtBr,
 } from '../i18n/mat-paginator-intl-lista-de-ocorrencias-pt-br';
+import {IssueConfiguration} from '../model';
 import {Paginacao} from '../ocorrencia-facade.service';
 import {
   OcorrenciaFormularioComponentTipo,
@@ -36,6 +37,9 @@ import {
   ],
 })
 export class ListaDeOcorrenciasComponent implements OnDestroy {
+  /** dados básicos do componente */
+  @Input() config: IssueConfiguration;
+
   /** eventos para serem listados */
   @Input() eventos: Evento[];
 

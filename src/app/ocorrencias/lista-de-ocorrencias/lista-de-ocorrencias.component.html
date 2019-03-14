@@ -14,7 +14,8 @@
   </div>
 
   <ng-container *ngFor="let evento of eventos; first as isFirst">
-    <app-ocorrencia-resumo [evento]="evento"
+    <app-ocorrencia-resumo *ngIf="evento | extraiVisibilidadeEvento: config.usuarioLogado"
+                           [evento]="evento"
                            [showBorderTop]="isFirst">
     </app-ocorrencia-resumo>
   </ng-container>

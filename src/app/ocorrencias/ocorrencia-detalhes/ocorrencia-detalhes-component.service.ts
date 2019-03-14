@@ -19,7 +19,6 @@ import {Funcoes} from '../../model/helper-objects/funcoes-sistema';
 import {ImodbService} from '../../model/servicos/imodb.service';
 import {
   Interacao,
-  ObjectReference,
   Participante,
   TextoFormatado,
   TipoInteracao,
@@ -32,6 +31,7 @@ import {
   Responsavel,
   Tutor,
 } from '../../model/transport-objects/';
+import {ObjectReference} from '../model';
 import {
   FormatadorDeTextoService,
 } from '../shared/utilitarios/formatador-de-texto.service';
@@ -142,9 +142,8 @@ export class OcorrenciaDetalhesComponentService implements OnDestroy {
     // Descobre quais são as cores já usadas
     const coresUsadas: Set<string> =
         coresAtuaisDosParticipantes ?
-            new Set<string>(
-                coresAtuaisDosParticipantes.map((c: CorDoParticipante) =>
-                                                    c.codigoCorHexadecimal)) :
+            new Set<string>(coresAtuaisDosParticipantes.map(
+                (c: CorDoParticipante) => c.codigoCorHexadecimal)) :
             new Set<string>();
 
     // Descobre quais os participantes ainda não tem cores...
@@ -325,6 +324,13 @@ export class OcorrenciaDetalhesComponentService implements OnDestroy {
                               }));
   }
 
+  excluiComentario(eventoId: string, interacaoId: string): any {
+    this._store$.dispatch(
+        new fromDiarioDeTutoriaStore.ACTIONS.EVENTO.ExcluiInteracaoDoEventoRun({
+            eventoId, interacaoId,
+        }));
+  }
+
   /**
    * Altera a visibilidade de um comentário
    *
@@ -435,23 +441,22 @@ export class OcorrenciaDetalhesComponentService implements OnDestroy {
 
   /** verifica se ou usuário logado é tutor */
   private _isTutor(historicoTutores: Tutor[]): boolean {
-    return historicoTutores.some(
-        (tutor: Tutor) =>
-            !tutor.dataFim && tutor.email === this._authService.email);
+    return historicoTutores.some((tutor: Tutor) =>
+                                     !tutor.dataFim &&
+                                     tutor.email === this._authService.email);
   }
 
   /** verifica se ou usuário logado é coordenador */
   private _isCoordenador(coordenadores: Coordenador[]): boolean {
-    return coordenadores.some(
-        (coordenador: Coordenador) =>
-            coordenador.email === this._authService.email);
+    return coordenadores.some((coordenador: Coordenador) =>
+                                  coordenador.email ===
+                                  this._authService.email);
   }
 
   /** verifica se ou usuário logado é responsável */
   private _isResponsavel(responsaveis: Responsavel[]): boolean {
-    return responsaveis.some(
-        (responsavel: Responsavel) =>
-            responsavel.email === this._authService.email);
+    return responsaveis.some((responsavel: Responsavel) =>
+                                 responsavel.email === this._authService.email);
   }
 
   /** verifica se ou usuário logado é da qualidade */

@@ -56,7 +56,6 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OcorrenciaDetalhesComponent implements OnDestroy {
-
   /** mostra o formulário de um evento */
   _mostraFormulario = false;
 
@@ -118,9 +117,9 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
   _alteraEventoNoPainelDeConfiguracoes(change: OcorrenciaChange) {
     switch (change.type) {
       case OcorrenciaChangeType.ALTERA_TIPO_SUBTIPO: {
-        this._componentService.alteraTipoEvento(change.eventoId,
-                                                change.descricaoTipoEvento,
-                                                change.descricaoSubTipoEvento);
+        this._componentService.alteraTipoEvento(
+            change.eventoId, change.descricaoTipoEvento,
+            change.descricaoSubTipoEvento);
         break;
       }
 
@@ -146,25 +145,25 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
     switch (evt.type) {
       case OcorrenciaChangeType.ALTERA_LOCAL: {
         this._componentService.getLatestValue(this._ocorrencia$)
-            .subscribe((ocorrencia: Evento) =>
-                           this._componentService.alteraLocal(ocorrencia.id,
-                                                              evt.valor));
+            .subscribe(
+                (ocorrencia: Evento) => this._componentService.alteraLocal(
+                    ocorrencia.id, evt.valor));
         break;
       }
 
       case OcorrenciaChangeType.ALTERA_UNIDADE: {
         this._componentService.getLatestValue(this._ocorrencia$)
-            .subscribe((ocorrencia: Evento) =>
-                           this._componentService.alteraUnidade(ocorrencia.id,
-                                                                evt.valor));
+            .subscribe(
+                (ocorrencia: Evento) => this._componentService.alteraUnidade(
+                    ocorrencia.id, evt.valor));
         break;
       }
 
       case OcorrenciaChangeType.ALTERA_PARECER: {
         this._componentService.getLatestValue(this._ocorrencia$)
-            .subscribe((ocorrencia: Evento) =>
-                           this._componentService.alteraParecer(ocorrencia.id,
-                                                                evt.valor));
+            .subscribe(
+                (ocorrencia: Evento) => this._componentService.alteraParecer(
+                    ocorrencia.id, evt.valor));
         break;
       }
 
@@ -183,9 +182,9 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
     switch (evt.type) {
       case OcorrenciaChangeType.ALTERA_TITULO: {
         this._componentService.getLatestValue(this._ocorrencia$)
-            .subscribe((ocorrencia: Evento) =>
-                           this._componentService.alteraTitulo(ocorrencia.id,
-                                                               evt.texto));
+            .subscribe(
+                (ocorrencia: Evento) => this._componentService.alteraTitulo(
+                    ocorrencia.id, evt.texto));
         break;
       }
     }
@@ -251,6 +250,11 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
               break;
             }
 
+            case OcorrenciaChangeType.EXCLUI_COMENTARIO: {
+              this._mostraDialogoDeConfirmacao(alteracao);
+              break;
+            }
+
             case OcorrenciaChangeType.TEXTO_COMENTARIO: {
               const textoFormatado: TextoFormatado = {
                 markdown: alteracao.texto,
@@ -266,6 +270,42 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
             }
           }
         });
+  }
+
+  /**
+   * Confirma se o comentário deve ser realmente excluído
+   *
+   * @private
+   * @param {OcorrenciaChange} alteracao
+   * @returns {*}
+   * @memberof OcorrenciaDetalhesComponent
+   */
+  private _mostraDialogoDeConfirmacao(alteracao: OcorrenciaChange): any {
+    const titulo = 'Exclusão de comentário';
+    const mensagem = `
+    <p>Você solicitou a exclusão de um comentário (isso não poderá ser desfeito depois).</p>
+    <p class='app-text-center'>Tem certeza que deseja continuar?</p>
+    `;
+
+    const data: ConfirmationDialogComponentData = {
+      titulo,
+      mensagem,
+      botaoFalseDisabled: false,
+      botaoFalseText: 'Não quero excluir mais',
+      botaoFalseVisible: true,
+      botaoTrueDisabled: false,
+      botaoTrueText: 'Claro, pode excluir',
+      botaoTrueVisible: true,
+    };
+
+    const dialogRef =
+        this._dialog.open<ConfirmationDialogComponent,
+                          ConfirmationDialogComponentData, boolean>(
+            ConfirmationDialogComponent, {data});
+
+    dialogRef.afterClosed().subscribe(
+        (continuaExclusao: boolean) => continuaExclusao ? this._componentService.excluiComentario(
+            alteracao.eventoId, alteracao.comentarioId) : null);
   }
 
   /**
@@ -402,7 +442,8 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
    * @memberof OcorrenciaDetalhesComponent
    */
   private _configuraCoresDosAvataresDosParticipantes() {
-    this._ocorrencia$.pipe(filter(Boolean), first(), takeUntil(this._destroy$))
+    this._ocorrencia$.pipe(filter(Boolean), first(),
+                           takeUntil(this._destroy$))
         .subscribe((evt: Evento) =>
                        (this._coresDosParticipantes =
                             this._componentService.setCoresDosParticipantes(

@@ -3,8 +3,9 @@ import {Injectable} from '@angular/core';
 import {AuthService} from '../../../auth/auth.service';
 import {ImodbService} from '../../../model/servicos/imodb.service';
 
-import {ClassificacaoEvento, Evento, ObjectReference} from '../../../model/transport-objects';
+import {ClassificacaoEvento, Evento} from '../../../model/transport-objects';
 import {Responsavel} from '../../../model/transport-objects/';
+import {ObjectReference} from '../../model';
 
 export interface CorDoParticipante {
   usuarioRef: ObjectReference;

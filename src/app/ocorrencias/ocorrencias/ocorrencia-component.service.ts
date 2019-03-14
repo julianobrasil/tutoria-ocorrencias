@@ -5,10 +5,10 @@ import {
 } from '../shared/utilitarios/formatador-de-texto.service';
 
 import {
-  ObjectReference,
   TextoFormatado,
   Visibilidade,
 } from '../../model/transport-objects';
+import {ObjectReference} from '../model';
 
 export enum OcorrenciaChangeType {
   ALTERA_LOCAL,
@@ -20,6 +20,7 @@ export enum OcorrenciaChangeType {
   ALTERA_UNIDADE,
   COMENTA,
   ENCERRA_E_COMENTA,
+  EXCLUI_COMENTARIO,
   NOVO_EVENTO,
   REABRE_E_COMENTA,
   TEXTO_COMENTARIO,

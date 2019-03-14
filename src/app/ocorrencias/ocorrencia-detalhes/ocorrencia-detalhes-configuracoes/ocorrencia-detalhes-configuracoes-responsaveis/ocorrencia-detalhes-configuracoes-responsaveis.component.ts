@@ -9,7 +9,8 @@ import {
   OcorrenciaDetalhesComponentService,
 } from '../../ocorrencia-detalhes-component.service';
 
-import {ObjectReference, Participante} from '../../../../model/transport-objects';
+import {Participante} from '../../../../model/transport-objects';
+import {ObjectReference} from '../../../model';
 import {ArrayUtils, DifferenceArrays, SelecaoDePessoasComponent} from '../../../shared';
 import {OcorrenciaDetalhesConfiguracoesParticipantesChange} from '../ocorrencia-detalhes-configuracoes-participantes/ocorrencia-detalhes-configuracoes-participantes.component';
 // tslint:enable: max-line-length

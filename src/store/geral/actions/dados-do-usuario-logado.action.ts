@@ -1,10 +1,10 @@
 import {Action} from '@ngrx/store';
+
 import {
   FuncaoDoUsuario,
   PermissaoDoUsuario,
 } from '../../../app/model/helper-objects/funcoes-sistema';
-
-import {ObjectReference} from '../../../app/model/transport-objects';
+import {ObjectReference} from '../../../app/ocorrencias/model';
 
 export enum OBTEM_DADOS_USUARIO_LOGADO {
   RUN = '[GERAL:DADOS DO USUÁRIO LOGADO]: Obtém dados do usuário logado run',
