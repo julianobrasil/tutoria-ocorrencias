@@ -18,7 +18,8 @@ import {Evento} from '../../model/transport-objects';
 import {
   MatPaginatorIntlListaDeOcorrenciasPtBr,
 } from '../i18n/mat-paginator-intl-lista-de-ocorrencias-pt-br';
-import {Paginacao} from '../ocorrencia-facade.service';
+import {IssueTrackerConfiguration} from '../model/issue-tracker-configuration';
+import {IssueTrackerPagination} from '../ocorrencia-facade.service';
 import {
   OcorrenciaFormularioComponentTipo,
 } from '../ocorrencia-formulario/ocorrencia-formulario-component.service';
@@ -36,12 +37,15 @@ import {
   ],
 })
 export class ListaDeOcorrenciasComponent implements OnDestroy {
+  /** dados básicos do componente */
+  @Input() config: IssueTrackerConfiguration;
+
   /** eventos para serem listados */
   @Input() eventos: Evento[];
 
   /** dados de paginação */
   @Input()
-  paginacao: Paginacao = {
+  paginacao: IssueTrackerPagination = {
     page: 0,
     pageSize: 10,
   };
@@ -51,7 +55,8 @@ export class ListaDeOcorrenciasComponent implements OnDestroy {
 
   /** emite quando algum parâmetro da paginação é trocado */
   @Output()
-  paginacaoChange: EventEmitter<Paginacao> = new EventEmitter<Paginacao>();
+  paginacaoChange: EventEmitter<IssueTrackerPagination> =
+      new EventEmitter<IssueTrackerPagination>();
 
   /** emite o termo digitado */
   @Output()

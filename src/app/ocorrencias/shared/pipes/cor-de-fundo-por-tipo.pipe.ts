@@ -15,7 +15,7 @@ export class CorDeFundoPorTipoPipe implements PipeTransform {
       }
 
       case ClassificacaoEvento.OUVIDORIA: {
-        return '#ff0000';
+        return '#FF0000';
       }
     }
 

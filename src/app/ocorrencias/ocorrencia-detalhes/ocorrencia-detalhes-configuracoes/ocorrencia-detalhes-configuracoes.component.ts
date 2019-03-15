@@ -25,6 +25,7 @@ import {
 import {
   OcorrenciaDetalhesConfiguracoesParticipantesChange,
 } from './ocorrencia-detalhes-configuracoes-participantes/ocorrencia-detalhes-configuracoes-participantes.component';
+import {OcorrenciaDetalhesConfiguracoesRotulosChange} from './ocorrencia-detalhes-configuracoes-rotulos/ocorrencia-detalhes-configuracoes-rotulos.component';
 // tslint:enable:max-line-length
 
 @Component({
@@ -51,10 +52,6 @@ export class OcorrenciaDetalhesConfiguracoesComponent implements OnDestroy {
 
   /** emite quando o usuário escolhe excluir o evento */
   @Output() excluiEvento: EventEmitter<void> = new EventEmitter<void>();
-
-  /** emite quando o usuário escolhe excluir o evento */
-  // @Output() alteraTipoEvento: EventEmitter<Evento> = new
-  // EventEmitter<Evento>();
 
   @Output()
   eventoChange: EventEmitter<OcorrenciaChange> =
@@ -149,6 +146,18 @@ export class OcorrenciaDetalhesConfiguracoesComponent implements OnDestroy {
       eventoId: this.ocorrencia.id,
       participantesAdicionados: change.participantesAdicionados,
       participantesRemovidos: change.participantesRemovidos,
+    });
+  }
+
+  /**
+   * Trata eventos de alteração de rótulos.
+   */
+  _alteraRotulos(change: OcorrenciaDetalhesConfiguracoesRotulosChange) {
+    this.eventoChange.emit({
+      type: OcorrenciaChangeType.ALTERA_ROTULOS,
+      eventoId: this.ocorrencia.id,
+      rotulosAdicionadosIds: change.rotulosAdicionadosIds,
+      rotulosRemovidosIds: change.rotulosRemovidosIds,
     });
   }
 

@@ -114,6 +114,9 @@ export class OcorrenciaDetalhesConfiguracoesParticipantesComponent implements
                   this._arrayUtils.participantesToObjectReferencesArray(
                       this.participantes),
             });
+
+            this._participantesAlterados$.next(
+                {addedElements: [], removedElements: []});
           });
     }
   }

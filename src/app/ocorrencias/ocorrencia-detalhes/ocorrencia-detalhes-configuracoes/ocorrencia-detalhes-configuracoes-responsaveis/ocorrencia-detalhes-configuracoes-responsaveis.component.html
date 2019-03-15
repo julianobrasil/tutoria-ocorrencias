@@ -22,8 +22,10 @@
 <sat-popover #popover
              (afterClose)="_monitoraAberturaFechamentoDoPopover(false)"
              (afterOpen)="_monitoraAberturaFechamentoDoPopover(true)"
-             hasBackdrop>
-  <div class="ocorrencia-detalhes-confirguracoes-participantes-popover mat-elevation-z8">
+             hasBackdrop
+             horizontalAlign="end"
+             verticalAlign="below">
+  <div class="ocorrencia-detalhes-configuracoes-participantes-popover mat-elevation-z8">
     <app-selecao-de-pessoas [maxUsuarios]="10"
                             [usuariosEscolhidos]="responsaveis | participantesToObjectReferences"
                             [matTooltipDisabled]="_matUsusarioTooltipDisabled">

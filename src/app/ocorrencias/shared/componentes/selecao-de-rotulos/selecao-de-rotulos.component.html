@@ -1,0 +1,27 @@
+<section class="selecao-de-rotulos-container">
+  <!-- BARRA DE TÍTULO -->
+
+  <!-- COMPONENTE DE SELEÇÃO DE USUÁRIOS (AUTOCOMPLETAR) -->
+  <section class="selecao-de-rotulos-input">
+    <mat-form-field appearance="fill">
+      <input [formControl]="_filtroCtrl"
+             matInput
+             placeholder="FILTRAR RÓTULOS...">
+    </mat-form-field>
+  </section>
+
+  <section class="selecao-de-rotulos-lista">
+    <mat-selection-list (selectionChange)="_alteracaoNaListaEscolhida($event)">
+      <mat-list-option *ngFor="let rotulo of _rotulosDisponiveis"
+                       [value]="rotulo"
+                       matTooltipPosition="left">
+        <div class="selecao-de-rotulos-lista-item">
+          <div [ngStyle]="{'background-color': rotulo?.corHexa}"
+               class="selecao-de-rotulos-lista-item-rotulo-avatar"></div>
+          <div>{{rotulo?.texto}}</div>
+        </div>
+      </mat-list-option>
+    </mat-selection-list>
+  </section>
+
+</section>

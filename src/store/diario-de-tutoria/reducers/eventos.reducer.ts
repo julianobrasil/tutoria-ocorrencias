@@ -1,10 +1,12 @@
 import {Evento} from '../../../app/model/transport-objects';
-import {Paginacao} from '../../../app/ocorrencias/ocorrencia-facade.service';
+import {
+  IssueTrackerPagination,
+} from '../../../app/ocorrencias/ocorrencia-facade.service';
 import * as fromActions from '../actions';
 
 export interface EventoState {
   eventos: Evento[];
-  paginacao: Paginacao;
+  paginacao: IssueTrackerPagination;
   termoDeBusca: string;
   eventoPorIdErro: boolean;
 }
@@ -137,6 +139,7 @@ function _acoesQueAtualizamUmEvento(
     case fromActions.EVENTO.ALTERA_PARECER_DO_EVENTO.SUCCESS:
     case fromActions.EVENTO.ALTERA_PARTICIPANTES_DO_EVENTO.SUCCESS:
     case fromActions.EVENTO.ALTERA_RESPONSAVEIS_DO_EVENTO.SUCCESS:
+    case fromActions.EVENTO.ALTERA_ROTULOS_DO_EVENTO.SUCCESS:
     case fromActions.EVENTO.ALTERA_TEXTO_DE_COMENTARIO.SUCCESS:
     case fromActions.EVENTO.ALTERA_TIPO_EVENTO.SUCCESS:
     case fromActions.EVENTO.ALTERA_TITULO_DO_EVENTO.SUCCESS:
@@ -144,6 +147,7 @@ function _acoesQueAtualizamUmEvento(
     case fromActions.EVENTO.ALTERA_VISIBILIDADE_DA_INTERACAO.SUCCESS:
     case fromActions.EVENTO.ALTERA_VISIBILIDADE_DO_EVENTO.SUCCESS:
     case fromActions.EVENTO.ENCERRA_EVENTO.SUCCESS:
+    case fromActions.EVENTO.EXCLUI_INTERACAO_EVENTO.SUCCESS:
     case fromActions.EVENTO.INSERE_COMENTARIO_EVENTO.SUCCESS:
     case fromActions.EVENTO.OBTEM_EVENTO_POR_ID.SUCCESS:
     case fromActions.EVENTO.REABRE_EVENTO.SUCCESS: {

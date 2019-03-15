@@ -3,8 +3,12 @@ import {Injectable} from '@angular/core';
 import {AuthService} from '../../../auth/auth.service';
 import {ImodbService} from '../../../model/servicos/imodb.service';
 
-import {ClassificacaoEvento, Evento, ObjectReference} from '../../../model/transport-objects';
-import {Responsavel} from '../../../model/transport-objects/';
+import {
+  ClassificacaoEvento,
+  Evento,
+  ObjectReference,
+  Responsavel,
+} from '../../../model/transport-objects';
 
 export interface CorDoParticipante {
   usuarioRef: ObjectReference;
@@ -20,9 +24,7 @@ export class OcorrenciaDetalhesConfiguracoesComponentService {
   }
 
   /** retorna o serviço Imodb */
-  getImodbService(): ImodbService {
-    return this._imodb;
-  }
+  getImodbService(): ImodbService { return this._imodb; }
 
   /** verifica se o usuário tem permissão para excluir o evento */
   temPermissaoParaExcluirEvento(evt: Evento): boolean {
@@ -36,12 +38,12 @@ export class OcorrenciaDetalhesConfiguracoesComponentService {
 
     const isDiretoria = this._authService.isUsuarioLogadoDiretoria();
 
-    const isTutoria = evt &&
-        (evt.classificacaoEvento === ClassificacaoEvento.TUTORIA_GERAL ||
-         evt.classificacaoEvento === ClassificacaoEvento.TUTORIA_TUTOR);
+    const isTutoria =
+        evt && (evt.classificacaoEvento === ClassificacaoEvento.TUTORIA_GERAL ||
+                evt.classificacaoEvento === ClassificacaoEvento.TUTORIA_TUTOR);
 
     return isAdministrador || isAutor ||
-        (isTutoria && (isQualidade || isDiretoria));
+           (isTutoria && (isQualidade || isDiretoria));
   }
 
   /** verifica se o usuário tem permissão para alterar o tipo de evento */
@@ -56,15 +58,15 @@ export class OcorrenciaDetalhesConfiguracoesComponentService {
 
     const isDiretoria = this._authService.isUsuarioLogadoDiretoria();
 
-    const isResponsavel = evt &&
+    const isResponsavel =
+        evt &&
         evt.responsaveis.some((r: Responsavel) => r.email === emailLogado);
 
-    const isTutoria = evt &&
-        (evt.classificacaoEvento === ClassificacaoEvento.TUTORIA_GERAL ||
-         evt.classificacaoEvento === ClassificacaoEvento.TUTORIA_TUTOR);
+    const isTutoria =
+        evt && (evt.classificacaoEvento === ClassificacaoEvento.TUTORIA_GERAL ||
+                evt.classificacaoEvento === ClassificacaoEvento.TUTORIA_TUTOR);
 
-    return (
-        isAdministrador || isAutor || isResponsavel ||
-        (isTutoria && (isQualidade || isDiretoria)));
+    return (isAdministrador || isAutor || isResponsavel ||
+            (isTutoria && (isQualidade || isDiretoria)));
   }
 }

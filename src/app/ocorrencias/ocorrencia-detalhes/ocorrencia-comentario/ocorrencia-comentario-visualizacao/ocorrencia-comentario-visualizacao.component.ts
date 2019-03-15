@@ -20,10 +20,7 @@ import {
   OcorrenciaDetalhesComponentService,
 } from '../../ocorrencia-detalhes-component.service';
 
-import {
-  OcorrenciaChange,
-  OcorrenciaChangeType,
-} from '../../../public_api';
+import {OcorrenciaChange, OcorrenciaChangeType} from '../../../public_api';
 
 @Component({
   selector: 'app-ocorrencia-comentario-visualizacao',
@@ -93,10 +90,19 @@ export class OcorrenciaComentarioVisualizacaoComponent implements OnDestroy {
     this.alteraTexto.emit(this._setupTextareaHeight());
   }
 
+  /** exclui o comentário */
+  _excluiInteracao() {
+    this.comentarioChanged.emit({
+      eventoId: this.ocorrencia.id,
+      comentarioId: this.comentario.id,
+      type: OcorrenciaChangeType.EXCLUI_COMENTARIO,
+    });
+  }
+
   /** true se a visibilidade do comentário for limitada */
   get _isVisibilidadeLimitada(): boolean {
-    return this.comentario && this.comentario.visibilidade &&
-           this.comentario.visibilidade.tipo !== TipoVisibilidade.TODOS;
+    return (this.comentario && this.comentario.visibilidade &&
+            this.comentario.visibilidade.tipo !== TipoVisibilidade.TODOS);
   }
 
   /** obtém a altura atual da `<section>` que contém o texto */

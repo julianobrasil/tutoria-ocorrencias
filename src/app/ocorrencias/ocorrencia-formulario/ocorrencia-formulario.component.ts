@@ -238,10 +238,15 @@ export class OcorrenciaFormularioComponent implements AfterViewInit,
   /** edição/criação cancelada */
   _cancelarEdicao() {
     this.ocorrencia = null;
-    if (!this._routerExtra.getUrlAnterior()) {
+    if (this._routerExtra.getUrlAnterior() === '/' ||
+        this._routerExtra.getUrlAnterior() === '/ocorrencia') {
       this.cancelamentoSolicitado.emit();
+
+      this._router.navigate(['../../../']);
     } else {
-      console.log(this._routerExtra.getUrlAnterior());
+      const id = this._routerExtra.getUrlAnterior().substr(
+          this._routerExtra.getUrlAnterior().lastIndexOf('/') + 1);
+      this._router.navigate(['../../', id], {relativeTo: this._route});
     }
   }
 
@@ -404,7 +409,7 @@ export class OcorrenciaFormularioComponent implements AfterViewInit,
                   dataEvento: new Date(this._ocorrencia.data),
                   parecer: this._ocorrencia.parecer,
                   local: this._ocorrencia.local,
-                  isResolvido: this._ocorrencia.isResolvido,
+                  isResolvido: this._ocorrencia.isEncerrado,
                 });
               }))
         .subscribe();

@@ -12,8 +12,16 @@
     </app-ocorrencia-avatar>
 
     <section class="ocorrencia-acao-texto-descricao">
-      <section class="autor texto-normal-negrito">{{acao?.autorRef?.description}}</section>
-      &nbsp;<span [innerHTML]="acao | acaoRealizada"></span>
+      <section class="autor texto-normal-negrito">{{acao?.autorRef?.description}}&nbsp;</section>
+
+      <span *ngIf="acao?.historicoInteracoes[0]?.tipoAcao !== _tipoAcao.ALTERA_ROTULO; else rotulos"
+            [innerHTML]="acao | acaoRealizada"
+            class="m-right-5px"></span>
+
+      <ng-template #rotulos>
+        <app-ocorrencia-acao-linha-alteracao-rotulo [historicoInteracao]="acao?.historicoInteracoes[0]">
+        </app-ocorrencia-acao-linha-alteracao-rotulo>
+      </ng-template>
       <app-tempo-decorrido [data]="acao?.historicoInteracoes[0]?.data"></app-tempo-decorrido>
     </section>
   </section>

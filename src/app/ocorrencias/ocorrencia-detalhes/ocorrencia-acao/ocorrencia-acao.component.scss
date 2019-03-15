@@ -11,25 +11,30 @@
   }
 
   .ocorrencia-acao-texto {
+    flex: 1;
     display: flex;
     align-items: center;
 
     margin-left: 5px;
 
     .ocorrencia-acao-texto-descricao {
-      display: inline;
+      flex: 1;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+
       margin-left: 5px;
 
       font-size: 0.8rem;
       color: rgba(0, 0, 0, 0.8);
 
-      .autor {
-        display: inline;
-      }
-
       .texto-normal-negrito {
         color: rgba(0, 0, 0, 1);
         font-weight: 600;
+      }
+
+      .m-right-5px {
+        margin-right: 5px;
       }
     }
   }

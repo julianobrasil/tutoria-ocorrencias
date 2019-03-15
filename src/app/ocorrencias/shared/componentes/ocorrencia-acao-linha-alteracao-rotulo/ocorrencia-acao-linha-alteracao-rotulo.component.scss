@@ -1,0 +1,17 @@
+.ocorrencia-acao-linha-alteracao-rotulo-container {
+  display: flex;
+  align-items: center;
+
+  .ocorrencia-acao-linha-alteracao-rotulo {
+    display: flex;
+    align-items: center;
+
+    &:last-of-type {
+      margin-right: 3px;
+    }
+
+    app-ocorrencia-rotulo {
+      margin-left: 5px;
+    }
+  }
+}

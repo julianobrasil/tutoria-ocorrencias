@@ -37,6 +37,7 @@
                                        [comentario]="comentario"
                                        [corDoAvatar]="comentario?.autorRef?.code | obtemCorDoAvatar: _coresDosParticipantes"
                                        [isTextoDoAvatarBranco]="comentario?.autorRef?.code | isTextoDoAvatarBranco: _coresDosParticipantes"
+                                       [ocorrencia]="_ocorrencia$ | async"
                                        [somenteEdicao]="false">
             </app-ocorrencia-comentario>
 

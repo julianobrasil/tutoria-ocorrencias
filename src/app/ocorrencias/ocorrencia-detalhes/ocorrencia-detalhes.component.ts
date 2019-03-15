@@ -56,7 +56,6 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OcorrenciaDetalhesComponent implements OnDestroy {
-
   /** mostra o formulário de um evento */
   _mostraFormulario = false;
 
@@ -135,6 +134,13 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
         this._componentService.alteraParticipantesEvento(
             change.eventoId, change.participantesAdicionados,
             change.participantesRemovidos);
+        break;
+      }
+
+      case OcorrenciaChangeType.ALTERA_ROTULOS: {
+        this._componentService.alteraRotulosEvento(change.eventoId,
+                                                   change.rotulosAdicionadosIds,
+                                                   change.rotulosRemovidosIds);
         break;
       }
     }
@@ -251,6 +257,11 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
               break;
             }
 
+            case OcorrenciaChangeType.EXCLUI_COMENTARIO: {
+              this._mostraDialogoDeConfirmacao(alteracao);
+              break;
+            }
+
             case OcorrenciaChangeType.TEXTO_COMENTARIO: {
               const textoFormatado: TextoFormatado = {
                 markdown: alteracao.texto,
@@ -266,6 +277,45 @@ export class OcorrenciaDetalhesComponent implements OnDestroy {
             }
           }
         });
+  }
+
+  /**
+   * Confirma se o comentário deve ser realmente excluído
+   *
+   * @private
+   * @param {OcorrenciaChange} alteracao
+   * @returns {*}
+   * @memberof OcorrenciaDetalhesComponent
+   */
+  private _mostraDialogoDeConfirmacao(alteracao: OcorrenciaChange): any {
+    const titulo = 'Exclusão de comentário';
+    const mensagem = `
+    <p>Você solicitou a exclusão de um comentário (isso não poderá ser desfeito depois).</p>
+    <p class='app-text-center'>Tem certeza que deseja continuar?</p>
+    `;
+
+    const data: ConfirmationDialogComponentData = {
+      titulo,
+      mensagem,
+      botaoFalseDisabled: false,
+      botaoFalseText: 'Não quero excluir mais',
+      botaoFalseVisible: true,
+      botaoTrueDisabled: false,
+      botaoTrueText: 'Claro, pode excluir',
+      botaoTrueVisible: true,
+    };
+
+    const dialogRef =
+        this._dialog.open<ConfirmationDialogComponent,
+                          ConfirmationDialogComponentData, boolean>(
+            ConfirmationDialogComponent, {data});
+
+    dialogRef.afterClosed().subscribe(
+        (continuaExclusao: boolean) =>
+            continuaExclusao ?
+                this._componentService.excluiComentario(
+                    alteracao.eventoId, alteracao.comentarioId) :
+                null);
   }
 
   /**

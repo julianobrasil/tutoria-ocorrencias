@@ -9,6 +9,7 @@ import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {filter, first, tap} from 'rxjs/operators';
 
 import {EVENTOS_EXISTENTES} from '../data/eventos';
+import {ROTULOS_EXISTENTES} from '../data/rotulos-dos-eventos';
 import * as fromStore from '../store';
 import * as fromGeralFeature from '../store/geral';
 import {effects} from '../store/geral/effects';
@@ -25,7 +26,9 @@ import {ServicosModule} from './model/servicos/servicos.module';
 import * as fromDocuments from './model/transport-objects';
 
 import {OcorrenciasPessoasAdapterService} from './ocorrencias-pessoas.service';
-import {PESSOAS_SERVICE_ADAPTER} from './ocorrencias/public_api';
+import {OcorrenciasRotulosAdapterService} from './ocorrencias-rotulos.service';
+import {PESSOAS_SERVICE_ADAPTER, ROTULOS_SERVICE_ADAPTER} from './ocorrencias/public_api';
+import {RouterExtraService} from './shared/services/router-extra';
 
 @NgModule({
   declarations: [AppComponent],
@@ -52,11 +55,15 @@ import {PESSOAS_SERVICE_ADAPTER} from './ocorrencias/public_api';
       provide: PESSOAS_SERVICE_ADAPTER,
       useExisting: OcorrenciasPessoasAdapterService,
     },
+    {
+      provide: ROTULOS_SERVICE_ADAPTER,
+      useExisting: OcorrenciasRotulosAdapterService,
+    },
   ],
   bootstrap: [AppComponent],
 })
 export class AppModule {
-  constructor(private _store$: Store<{}>) {
+  constructor(private _store$: Store<{}>, _routerExtra: RouterExtraService) {
     this._fixEventos();
     this._store$.dispatch(
         new fromStore.GERAL.ACTIONS.ObtemDadosDoUsuarioLogadoRun());
@@ -97,6 +104,14 @@ export class AppModule {
         semFormatacao: evt.parecer,
       };
 
+      evt.isEncerrado = evt.isEncerrado;
+
+      evt.rotulos = [
+        evt.isEncerrado ?
+            ROTULOS_EXISTENTES.find((r) => r.texto === 'resolvido') :
+            ROTULOS_EXISTENTES.find((r) => r.texto === 'não resolvido'),
+      ];
+
       evt.cidadeUnidade =
           `${evt.tutoria.unidade.cidade}:${evt.tutoria.unidade.unidade}`;
 
@@ -133,7 +148,7 @@ export class AppModule {
               .sort((a, b) => new Date(a.dataCriacao).getTime() -
                               new Date(b.dataCriacao).getTime());
 
-      if (evt.isResolvido) {
+      if (evt.isEncerrado) {
         const acao: fromDocuments.Interacao = {
           tipoInteracao: fromDocuments.TipoInteracao.ACAO,
           dataCriacao: evt.lasModifiedDate,

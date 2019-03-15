@@ -35,11 +35,12 @@ export * from './valor-tutoria';
 export * from './historico-auditoria-acao';
 export * from './historico-interacao';
 export * from './interacao';
-export * from './object-reference';
 export * from './participante';
 export * from './texto-formatado';
 export * from './tipo-acao';
 export * from './tipo-acao';
 export * from './tipo-interacao';
+export * from './object-reference';
+export * from './rotulo-do-evento';
 
 export * from './evento-dto/';

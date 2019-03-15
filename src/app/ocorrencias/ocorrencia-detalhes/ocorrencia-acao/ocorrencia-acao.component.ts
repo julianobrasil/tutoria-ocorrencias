@@ -31,6 +31,9 @@ export class OcorrenciaAcaoComponent {
   /** ícone a ser usado */
   _icon: string;
 
+  /** tipos de ação disponíveis */
+  _tipoAcao = TipoAcao;
+
   /** configura o tema */
   private _setupTheme(acao: Interacao) {
     switch (acao.historicoInteracoes[0].tipoAcao) {
@@ -73,6 +76,12 @@ export class OcorrenciaAcaoComponent {
       case TipoAcao.ALTERA_VISIBILIDADE_EVENTO: {
         this._theme = 'primary';
         this._icon = 'visibility';
+        break;
+      }
+
+      case TipoAcao.ALTERA_ROTULO: {
+        this._theme = 'accent';
+        this._icon = 'label';
         break;
       }
     }

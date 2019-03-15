@@ -1,11 +1,11 @@
 <section [ngClass]="_containerClasses">
   <section class="ocorrencia-resumo-icone-fechada-aberta">
-    <mat-icon *ngIf="evento?.isResolvido"
+    <mat-icon *ngIf="evento?.isEncerrado"
               class="icon-ocorrencia-finalizada">
       check_circle_outline
     </mat-icon>
 
-    <mat-icon *ngIf="!evento?.isResolvido"
+    <mat-icon *ngIf="!evento?.isEncerrado"
               class="icon-ocorrencia-nao-finalizada">
       error_outline
     </mat-icon>
@@ -13,10 +13,15 @@
 
   <div class="ocorrencia-resumo-texto-container">
     <section class="ocorrencia-resumo-texto-titulo">
-      <a [routerLink]="evento?.id">{{evento?.titulo}}
-      </a>
+      <a [routerLink]="evento?.id">{{evento?.titulo}}</a>
+
       <app-ocorrencia-rotulo [corDeFundo]="evento?.classificacaoEvento | corDeFundoPorTipo"
                              [rotulo]="evento?.classificacaoEvento | labelPorTipo">
+      </app-ocorrencia-rotulo>
+
+      <app-ocorrencia-rotulo *ngFor="let rotulo of evento?.rotulos | ordenaRotulos"
+                             [corDeFundo]="rotulo?.corHexa"
+                             [rotulo]="rotulo?.texto">
       </app-ocorrencia-rotulo>
     </section>
 

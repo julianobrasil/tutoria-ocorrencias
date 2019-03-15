@@ -1,0 +1,26 @@
+<div class="ocorrencia-acao-linha-alteracao-rotulo-container">
+  <!-- RÓTULOS ADICIONADOS -->
+  <section *ngIf="_rotulosAdicionados?.length"
+           class="ocorrencia-acao-linha-alteracao-rotulo">
+    <div>adicionou</div>
+    <app-ocorrencia-rotulo *ngFor="let rotulo of _rotulosAdicionados | ordenaRotulos"
+                           [corDeFundo]="rotulo?.corHexa"
+                           [rotulo]="rotulo?.texto">
+    </app-ocorrencia-rotulo>
+  </section>
+
+  <!-- CONECTIVO DE LIGAÇÃO ("adicionou xyz E removeu ckj") -->
+  <section *ngIf="_rotulosAdicionados?.length && _rotulosRemovidos?.length">
+    &nbsp;&nbsp;e&nbsp;
+  </section>
+
+  <!-- RÓTULOS REMOVIDOS -->
+  <section *ngIf="_rotulosRemovidos?.length"
+           class="ocorrencia-acao-linha-alteracao-rotulo">
+    <div>removeu</div>
+    <app-ocorrencia-rotulo *ngFor="let rotulo of _rotulosRemovidos | ordenaRotulos"
+                           [corDeFundo]="rotulo?.corHexa"
+                           [rotulo]="rotulo?.texto">
+    </app-ocorrencia-rotulo>
+  </section>
+</div>

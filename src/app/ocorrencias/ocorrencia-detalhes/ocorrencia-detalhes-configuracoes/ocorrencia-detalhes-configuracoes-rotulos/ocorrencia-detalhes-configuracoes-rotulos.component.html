@@ -1,14 +1,34 @@
 <section class="ocorrencia-detalhes-configuracoes-rotulos-container">
-  <section [ngClass]="_classesDoCabecalho">
+  <section (click)="popover.open()"
+           [ngClass]="_classesDoCabecalho"
+           [satPopoverAnchorFor]="popover">
     <span>Rótulos</span>
 
     <mat-icon *ngIf="podeAdicionarRotulos">settings</mat-icon>
   </section>
 
   <section class="ocorrencia-detalhes-configuracoes-rotulos-pilha">
-    <span *ngIf="ocorrencia?.classificacaoEvento === _classificacaoEvento.OCORRENCIA_COMUM">Nenhum</span>
-    <app-ocorrencia-rotulo class="ocorrencia-detalhes-configuracoes-rotulos-pilha-item" [corDeFundo]="ocorrencia?.classificacaoEvento | corDeFundoPorTipo"
-                           [rotulo]="ocorrencia?.classificacaoEvento | labelPorTipo">
+    <span *ngIf="_mostraIndicadorNenhumLabel">Nenhum</span>
+    <app-ocorrencia-rotulo [corDeFundo]="ocorrencia?.classificacaoEvento | corDeFundoPorTipo"
+                           [rotulo]="ocorrencia?.classificacaoEvento | labelPorTipo"
+                           class="ocorrencia-detalhes-configuracoes-rotulos-pilha-item">
+    </app-ocorrencia-rotulo>
+    <app-ocorrencia-rotulo *ngFor="let rotulo of ocorrencia?.rotulos"
+                           [corDeFundo]="rotulo?.corHexa"
+                           [rotulo]="rotulo?.texto"
+                           class="ocorrencia-detalhes-configuracoes-rotulos-pilha-item">
     </app-ocorrencia-rotulo>
   </section>
 </section>
+
+<sat-popover #popover
+             (afterClose)="_monitoraAberturaFechamentoDoPopover(false)"
+             (afterOpen)="_monitoraAberturaFechamentoDoPopover(true)"
+             hasBackdrop
+             horizontalAlign="end"
+             verticalAlign="below">
+  <div class="ocorrencia-detalhes-configuracoes-rotulos-popover mat-elevation-z8">
+    <app-selecao-de-rotulos [rotulosEscolhidos]="_rotulos">
+    </app-selecao-de-rotulos>
+  </div>
+</sat-popover>

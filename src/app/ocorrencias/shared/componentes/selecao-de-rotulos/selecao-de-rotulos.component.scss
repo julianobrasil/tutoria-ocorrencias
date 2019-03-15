@@ -1,0 +1,74 @@
+@import '~@angular/material/theming';
+@import '../../../../../theme.scss';
+
+.selecao-de-rotulos-container {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 340px;
+
+  &>section {
+    padding: 10px 0px;
+  }
+
+  .selecao-de-rotulos-titulo {
+    font-weight: 300;
+
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+    padding-left: 10px;
+    padding-right: 10px;
+
+    background-color: mat-color($app-primary);
+    color: mat-contrast($app-primary, 700);
+  }
+
+  .selecao-de-rotulos-input {
+    display: flex;
+
+    font-family: inherit;
+    margin-top: 0px;
+    padding: 0px;
+
+    .mat-form-field {
+      flex: 1;
+    }
+  }
+
+  .selecao-de-rotulos-lista {
+    max-height: 290px;
+    overflow-y: auto;
+
+    padding-bottom: 0px;
+
+
+    .mat-list-option {
+
+      &:first-of-type {
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+      }
+
+      &:not(:last-of-type) {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      }
+
+      .selecao-de-rotulos-lista-item {
+        display: flex;
+        align-items: center;
+
+        .selecao-de-rotulos-lista-item-rotulo-avatar {
+          height: 15px;
+          width: 15px;
+
+          border-radius: 4px;
+          
+          margin-right: 10px;
+        }
+      }
+
+      padding-left: 0px;
+      padding-right: 0px;
+    }
+  }
+
+}

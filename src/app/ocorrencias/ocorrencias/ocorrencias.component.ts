@@ -1,12 +1,17 @@
-import {ChangeDetectionStrategy, Component, OnDestroy, ViewEncapsulation} from '@angular/core';
-import {ActivatedRoute, ParamMap} from '@angular/router';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  ViewEncapsulation,
+} from '@angular/core';
+import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 
 import {combineLatest, Observable, Subject} from 'rxjs';
-import {filter, first, map, takeUntil} from 'rxjs/operators';
+import {first, map, takeUntil, tap} from 'rxjs/operators';
 
 import {
+  IssueTrackerPagination,
   OcorrenciaStoreFacadeService,
-  Paginacao,
 } from '../ocorrencia-facade.service';
 import {
   OcorrenciaFormularioComponentData,
@@ -19,6 +24,7 @@ import {
   NovoEventoRequest,
   Unidade,
 } from '../../model/transport-objects/';
+import {IssueTrackerConfiguration} from '../model/issue-tracker-configuration';
 
 @Component({
   selector: 'app-ocorrencias',
@@ -28,12 +34,14 @@ import {
   encapsulation: ViewEncapsulation.None,
 })
 export class OcorrenciasComponent implements OnDestroy {
+  _config$: Observable<IssueTrackerConfiguration> =
+      this._ocorrenciaStoreFacade.getIssueTrackerConfiguration$();
 
   /** dados de eventos paginados */
   _eventos$: Observable<Evento[]> = this._ocorrenciaStoreFacade.getEventos$();
 
   /** dados de paginação */
-  _paginacao$: Observable<Paginacao> =
+  _paginacao$: Observable<IssueTrackerPagination> =
       this._ocorrenciaStoreFacade.getPaginacao$();
 
   /** quando estiver criando nova ocorrência, é true */
@@ -53,14 +61,14 @@ export class OcorrenciasComponent implements OnDestroy {
   /** destrói todas as assinaturas em observables */
   private _destroy$: Subject<void> = new Subject<void>();
 
-  constructor(private _activatedRoute: ActivatedRoute,
+  constructor(private _activatedRoute: ActivatedRoute, private _router: Router,
               private _ocorrenciaStoreFacade: OcorrenciaStoreFacadeService,
               private _componentService: OcorrenciaComponentService) {
     this._obtemOcorrenciaAPartirDaRota();
 
     combineLatest(this._paginacao$)
         .pipe(first(), map((_) => _[0]))
-        .subscribe((paginacao: Paginacao) => {
+        .subscribe((paginacao: IssueTrackerPagination) => {
           if (!paginacao) {
             this._ocorrenciaStoreFacade.setPaginacao({
               page: 0,
@@ -90,11 +98,16 @@ export class OcorrenciasComponent implements OnDestroy {
                                     OcorrenciaFormularioComponentTipo) {
     this._ocorrenciaFormularioComponentTipo = classificacao;
 
-    this._isCriandoNovaOcorrencia = true;
+    // this._isCriandoNovaOcorrencia = true;
+    // console.log(thi)
+    this._router.navigate(
+        ['nova-ocorrencia', this._ocorrenciaFormularioComponentTipo], {
+          relativeTo: this._activatedRoute,
+        });
   }
 
   /** atualiza os dados de paginação */
-  _atualizaPaginacao(paginacao: Paginacao) {
+  _atualizaPaginacao(paginacao: IssueTrackerPagination) {
     this._ocorrenciaStoreFacade.setPaginacaoEBusca(paginacao);
   }
 
@@ -123,12 +136,11 @@ export class OcorrenciasComponent implements OnDestroy {
    * @memberof OcorrenciaDetalhesComponent
    */
   private _obtemOcorrenciaAPartirDaRota() {
-    this._activatedRoute.paramMap.pipe(
-                                     map((p: ParamMap) =>
-                                             p.get('tipoNovaOcorrencia') ?
-                                                 p.get('tipoNovaOcorrencia') :
-                                                 null),
-                                     takeUntil(this._destroy$))
+    this._activatedRoute.paramMap.pipe(map((p: ParamMap) => (
+                                               p.get('tipoNovaOcorrencia') ?
+                                                   p.get('tipoNovaOcorrencia') :
+                                                   null)),
+                                       takeUntil(this._destroy$))
         .subscribe((tipoNovaOcorrencia: OcorrenciaFormularioComponentTipo) => {
           if (tipoNovaOcorrencia) {
             this._ocorrenciaFormularioComponentTipo = tipoNovaOcorrencia;

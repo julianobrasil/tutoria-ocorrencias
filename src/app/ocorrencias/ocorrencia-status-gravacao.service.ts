@@ -144,7 +144,7 @@ export class OcorrenciaStatusGravacaoService {
   }
 
   /**
-   * emite quando ococorre uma operação de alteração dos responsaveis da
+   * emite quando ococorre uma operação de alteração dos responsáveis da
    * ocorrência
    */
   getStatusAlteracaoDeResponsaveisDoEvento$() {
@@ -152,6 +152,19 @@ export class OcorrenciaStatusGravacaoService {
       filter(
         (status: OcorrenciaDadosDaGravacao) =>
           status.operacaoExecutada === OcorrenciaChangeType.ALTERA_RESPONSAVEIS,
+      ),
+    );
+  }
+
+  /**
+   * emite quando ococorre uma operação de alteração dos rótulos da
+   * ocorrência
+   */
+  getStatusAlteracaoDeRotulosDoEvento$() {
+    return this.statusGravacao$.pipe(
+      filter(
+        (status: OcorrenciaDadosDaGravacao) =>
+          status.operacaoExecutada === OcorrenciaChangeType.ALTERA_ROTULOS,
       ),
     );
   }

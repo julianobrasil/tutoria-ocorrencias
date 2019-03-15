@@ -7,9 +7,8 @@ import {ObjectReference, Participante} from '../../../model/transport-objects';
 })
 export class UsuariosImexiveisPipe implements PipeTransform {
   transform(values: Participante[]): ObjectReference[] {
-    return values ?
-               values.filter((u: Participante) => u.isAutor)
-                   .map((u: Participante) => u.usuarioRef) :
-               [];
+    return values
+      ? values.filter((u: Participante) => u.isAutor).map((u: Participante) => u.usuarioRef)
+      : [];
   }
 }

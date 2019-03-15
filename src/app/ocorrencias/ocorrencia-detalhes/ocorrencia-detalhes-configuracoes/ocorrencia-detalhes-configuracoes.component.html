@@ -11,7 +11,8 @@
   <mat-divider></mat-divider>
 
   <section class="ocorrencia-detalhes-configuracoes-rotulos">
-    <app-ocorrencia-detalhes-configuracoes-rotulos [ocorrencia]="ocorrencia">
+    <app-ocorrencia-detalhes-configuracoes-rotulos (alteracaoDeRotulos)="_alteraRotulos($event)"
+                                                   [ocorrencia]="ocorrencia">
     </app-ocorrencia-detalhes-configuracoes-rotulos>
   </section>
 

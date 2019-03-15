@@ -1,12 +1,14 @@
 import {Injectable} from '@angular/core';
 import {select, Store} from '@ngrx/store';
 import {combineLatest, Observable} from 'rxjs';
-import {first} from 'rxjs/operators';
+import {first, map} from 'rxjs/operators';
 
 import * as fromStore from '../../store';
 import {Evento, NovoEventoRequest, Unidade} from '../model/transport-objects';
 
-export interface Paginacao {
+import {IssueTrackerConfiguration} from './model/issue-tracker-configuration';
+
+export interface IssueTrackerPagination {
   page: number;
   pageSize: number;
   pageSizeOptions?: number[];
@@ -19,6 +21,22 @@ export interface Paginacao {
 export class OcorrenciaStoreFacadeService {
   constructor(private _store$: Store<{}>) {}
 
+  /** preenche as configurações básicas do componente */
+  getIssueTrackerConfiguration$(): Observable<IssueTrackerConfiguration> {
+    const configuration: IssueTrackerConfiguration =
+        new IssueTrackerConfiguration();
+    return combineLatest(
+               this._store$.pipe(
+                   select(fromStore.GERAL.SELECTORS.DADOS_DO_USUARIO_LOGADO
+                              .getUsuarioRef)),
+               this._store$.pipe(
+                   select(fromStore.GERAL.SELECTORS.DADOS_DO_USUARIO_LOGADO
+                              .getFuncoesDoUsuario)))
+        .pipe(map(([usuarioRef, funcoesDoUsuario]) =>
+                      configuration.fillUpUserData(usuarioRef)
+                          .fillUpRoles(funcoesDoUsuario)));
+  }
+
   /** envia to para gravação */
   criaEvento(novoEventoRequest: NovoEventoRequest): void {
     this._store$.dispatch(
@@ -27,7 +45,7 @@ export class OcorrenciaStoreFacadeService {
   }
 
   /** obtém a paginação corrente */
-  getPaginacao$(): Observable<Paginacao> {
+  getPaginacao$(): Observable<IssueTrackerPagination> {
     return this._store$.pipe(
         select(fromStore.DIARIO_DE_TUTORIA.SELECTORS.EVENTO.getPaginacao));
   }
@@ -52,56 +70,42 @@ export class OcorrenciaStoreFacadeService {
 
   /** configura o atual conjunto de eventos */
   setEventos(eventos: Evento[]) {
-    this._store$.dispatch(
-        new fromStore.DIARIO_DE_TUTORIA.ACTIONS.EVENTO
-            .ObtemEventosPaginadosSuccess({
-              eventos,
-              totalElements: eventos.length,
-            }),
-    );
+    this._store$.dispatch(new fromStore.DIARIO_DE_TUTORIA.ACTIONS.EVENTO
+                              .ObtemEventosPaginadosSuccess({
+                                eventos,
+                                totalElements: eventos.length,
+                              }));
   }
 
   /** configura a paginação atual */
-  setPaginacao(paginacao: Paginacao) {
-    this._store$.dispatch(
-        new fromStore.DIARIO_DE_TUTORIA.ACTIONS.EVENTO
-            .ConfiguraDadosDePaginacaoRun({paginacao}),
-    );
+  setPaginacao(paginacao: IssueTrackerPagination) {
+    this._store$.dispatch(new fromStore.DIARIO_DE_TUTORIA.ACTIONS.EVENTO
+                              .ConfiguraDadosDePaginacaoRun({paginacao}));
   }
 
   /** configura a paginação atual e dispara uma busca */
-  setPaginacaoEBusca(paginacao?: Paginacao) {
+  setPaginacaoEBusca(paginacao?: IssueTrackerPagination) {
     combineLatest(
         this._store$.pipe(select(
-            fromStore.DIARIO_DE_TUTORIA.SELECTORS.EVENTO.getTermoDeBusca)),
-        )
+            fromStore.DIARIO_DE_TUTORIA.SELECTORS.EVENTO.getTermoDeBusca)))
         .pipe(first())
-        .subscribe(
-            ([termoDeBusca]) => this._store$.dispatch(
-                new fromStore.DIARIO_DE_TUTORIA.ACTIONS.EVENTO
-                    .ObtemEventosPaginadosRun({
-                      termoDeBusca,
-                      paginacao,
-                    }),
-                ),
-        );
+        .subscribe(([termoDeBusca]) => this._store$.dispatch(
+                       new fromStore.DIARIO_DE_TUTORIA.ACTIONS.EVENTO
+                           .ObtemEventosPaginadosRun({
+                               termoDeBusca, paginacao,
+                           })));
   }
 
   /** configura o termo de busca atual e dispara uma busca */
   setTermoDeBuscaEBusca(termoDeBusca: string) {
     combineLatest(
-        this._store$.pipe(
-            select(fromStore.DIARIO_DE_TUTORIA.SELECTORS.EVENTO.getPaginacao)),
-        )
+        this._store$.pipe(select(
+            fromStore.DIARIO_DE_TUTORIA.SELECTORS.EVENTO.getPaginacao)))
         .pipe(first())
-        .subscribe(
-            ([paginacao]) => this._store$.dispatch(
-                new fromStore.DIARIO_DE_TUTORIA.ACTIONS.EVENTO
-                    .ObtemEventosPaginadosRun({
-                      termoDeBusca,
-                      paginacao,
-                    }),
-                ),
-        );
+        .subscribe(([paginacao]) => this._store$.dispatch(
+                       new fromStore.DIARIO_DE_TUTORIA.ACTIONS.EVENTO
+                           .ObtemEventosPaginadosRun({
+                               termoDeBusca, paginacao,
+                           })));
   }
 }

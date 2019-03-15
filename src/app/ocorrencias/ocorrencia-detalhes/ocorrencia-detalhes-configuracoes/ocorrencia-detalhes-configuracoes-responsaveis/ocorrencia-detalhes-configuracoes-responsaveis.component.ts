@@ -1,5 +1,13 @@
 // tslint:disable: max-line-length
-import {AfterViewInit, Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  Output,
+  ViewChild,
+} from '@angular/core';
 
 import {ReplaySubject, Subject} from 'rxjs';
 import {first, map, takeUntil} from 'rxjs/operators';
@@ -19,7 +27,8 @@ import {OcorrenciaDetalhesConfiguracoesParticipantesChange} from '../ocorrencia-
   templateUrl: './ocorrencia-detalhes-configuracoes-responsaveis.component.html',
   styleUrls: ['./ocorrencia-detalhes-configuracoes-responsaveis.component.scss'],
 })
-export class OcorrenciaDetalhesConfiguracoesResponsaveisComponent implements AfterViewInit {
+export class OcorrenciaDetalhesConfiguracoesResponsaveisComponent
+  implements AfterViewInit, OnDestroy {
   /** responsáveis */
   @Input() responsaveis: Participante[];
 
@@ -62,6 +71,13 @@ export class OcorrenciaDetalhesConfiguracoesResponsaveisComponent implements Aft
     this._setupMonitoramentoAlteracaoDeParticipantes();
   }
 
+  ngOnDestroy() {
+    if (this._destroy$ && !this._destroy$.closed) {
+      this._destroy$.next();
+      this._destroy$.complete();
+    }
+  }
+
   /**
    * Paraliza a atualização de tela enquanto o popover estiver aberto (caso
    * contrário perde-se as opcões escolhidas)
@@ -92,6 +108,9 @@ export class OcorrenciaDetalhesConfiguracoesResponsaveisComponent implements Aft
               this.responsaveis,
             ),
           });
+
+          this._participantesAlterados$.next(
+            {addedElements: [], removedElements: []});
         });
     }
   }

@@ -68,9 +68,9 @@ export class OcorrenciaDetalhesTituloComponent {
     return {
       'ocorrencia-detalhes-titulo-subtitulo-icon': true,
       'icon-ocorrencia-nao-finalizada':
-          this.ocorrencia ? !this.ocorrencia.isResolvido : false,
+          this.ocorrencia ? !this.ocorrencia.isEncerrado : false,
       'icon-ocorrencia-finalizada':
-          this.ocorrencia ? this.ocorrencia.isResolvido : false,
+          this.ocorrencia ? this.ocorrencia.isEncerrado : false,
     };
   }
 }

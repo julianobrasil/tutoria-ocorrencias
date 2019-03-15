@@ -1,9 +1,9 @@
 import {Action} from '@ngrx/store';
+
 import {
   FuncaoDoUsuario,
   PermissaoDoUsuario,
 } from '../../../app/model/helper-objects/funcoes-sistema';
-
 import {ObjectReference} from '../../../app/model/transport-objects';
 
 export enum OBTEM_DADOS_USUARIO_LOGADO {

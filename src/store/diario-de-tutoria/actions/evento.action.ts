@@ -3,12 +3,11 @@ import {Action} from '@ngrx/store';
 import {
   Evento,
   NovoEventoRequest,
-  ObjectReference,
   TextoFormatado,
   Visibilidade,
 } from '../../../app/model/transport-objects';
-import {TipoEvento} from '../../../app/model/transport-objects/';
-import {Paginacao} from '../../../app/ocorrencias/ocorrencia-facade.service';
+import {ObjectReference, TipoEvento} from '../../../app/model/transport-objects/';
+import {IssueTrackerPagination} from '../../../app/ocorrencias/ocorrencia-facade.service';
 
 export enum OBTEM_EVENTOS_PAGINADOS {
   RUN = '[DIÁRIO DE TUTORIA:EVENTOS]: Obtém eventos paginados run',
@@ -54,6 +53,12 @@ export enum INSERE_COMENTARIO_EVENTO {
   RUN = '[DIÁRIO DE TUTORIA:EVENTOS]: Insere comentário no evento run',
   SUCCESS = '[DIÁRIO DE TUTORIA:EVENTOS]: Insere comentário no evento success',
   FAIL = '[DIÁRIO DE TUTORIA:EVENTOS]: Insere comentário no evento fail',
+}
+
+export enum EXCLUI_INTERACAO_EVENTO {
+  RUN = '[DIÁRIO DE TUTORIA:EVENTOS]: Exclui comentário de evento run',
+  SUCCESS = '[DIÁRIO DE TUTORIA:EVENTOS]: Exclui comentário de evento success',
+  FAIL = '[DIÁRIO DE TUTORIA:EVENTOS]: Exclui comentário de evento fail',
 }
 
 export enum CRIA_EVENTO {
@@ -107,12 +112,17 @@ export enum ALTERA_RESPONSAVEIS_DO_EVENTO {
   SUCCESS = '[DIÁRIO DE TUTORIA:EVENTOS]: Altera responsaveis do evento success',
 }
 
+export enum ALTERA_ROTULOS_DO_EVENTO {
+  RUN = '[DIÁRIO DE TUTORIA:EVENTOS]: Altera rótulos do evento run',
+  SUCCESS = '[DIÁRIO DE TUTORIA:EVENTOS]: Altera rótulos do evento success',
+}
+
 export class ObtemEventosPaginadosRun implements Action {
   readonly type = OBTEM_EVENTOS_PAGINADOS.RUN;
   constructor(
     public payload: {
       termoDeBusca?: string;
-      paginacao: Paginacao;
+      paginacao: IssueTrackerPagination;
     },
   ) {}
 }
@@ -129,7 +139,7 @@ export class ObtemEventosPaginadosSuccess implements Action {
 
 export class ConfiguraDadosDePaginacaoRun implements Action {
   readonly type = CONFIGURA_DADOS_PAGINACAO.RUN;
-  constructor(public payload: {paginacao: Paginacao}) {}
+  constructor(public payload: {paginacao: IssueTrackerPagination}) {}
 }
 
 export class ObtemTiposDeEventosRun implements Action {
@@ -235,6 +245,26 @@ export class InsereComentarioSuccess implements Action {
 
 export class InsereComentarioFail implements Action {
   readonly type = INSERE_COMENTARIO_EVENTO.FAIL;
+  constructor(public payload: {error: any}) {}
+}
+
+export class ExcluiInteracaoDoEventoRun implements Action {
+  readonly type = EXCLUI_INTERACAO_EVENTO.RUN;
+  constructor(
+    public payload: {
+      eventoId: string;
+      interacaoId?: string;
+    },
+  ) {}
+}
+
+export class ExcluiInteracaoDoEventoSuccess implements Action {
+  readonly type = EXCLUI_INTERACAO_EVENTO.SUCCESS;
+  constructor(public payload: {evento: Evento}) {}
+}
+
+export class ExcluiInteracaoDoEventoFail implements Action {
+  readonly type = EXCLUI_INTERACAO_EVENTO.FAIL;
   constructor(public payload: {error: any}) {}
 }
 
@@ -392,6 +422,22 @@ export class AlteraResponsaveisDoEventoSuccess implements Action {
   constructor(public payload: {evento: Evento}) {}
 }
 
+export class AlteraRotulosDoEventoRun implements Action {
+  readonly type = ALTERA_ROTULOS_DO_EVENTO.RUN;
+  constructor(
+    public payload: {
+      eventoId: string;
+      rotulosAdicionadosIds: string[];
+      rotulosRemovidosIds: string[];
+    },
+  ) {}
+}
+
+export class AlteraRotulosDoEventoSuccess implements Action {
+  readonly type = ALTERA_ROTULOS_DO_EVENTO.SUCCESS;
+  constructor(public payload: {evento: Evento}) {}
+}
+
 export type EventoAction =
   | AlteraLocalDoEventoRun
   | AlteraLocalDoEventoSuccess
@@ -401,6 +447,8 @@ export type EventoAction =
   | AlteraParticipantesDoEventoSuccess
   | AlteraResponsaveisDoEventoRun
   | AlteraResponsaveisDoEventoSuccess
+  | AlteraRotulosDoEventoRun
+  | AlteraRotulosDoEventoSuccess
   | AlteraTextoDeComentarioRun
   | AlteraTextoDeComentarioSuccess
   | AlteraTituloDoEventoRun
@@ -416,6 +464,9 @@ export type EventoAction =
   | ConfiguraDadosDePaginacaoRun
   | EncerraEventoRun
   | EncerraEventoSuccess
+  | ExcluiInteracaoDoEventoFail
+  | ExcluiInteracaoDoEventoRun
+  | ExcluiInteracaoDoEventoSuccess
   | ExcluiEventoRun
   | ExcluiEventoSuccess
   | InsereComentarioRun

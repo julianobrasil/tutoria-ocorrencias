@@ -15,20 +15,25 @@ export enum OcorrenciaChangeType {
   ALTERA_PARECER,
   ALTERA_PARTICIPANTES,
   ALTERA_RESPONSAVEIS,
+  ALTERA_ROTULOS,
   ALTERA_TIPO_SUBTIPO,
   ALTERA_TITULO,
   ALTERA_UNIDADE,
   COMENTA,
   ENCERRA_E_COMENTA,
+  EXCLUI_COMENTARIO,
   NOVO_EVENTO,
   REABRE_E_COMENTA,
   TEXTO_COMENTARIO,
   VISIBILIDADE_COMENTARIO,
   VISIBILIDADE_EVENTO,
+  /** Used when dealing with the update of data in the custom form */
+  CUSTOM_TYPE,
 }
 
 export interface OcorrenciaChange {
   type: OcorrenciaChangeType;
+  customType?: string;
   eventoId?: string;
   comentarioId?: string;
   visibilidade?: Visibilidade;
@@ -37,6 +42,8 @@ export interface OcorrenciaChange {
   descricaoSubTipoEvento?: string;
   participantesAdicionados?: ObjectReference[];
   participantesRemovidos?: ObjectReference[];
+  rotulosAdicionadosIds?: string[];
+  rotulosRemovidosIds?: string[];
 }
 
 @Injectable({providedIn: 'root'})

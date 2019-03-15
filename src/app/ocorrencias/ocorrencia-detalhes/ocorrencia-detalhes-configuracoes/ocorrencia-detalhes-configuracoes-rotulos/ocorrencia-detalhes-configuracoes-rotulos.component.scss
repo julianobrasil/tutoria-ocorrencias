@@ -44,6 +44,7 @@
 
     .ocorrencia-detalhes-configuracoes-rotulos-pilha-item {
       display: flex;
+      margin-bottom: 5px;
 
       .ocorrencia-rotulo {
         flex: 1;
@@ -54,4 +55,9 @@
       font-size: 0.8rem;
     }
   }
+}
+
+.ocorrencia-detalhes-configuracoes-rotulos-popover {
+  background-color: white;
+  border-radius: 4px;
 }

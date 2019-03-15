@@ -53,6 +53,9 @@ export class OcorrenciaMenuComponent implements AfterViewInit,
   /** emite uma solicitação de alteração de texto */
   @Output() alteraTexto: EventEmitter<void> = new EventEmitter<void>();
 
+  /** emite uma solicitação de exclusão da interação */
+  @Output() excluiInteracao: EventEmitter<void> = new EventEmitter<void>();
+
   /** emite true quando o menu for aberto e false quando for fechado */
   @Output() menuAberto: EventEmitter<boolean> = new EventEmitter<boolean>();
 

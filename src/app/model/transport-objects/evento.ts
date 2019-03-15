@@ -4,6 +4,7 @@ import {Interacao, Visibilidade} from './interacao';
 import {ObjectReference} from './object-reference';
 import {Participante} from './participante';
 import {Responsavel} from './responsavel';
+import {RotuloDoEvento} from './rotulo-do-evento';
 import {TextoFormatado} from './texto-formatado';
 import {Tutoria} from './tutoria';
 
@@ -23,7 +24,6 @@ export class Evento extends AbstractDocument {
   etapaAtual = '';
   etapas: Etapa[];
   isEtapaNova = false;
-  isResolvido = false;
   isSolicitacaoMaisDetalhesFeita?: boolean;
   isSolicitacaoMaisDetalhesRespondida?: boolean;
   observacao?: string;
@@ -42,6 +42,9 @@ export class Evento extends AbstractDocument {
   cidadeUnidade?: string;
   local?: string;
   visibilidade?: Visibilidade;
+  isEncerrado?: boolean;
+  // isResolvido = false; => substituído por isEncerrado
+  rotulos?: RotuloDoEvento[];
 
   constructor() {
     super();
