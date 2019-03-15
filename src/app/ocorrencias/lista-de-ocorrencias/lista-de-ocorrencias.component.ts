@@ -55,7 +55,8 @@ export class ListaDeOcorrenciasComponent implements OnDestroy {
 
   /** emite quando algum parâmetro da paginação é trocado */
   @Output()
-  paginacaoChange: EventEmitter<IssueTrackerPagination> = new EventEmitter<IssueTrackerPagination>();
+  paginacaoChange: EventEmitter<IssueTrackerPagination> =
+      new EventEmitter<IssueTrackerPagination>();
 
   /** emite o termo digitado */
   @Output()

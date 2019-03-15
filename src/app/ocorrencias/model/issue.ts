@@ -1,7 +1,7 @@
 import {AbstractDocument} from './abstract-document';
 import {FormattedText} from './formatted-text';
 import {Interaction} from './interaction';
-import {IssueMember} from './IssueMember';
+import {IssueMember} from './issue-member';
 import {ObjectReference} from './object-reference';
 import {Visibility} from './visibility';
 

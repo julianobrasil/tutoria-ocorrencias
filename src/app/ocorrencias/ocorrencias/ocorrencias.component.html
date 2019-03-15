@@ -5,6 +5,7 @@
                           [config]="_config$ | async"
                           [eventos]="_eventos$ | async"
                           [paginacao]="_paginacao$ | async">
+  <ng-content select="[newIssueSelectButton]"></ng-content>
 </app-lista-de-ocorrencias>
 
 <ng-template #novaOcorrencia>
