@@ -1,7 +1,8 @@
 <section class="selecao-de-pessoas-container">
   <!-- BARRA DE TÍTULO -->
-  <section class="selecao-de-pessoas-titulo">
-    {{usuariosEscolhidos | textoDeLimiteDeParticipantesEscolhidos: maxUsuarios}}
+  <section [class.max-pessoas-atingido]="usuariosEscolhidos?.length === maxUsuarios"
+           class="selecao-de-pessoas-titulo">
+    {{usuariosEscolhidos | textoDeLimiteDeParticipantesEscolhidos: {maxUsuarios: maxUsuarios, corrente: usuariosEscolhidos?.length} }}
   </section>
 
   <!-- COMPONENTE DE SELEÇÃO DE USUÁRIOS (AUTOCOMPLETAR) -->

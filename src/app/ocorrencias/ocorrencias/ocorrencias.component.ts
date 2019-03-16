@@ -98,8 +98,6 @@ export class OcorrenciasComponent implements OnDestroy {
                                     OcorrenciaFormularioComponentTipo) {
     this._ocorrenciaFormularioComponentTipo = classificacao;
 
-    // this._isCriandoNovaOcorrencia = true;
-    // console.log(thi)
     this._router.navigate(
         ['nova-ocorrencia', this._ocorrenciaFormularioComponentTipo], {
           relativeTo: this._activatedRoute,

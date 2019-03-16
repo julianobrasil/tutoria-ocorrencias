@@ -16,16 +16,9 @@ import {
   OcorrenciaDetalhesComponentService,
 } from '../../ocorrencia-detalhes-component.service';
 
-import {
-  ObjectReference,
-  Participante,
-} from '../../../../model/transport-objects';
+import {ObjectReference, Participante} from '../../../../model/transport-objects';
 
-import {
-  ArrayUtils,
-  DifferenceArrays,
-  SelecaoDePessoasComponent,
-} from '../../../shared';
+import {ArrayUtils, DifferenceArrays, SelecaoDePessoasComponent} from '../../../shared';
 
 export interface OcorrenciaDetalhesConfiguracoesParticipantesChange {
   participantesAdicionados: ObjectReference[];
@@ -35,14 +28,11 @@ export interface OcorrenciaDetalhesConfiguracoesParticipantesChange {
 
 @Component({
   selector: 'app-ocorrencia-detalhes-configuracoes-participantes',
-  templateUrl:
-      './ocorrencia-detalhes-configuracoes-participantes.component.html',
-  styleUrls:
-      ['./ocorrencia-detalhes-configuracoes-participantes.component.scss'],
+  templateUrl: './ocorrencia-detalhes-configuracoes-participantes.component.html',
+  styleUrls: ['./ocorrencia-detalhes-configuracoes-participantes.component.scss'],
 })
-export class OcorrenciaDetalhesConfiguracoesParticipantesComponent implements
-    AfterViewInit,
-    OnDestroy {
+export class OcorrenciaDetalhesConfiguracoesParticipantesComponent
+  implements AfterViewInit, OnDestroy {
   /** Participantes */
   @Input() participantes: Participante[];
 
@@ -55,8 +45,8 @@ export class OcorrenciaDetalhesConfiguracoesParticipantesComponent implements
   /** Emite quando há alterações nos participantes */
   @Output()
   alteracaoDeParticipantes: EventEmitter<
-      OcorrenciaDetalhesConfiguracoesParticipantesChange> =
-      new EventEmitter<OcorrenciaDetalhesConfiguracoesParticipantesChange>();
+    OcorrenciaDetalhesConfiguracoesParticipantesChange
+  > = new EventEmitter<OcorrenciaDetalhesConfiguracoesParticipantesChange>();
 
   /**
    * Instância do componente de seleção de pessoas (para obter a quantidade de
@@ -69,17 +59,21 @@ export class OcorrenciaDetalhesConfiguracoesParticipantesComponent implements
   _matUsusarioTooltipDisabled = true;
 
   /** emite quando há alteração de participantes para ser gravado no banco */
-  _participantesAlterados$: ReplaySubject<DifferenceArrays<ObjectReference>> =
-      new ReplaySubject<DifferenceArrays<ObjectReference>>(1);
+  _participantesAlterados$: ReplaySubject<DifferenceArrays<ObjectReference>> = new ReplaySubject<
+    DifferenceArrays<ObjectReference>
+  >(1);
 
   /** destrói todas as assinaturas em observables */
   private _destroy$: Subject<void> = new Subject<void>();
 
-  constructor(private _arrayUtils: ArrayUtils,
-              private _ocorrenciaDetalhesComponentService:
-                  OcorrenciaDetalhesComponentService) {}
+  constructor(
+    private _arrayUtils: ArrayUtils,
+    private _ocorrenciaDetalhesComponentService: OcorrenciaDetalhesComponentService,
+  ) {}
 
-  ngAfterViewInit() { this._setupMonitoramentoAlteracaoDeParticipantes(); }
+  ngAfterViewInit() {
+    this._setupMonitoramentoAlteracaoDeParticipantes();
+  }
 
   ngOnDestroy() {
     if (this._destroy$ && !this._destroy$.closed) {
@@ -95,29 +89,32 @@ export class OcorrenciaDetalhesConfiguracoesParticipantesComponent implements
   _monitoraAberturaFechamentoDoPopover(popoverFoiAberto: boolean) {
     this._matUsusarioTooltipDisabled = !popoverFoiAberto;
 
-    this._ocorrenciaDetalhesComponentService.interrompeAtualizacaoPeriodica(
-        popoverFoiAberto);
+    this._ocorrenciaDetalhesComponentService.interrompeAtualizacaoPeriodica(popoverFoiAberto);
     if (!popoverFoiAberto) {
-      this._participantesAlterados$.pipe(first())
-          .subscribe((ad: DifferenceArrays<ObjectReference>) => {
-            if (!(ad &&
-                  ((ad.addedElements && !!ad.addedElements.length) ||
-                   (ad.removedElements && !!ad.removedElements.length)))) {
-              // não há alterações
-              return;
-            }
+      this._participantesAlterados$
+        .pipe(first())
+        .subscribe((ad: DifferenceArrays<ObjectReference>) => {
+          if (
+            !(
+              ad &&
+              ((ad.addedElements && !!ad.addedElements.length) ||
+                (ad.removedElements && !!ad.removedElements.length))
+            )
+          ) {
+            // não há alterações
+            return;
+          }
 
-            this.alteracaoDeParticipantes.emit({
-              participantesAdicionados: ad.addedElements,
-              participantesRemovidos: ad.removedElements,
-              participantesOriginais:
-                  this._arrayUtils.participantesToObjectReferencesArray(
-                      this.participantes),
-            });
-
-            this._participantesAlterados$.next(
-                {addedElements: [], removedElements: []});
+          this.alteracaoDeParticipantes.emit({
+            participantesAdicionados: ad.addedElements,
+            participantesRemovidos: ad.removedElements,
+            participantesOriginais: this._arrayUtils.participantesToObjectReferencesArray(
+              this.participantes,
+            ),
           });
+
+          this._participantesAlterados$.next({addedElements: [], removedElements: []});
+        });
     }
   }
 
@@ -136,17 +133,18 @@ export class OcorrenciaDetalhesConfiguracoesParticipantesComponent implements
    */
   private _setupMonitoramentoAlteracaoDeParticipantes() {
     this._selecaoDePessoasComponent.usuariosEscolhidosChange
-        .pipe(
-            map((usuariosEscolhidos:
-                     ObjectReference[]): DifferenceArrays<ObjectReference> =>
-                    this._arrayUtils.obtemDiferencaEntreArrays<ObjectReference>(
-                        this._arrayUtils.participantesToObjectReferencesArray(
-                            this.participantes),
-                        usuariosEscolhidos,
-                        (a: ObjectReference, b: ObjectReference) =>
-                            a && b && a.code && b.code ? a.code === b.code :
-                                                         false)),
-            takeUntil(this._destroy$))
-        .subscribe(this._participantesAlterados$);
+      .pipe(
+        map(
+          (usuariosEscolhidos: ObjectReference[]): DifferenceArrays<ObjectReference> =>
+            this._arrayUtils.obtemDiferencaEntreArrays<ObjectReference>(
+              this._arrayUtils.participantesToObjectReferencesArray(this.participantes),
+              usuariosEscolhidos,
+              (a: ObjectReference, b: ObjectReference) =>
+                a && b && a.code && b.code ? a.code === b.code : false,
+            ),
+        ),
+        takeUntil(this._destroy$),
+      )
+      .subscribe(this._participantesAlterados$);
   }
 }

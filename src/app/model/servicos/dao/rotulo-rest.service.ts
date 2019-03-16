@@ -18,12 +18,13 @@ export class RotuloRestService {
   obtemRotulosPorParteDoNome(valor: string):
       Observable<fromDocuments.RotuloDoEvento[]> {
     if (!valor) {
-      return observableOf(JSON.parse(JSON.stringify(ROTULOS_EXISTENTES)));
+      return observableOf(JSON.parse(JSON.stringify(ROTULOS_EXISTENTES.filter(
+        (r: fromDocuments.RotuloDoEvento) => !r.isReservado))));
     }
     valor = valor.toUpperCase();
-    const rotulos =
-        ROTULOS_EXISTENTES.filter((r: fromDocuments.RotuloDoEvento) =>
-                                      r.texto.toUpperCase().includes(valor));
+    const rotulos = ROTULOS_EXISTENTES.filter(
+        (r: fromDocuments.RotuloDoEvento) =>
+            r.texto.toUpperCase().includes(valor) && !r.isReservado);
 
     return observableOf(JSON.parse(JSON.stringify(rotulos)));
   }

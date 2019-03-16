@@ -57,6 +57,11 @@ export class SelecaoDeRotulosComponent implements OnDestroy,
   set rotulosEscolhidos(value: RotuloDoEvento[]) {
     this._rotulosEscolhidos = value;
 
+    if (this._rotulosEscolhidos) {
+      this._rotulosEscolhidos =
+          this._rotulosEscolhidos.filter((r: RotuloDoEvento) => !r.isReservado);
+    }
+
     this._rotulosEscolhidos$.next(value);
   }
   private _rotulosEscolhidos: RotuloDoEvento[] = [];
@@ -131,11 +136,11 @@ export class SelecaoDeRotulosComponent implements OnDestroy,
               switchMap(
                   (valor: string) =>
                       this._selecaoDeRotulosAdapterService.obtemRotulos(valor)),
-              tap((pessoas: RotuloDoEvento[]) => {
+              tap((rotulos: RotuloDoEvento[]) => {
                 this._selecaoDeRotulosComponentService
-                    ._adicionaRotulosSeNaoExistir(pessoas,
+                    ._adicionaRotulosSeNaoExistir(rotulos,
                                                   this._rotulosEscolhidos);
-                this._rotulosDisponiveis = pessoas;
+                this._rotulosDisponiveis = rotulos;
                 this._cd.markForCheck();
               }),
               concatMapTo(this._matSelectionList.options.changes),

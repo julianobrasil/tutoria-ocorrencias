@@ -27,7 +27,10 @@ import * as fromDocuments from './model/transport-objects';
 
 import {OcorrenciasPessoasAdapterService} from './ocorrencias-pessoas.service';
 import {OcorrenciasRotulosAdapterService} from './ocorrencias-rotulos.service';
-import {PESSOAS_SERVICE_ADAPTER, ROTULOS_SERVICE_ADAPTER} from './ocorrencias/public_api';
+import {
+  PESSOAS_SERVICE_ADAPTER,
+  ROTULOS_SERVICE_ADAPTER,
+} from './ocorrencias/public_api';
 import {RouterExtraService} from './shared/services/router-extra';
 
 @NgModule({
@@ -87,6 +90,9 @@ export class AppModule {
   }
 
   _fixEventos(): void {
+    const rotuloTutoria = ROTULOS_EXISTENTES.find(
+        (r: fromDocuments.RotuloDoEvento) => r.texto === 'tutoria');
+
     EVENTOS_EXISTENTES.forEach((evt: fromDocuments.Evento) => {
       if (evt.tutoria.historicoTutores.length) {
         evt.tutoria.historicoTutores.sort((a, b) =>
@@ -110,6 +116,7 @@ export class AppModule {
         evt.isEncerrado ?
             ROTULOS_EXISTENTES.find((r) => r.texto === 'resolvido') :
             ROTULOS_EXISTENTES.find((r) => r.texto === 'não resolvido'),
+        rotuloTutoria,
       ];
 
       evt.cidadeUnidade =

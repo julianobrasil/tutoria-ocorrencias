@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {
   HistoricoInteracao,
   RotuloDoEvento,
@@ -9,7 +9,7 @@ import {
   templateUrl: './ocorrencia-acao-linha-alteracao-rotulo.component.html',
   styleUrls: ['./ocorrencia-acao-linha-alteracao-rotulo.component.scss'],
 })
-export class OcorrenciaAcaoLinhaAlteracaoRotuloComponent implements OnInit {
+export class OcorrenciaAcaoLinhaAlteracaoRotuloComponent {
   /** histórico de interação com atualização de rótulos */
   @Input()
   get historicoInteracao(): HistoricoInteracao {
@@ -34,8 +34,4 @@ export class OcorrenciaAcaoLinhaAlteracaoRotuloComponent implements OnInit {
 
   /** rótulos que foram removidos */
   _rotulosRemovidos: RotuloDoEvento[];
-
-  constructor() {}
-
-  ngOnInit() {}
 }

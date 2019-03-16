@@ -5,17 +5,37 @@ import {ObjectReference} from '../../../model/transport-objects';
 @Pipe({name: 'textoDeLimiteDeParticipantesEscolhidos'})
 export class TextoDeLimiteDeParticipantesEscolhidosPipe implements
     PipeTransform {
-  transform(usuarios: ObjectReference[], maxUsuarios: number): string {
-    if (maxUsuarios < 0) {
+  /**
+   * Note que o número de usuários corrente poderia ser obtido a partir do
+   * parâmetro "usuarios", mas precisava de uma forma de forçar o angular a
+   * executar o transform (sem ser colocando o meta atributo "pure = false").
+   * A forma que me parececu mais natural foi colocar o atributo corrente com o
+   * número de usuários, que, quando alterado, deve realmente disparar o
+   * método transform
+   *
+   * @param {ObjectReference[]} usuarios
+   * @param {{maxUsuarios: number, corrente: number}} args
+   *     maxUsuarios: # máximo de usuários
+   *     corrente: # de usuários corrente
+   * @returns {string}
+   * @memberof TextoDeLimiteDeParticipantesEscolhidosPipe
+   */
+  transform(usuarios: ObjectReference[], args: {
+    maxUsuarios: number;
+    corrente: number
+  }): string {
+    if (args.maxUsuarios < 0) {
       return '';
     }
 
-    if (maxUsuarios > 0 && (usuarios && usuarios.length === maxUsuarios)) {
-      return 'Máximo de pessoas atingido: ' + maxUsuarios;
+    if (args.maxUsuarios > 0 &&
+        (usuarios && usuarios.length === args.maxUsuarios)) {
+      return 'Máximo de pessoas atingido: ' + args.maxUsuarios;
     }
 
-    return maxUsuarios > 1 ?
-               'Você pode escolher até ' + maxUsuarios + ' pessoas' :
-               maxUsuarios === 1 ? 'Você pode escolher até 1 pessoa' : '';
+    const diferenca = args.maxUsuarios - usuarios.length;
+
+    return diferenca > 1 ? 'Você pode adicionar mais ' + diferenca + ' pessoas' :
+                           'Você pode adicionar mais 1 pessoa';
   }
 }

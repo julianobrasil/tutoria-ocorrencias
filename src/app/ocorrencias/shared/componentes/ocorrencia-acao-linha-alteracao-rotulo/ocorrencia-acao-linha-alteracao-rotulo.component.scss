@@ -1,10 +1,16 @@
 .ocorrencia-acao-linha-alteracao-rotulo-container {
-  display: flex;
-  align-items: center;
+  display: inline;
 
+  .conjuncao-aditiva {
+    display: inline-flex;
+  }
+  
   .ocorrencia-acao-linha-alteracao-rotulo {
-    display: flex;
-    align-items: center;
+    display: inline;
+
+    &>* {
+      display: inline-flex;
+    }
 
     &:last-of-type {
       margin-right: 3px;

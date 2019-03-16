@@ -16,12 +16,14 @@ import {
   MatListOption,
   MatSelectionList,
   MatSelectionListChange,
+  MatSnackBar,
 } from '@angular/material';
 
-import {Subject} from 'rxjs';
+import {combineLatest, Subject} from 'rxjs';
 import {
   concatMapTo,
   debounceTime,
+  map,
   startWith,
   switchMap,
   takeUntil,
@@ -93,7 +95,7 @@ export class SelecaoDePessoasComponent implements OnDestroy,
               private _selecaoDePessoasAdapterService: PessoaServiceAdapter,
               private _selecaoDePessoasComponentService:
                   SelecaoDePessoasComponentService,
-              private _cd: ChangeDetectorRef) {}
+              private _snakbar: MatSnackBar, private _cd: ChangeDetectorRef) {}
 
   ngAfterViewInit() { this._setupFiltroDePessoas(); }
 
@@ -101,6 +103,10 @@ export class SelecaoDePessoasComponent implements OnDestroy,
     if (this._destroy$ && !this._destroy$.closed) {
       this._destroy$.next();
       this._destroy$.complete();
+    }
+
+    if (this._usuariosEscolhidos$ && !this._usuariosEscolhidos$.closed) {
+      this._usuariosEscolhidos$.complete();
     }
   }
 
@@ -113,10 +119,20 @@ export class SelecaoDePessoasComponent implements OnDestroy,
   _alteracaoNaListaEscolhida(change: MatSelectionListChange) {
     const usuario = change.option.value as ObjectReference;
 
-    if (this.usuariosImexiveis &&
-        this.usuariosImexiveis.some((u: ObjectReference) =>
-                                        u.code === usuario.code)) {
+    if ((this.usuariosImexiveis &&
+         this.usuariosImexiveis.some((u: ObjectReference) =>
+                                         u.code === usuario.code))) {
       change.option.toggle();
+      return;
+    }
+
+    if (this._usuariosEscolhidos.length === this.maxUsuarios &&
+        change.option.selected) {
+      change.option.toggle();
+
+      this._snakbar.open(
+          'Máximo de usuários atingido', '',
+          {horizontalPosition: 'end', verticalPosition: 'top',  duration: 3000});
       return;
     }
 
@@ -144,8 +160,10 @@ export class SelecaoDePessoasComponent implements OnDestroy,
 
   /** monitora o que o usuário está digitando */
   private _setupFiltroDePessoas() {
-    this._filtroCtrl.valueChanges
-        .pipe(startWith(''), debounceTime(300),
+    combineLatest(this._filtroCtrl.valueChanges,
+                  this._usuariosEscolhidos$.pipe(startWith([])))
+        .pipe(startWith(['', []]), debounceTime(300),
+              map(([valor, _]) => valor),
               switchMap((valor: string) =>
                             this._selecaoDePessoasAdapterService.obtemPessoas(
                                 0, 20, valor)),

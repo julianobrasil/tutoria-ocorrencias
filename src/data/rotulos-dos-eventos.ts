@@ -9,6 +9,7 @@ export const ROTULOS_EXISTENTES: RotuloDoEvento[] = [
     texto: 'resolvido',
     isApagavel: false,
     corHexa: '#6BFF33',
+    isReservado: false,
   },
   {
     id: '2',
@@ -18,6 +19,7 @@ export const ROTULOS_EXISTENTES: RotuloDoEvento[] = [
     texto: 'não resolvido',
     isApagavel: false,
     corHexa: '#FF0000',
+    isReservado: false,
   },
   {
     id: '3',
@@ -27,6 +29,7 @@ export const ROTULOS_EXISTENTES: RotuloDoEvento[] = [
     texto: 'em análise',
     isApagavel: false,
     corHexa: '#FFC433',
+    isReservado: false,
   },
   {
     id: '4',
@@ -36,5 +39,26 @@ export const ROTULOS_EXISTENTES: RotuloDoEvento[] = [
     texto: 'sem solução no momento',
     isApagavel: false,
     corHexa: '#000000',
+    isReservado: false,
+  },
+  {
+    id: '5',
+    version: 0,
+    lasModifiedDate: '2018-01-31T13:25:43.484Z',
+    lasModifiedBy: 'karolina.miranda',
+    texto: 'tutoria',
+    isApagavel: false,
+    corHexa: '#FFFF00',
+    isReservado: true,
+  },
+  {
+    id: '6',
+    version: 0,
+    lasModifiedDate: '2018-01-31T13:25:43.484Z',
+    lasModifiedBy: 'karolina.miranda',
+    texto: 'ouvidoria',
+    isApagavel: false,
+    corHexa: '#FF0000',
+    isReservado: true,
   },
 ];

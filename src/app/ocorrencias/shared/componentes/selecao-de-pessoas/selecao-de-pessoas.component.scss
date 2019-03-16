@@ -21,6 +21,11 @@
 
     background-color: mat-color($app-primary);
     color: mat-contrast($app-primary, 700);
+
+    &.max-pessoas-atingido {
+      background-color: mat-color($app-warn);
+      color: mat-contrast($app-warn, 700);
+    }
   }
 
   .selecao-de-pessoas-input {

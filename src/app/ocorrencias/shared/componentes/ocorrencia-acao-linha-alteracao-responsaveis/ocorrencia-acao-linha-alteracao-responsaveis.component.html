@@ -1,0 +1,58 @@
+<div class="ocorrencia-acao-linha-alteracao-responsaveis-container">
+  <!-- RESPONSAVEIS ADICIONADOS -->
+  <section *ngIf="_responsaveisAdicionados?.length"
+           class="ocorrencia-acao-linha-alteracao-responsaveis">
+    <div>adicionou&nbsp;</div>
+    <ng-container *ngFor="let userInfo of _responsaveisAdicionados; last as isLast, first as isFirst">
+      <span *ngIf="!isFirst"
+            [ngClass]="_getConectivoClass(isLast)">{{isLast ? 'e' : ','}}</span>
+      <span #popoverAnchor="satPopoverAnchor"
+            (mouseenter)="_mostraPopover(userInfo,popoverAnchor)"
+            (mouseleave)="_escondePopover(popoverAnchor)"
+            [satPopoverAnchorFor]="popover"
+            class="usuario-login">
+        <strong>{{userInfo?.login}}</strong>
+      </span>
+    </ng-container>
+  </section>
+
+  <!-- CONECTIVO DE LIGAÇÃO ("adicionou xyz E removeu ckj") -->
+  <section *ngIf="_responsaveisAdicionados?.length && _responsaveisRemovidos?.length"
+           class="conjuncao-aditiva">
+    &nbsp;e&nbsp;
+  </section>
+
+  <!-- RESPONSAVEIS REMOVIDOS -->
+  <section *ngIf="_responsaveisRemovidos?.length"
+           class="ocorrencia-acao-linha-alteracao-responsaveis">
+    <div>removeu&nbsp;</div>
+
+    <ng-container *ngFor="let userInfo of _responsaveisRemovidos; last as isLast, first as isFirst">
+      <span *ngIf="!isFirst"
+            [ngClass]="_getConectivoClass(isLast)">{{isLast ? 'e' : ','}}</span>
+      <span #popoverAnchor="satPopoverAnchor"
+            (mouseenter)="_mostraPopover(userInfo,popoverAnchor)"
+            (mouseleave)="_escondePopover(popoverAnchor)"
+            [satPopoverAnchorFor]="popover"
+            class="user-login">
+        <strong>{{userInfo?.login}}</strong>
+      </span>
+    </ng-container>
+  </section>
+</div>
+
+<sat-popover #popover
+             horizontalAlign="center"
+             verticalAlign="above">
+  <section (mouseenter)="_mantemPopoverAberto()"
+           (mouseleave)="_escondePopover()"
+           class="ocorrencia-acao-linha-alteracao-responsaveis-popover-container mat-elevation-z8">
+    <section class="ocorrencia-acao-linha-alteracao-responsaveis-popover-usuario">
+      {{_usuarioInfoSelecionado?.responsavelRef?.description}}
+    </section>
+
+    <section class="ocorrencia-acao-linha-alteracao-responsaveis-popover-email">
+      {{_usuarioInfoSelecionado?.responsavelRef?.code}}
+    </section>
+  </section>
+</sat-popover>

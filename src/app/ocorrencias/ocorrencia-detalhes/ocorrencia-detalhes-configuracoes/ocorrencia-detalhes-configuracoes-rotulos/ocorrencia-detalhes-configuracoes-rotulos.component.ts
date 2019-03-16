@@ -77,7 +77,7 @@ export class OcorrenciaDetalhesConfiguracoesRotulosComponent implements
   @ViewChild(SelecaoDeRotulosComponent)
   _selecaoDeRotulosComponent: SelecaoDeRotulosComponent;
 
-  /** emite quando há alteração de participantes para ser gravado no banco */
+  /** emite quando há alteração de rótulos para ser gravado no banco */
   _rotulosAlterados$: ReplaySubject<DifferenceArrays<RotuloDoEvento>> =
       new ReplaySubject<DifferenceArrays<RotuloDoEvento>>(1);
 
@@ -163,10 +163,11 @@ export class OcorrenciaDetalhesConfiguracoesRotulosComponent implements
             map((rotulosEscolhidos:
                      RotuloDoEvento[]): DifferenceArrays<RotuloDoEvento> =>
                     this._arrayUtils.obtemDiferencaEntreArrays<RotuloDoEvento>(
-                        this.ocorrencia.rotulos, rotulosEscolhidos,
+                        this.ocorrencia.rotulos.filter((r: RotuloDoEvento) =>
+                                                           !r.isReservado),
+                        rotulosEscolhidos,
                         (a: RotuloDoEvento, b: RotuloDoEvento) =>
-                            a && b && a.id && b.id ? a.id === b.id :
-                                                     false)),
+                            a && b && a.id && b.id ? a.id === b.id : false)),
             takeUntil(this._destroy$))
         .subscribe(this._rotulosAlterados$);
   }

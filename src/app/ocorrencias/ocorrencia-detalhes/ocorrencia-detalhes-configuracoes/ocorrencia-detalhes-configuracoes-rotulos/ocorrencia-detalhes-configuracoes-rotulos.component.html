@@ -9,10 +9,6 @@
 
   <section class="ocorrencia-detalhes-configuracoes-rotulos-pilha">
     <span *ngIf="_mostraIndicadorNenhumLabel">Nenhum</span>
-    <app-ocorrencia-rotulo [corDeFundo]="ocorrencia?.classificacaoEvento | corDeFundoPorTipo"
-                           [rotulo]="ocorrencia?.classificacaoEvento | labelPorTipo"
-                           class="ocorrencia-detalhes-configuracoes-rotulos-pilha-item">
-    </app-ocorrencia-rotulo>
     <app-ocorrencia-rotulo *ngFor="let rotulo of ocorrencia?.rotulos"
                            [corDeFundo]="rotulo?.corHexa"
                            [rotulo]="rotulo?.texto"

@@ -1,0 +1,51 @@
+.ocorrencia-acao-linha-alteracao-responsaveis-container {
+  display: inline;
+
+  .conjuncao-aditiva {
+    display: inline-flex;
+  }
+
+  .ocorrencia-acao-linha-alteracao-responsaveis {
+    display: inline;
+
+    &>* {
+      display: inline-flex;
+    }
+
+    &:last-of-type {
+      margin-right: 3px;
+    }
+
+    $margin: 3px;
+    .margem-dupla {
+      margin-left: $margin;
+      margin-right: $margin;
+    }
+
+    .margem-direita {
+      margin-right: $margin;
+    }
+
+    .ususario-login {
+      &:hover {
+        text-decoration: underline;
+
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+.ocorrencia-acao-linha-alteracao-responsaveis-popover-container {
+  background-color: white;
+  border-radius: 4px;
+  padding: 10px 20px;
+  margin-bottom: 10px;
+
+  font-size: 12px;
+
+  .ocorrencia-acao-linha-alteracao-responsaveis-popover-usuario {
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+}

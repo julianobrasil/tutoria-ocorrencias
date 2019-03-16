@@ -19,16 +19,21 @@
 
     .ocorrencia-acao-texto-descricao {
       flex: 1;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-
+      
       margin-left: 5px;
 
       font-size: 0.8rem;
       color: rgba(0, 0, 0, 0.8);
 
+      .acao-default, app-tempo-decorrido {
+        display: inline;
+      }
+
       .texto-normal-negrito {
+        // aqui
+        display: inline;
+
+
         color: rgba(0, 0, 0, 1);
         font-weight: 600;
       }

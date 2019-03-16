@@ -84,6 +84,12 @@ export class OcorrenciaAcaoComponent {
         this._icon = 'label';
         break;
       }
+
+      case TipoAcao.ALTERA_RESPONSAVEIS: {
+        this._theme = 'primary';
+        this._icon = 'person';
+        break;
+      }
     }
   }
 }

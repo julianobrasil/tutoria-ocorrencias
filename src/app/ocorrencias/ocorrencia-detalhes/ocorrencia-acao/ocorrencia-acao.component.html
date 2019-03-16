@@ -14,14 +14,20 @@
     <section class="ocorrencia-acao-texto-descricao">
       <section class="autor texto-normal-negrito">{{acao?.autorRef?.description}}&nbsp;</section>
 
-      <span *ngIf="acao?.historicoInteracoes[0]?.tipoAcao !== _tipoAcao.ALTERA_ROTULO; else rotulos"
-            [innerHTML]="acao | acaoRealizada"
-            class="m-right-5px"></span>
+      <ng-container [ngSwitch]="acao?.historicoInteracoes[0]?.tipoAcao">
+        <span *ngSwitchDefault
+              [innerHTML]="acao | acaoRealizada"
+              class="acao-default m-right-5px"></span>
 
-      <ng-template #rotulos>
-        <app-ocorrencia-acao-linha-alteracao-rotulo [historicoInteracao]="acao?.historicoInteracoes[0]">
+        <app-ocorrencia-acao-linha-alteracao-rotulo *ngSwitchCase="_tipoAcao.ALTERA_ROTULO"
+                                                    [historicoInteracao]="acao?.historicoInteracoes[0]">
         </app-ocorrencia-acao-linha-alteracao-rotulo>
-      </ng-template>
+
+        <app-ocorrencia-acao-linha-alteracao-responsaveis *ngSwitchCase="_tipoAcao.ALTERA_RESPONSAVEIS"
+                                                          [historicoInteracao]="acao?.historicoInteracoes[0]">
+        </app-ocorrencia-acao-linha-alteracao-responsaveis>
+      </ng-container>
+
       <app-tempo-decorrido [data]="acao?.historicoInteracoes[0]?.data"></app-tempo-decorrido>
     </section>
   </section>

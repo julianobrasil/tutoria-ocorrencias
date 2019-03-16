@@ -62,16 +62,21 @@ export class EventoRestService {
             null;
 
     let classificacaoEvento: fromDocuments.ClassificacaoEvento = null;
+    let rotuloAplicacao: fromDocuments.RotuloDoEvento;
     if (tutoria) {
-      const tutorAtual: fromDocuments.Tutor = tutoria.historicoTutores.find(
-          (t: fromDocuments.Tutor) => !t.dataFim);
+      const tutorAtual: fromDocuments.Tutor =
+          tutoria.historicoTutores.find((t: fromDocuments.Tutor) => !t.dataFim);
       classificacaoEvento =
           tutorAtual && tutorAtual.email === this._authService.email ?
               fromDocuments.ClassificacaoEvento.TUTORIA_TUTOR :
               (classificacaoEvento =
                    fromDocuments.ClassificacaoEvento.TUTORIA_GERAL);
+      rotuloAplicacao = ROTULOS_EXISTENTES.find(
+          (r: fromDocuments.RotuloDoEvento) => r.texto === 'tutoria');
     } else if (novoEventoRequest.classificacaoEvento) {
       classificacaoEvento = novoEventoRequest.classificacaoEvento;
+      rotuloAplicacao = ROTULOS_EXISTENTES.find(
+          (r: fromDocuments.RotuloDoEvento) => r.texto === 'ouvidoria');
     } else {
       classificacaoEvento = fromDocuments.ClassificacaoEvento.OCORRENCIA_COMUM;
     }
@@ -106,6 +111,7 @@ export class EventoRestService {
         },
       ],
       responsaveis,
+      rotulos: rotuloAplicacao ? [rotuloAplicacao] : [],
       titulo: novoEventoRequest.titulo, tutoria,
       textoFormatado: novoEventoRequest.textoFormatado,
       cidadeUnidade: novoEventoRequest.cidadeUnidade ?
@@ -520,9 +526,9 @@ export class EventoRestService {
 
     evento.interacoes.push(comentario);
 
-    if (!evento.participantes.some(
-            (p: fromDocuments.Participante) =>
-                p.usuarioRef.code === this._authService.email)) {
+    if (!evento.participantes.some((p: fromDocuments.Participante) =>
+                                       p.usuarioRef.code ===
+                                       this._authService.email)) {
       // no servidor é preciso verificar o real papel do participante antes de
       // colocá-lo como convidado
       const participante: fromDocuments.Participante = {
@@ -749,8 +755,11 @@ export class EventoRestService {
     });
 
     participantesAdicionados.forEach((or: fromDocuments.ObjectReference) => {
-      if (!evento.participantes.some((p: fromDocuments.Participante) =>
-                                         p.usuarioRef.code === or.code)) {
+      if (!evento.participantes.some(
+              (p: fromDocuments.Participante) =>
+                  p.usuarioRef.code === or.code &&
+                  p.tipoParticipacao ===
+                      fromDocuments.TipoParticipacao.RESPONSAVEL)) {
         // se o responsável não for participante, é preciso incluí-lo como tal
         const participante: fromDocuments.Participante = {
           isAutor: false,
@@ -763,12 +772,52 @@ export class EventoRestService {
     });
 
     participantesRemovidos.forEach((or: fromDocuments.ObjectReference) => {
-      const index = evento.responsaveis.findIndex(
+      let index = evento.responsaveis.findIndex(
           (p: fromDocuments.Responsavel) => p.email === or.code);
       if (index > -1) {
         evento.responsaveis.splice(index, 1);
       }
+
+      index = evento.participantes.findIndex(
+          (p: fromDocuments.Participante) =>
+              p.usuarioRef.code === or.code &&
+              p.tipoParticipacao ===
+                  fromDocuments.TipoParticipacao.RESPONSAVEL);
+
+      if (index > -1) {
+        if (evento.interacoes.some((i: fromDocuments.Interacao) =>
+                                       i.autorRef.code === or.code)) {
+          evento.participantes[index].tipoParticipacao =
+              fromDocuments.TipoParticipacao.CONVIDADO;
+        } else {
+          evento.participantes.splice(index, 1);
+        }
+      }
     });
+
+    const agora: Date = new Date();
+    const valorAntigo: string = JSON.stringify(participantesRemovidos);
+    const valorCorrente: string = JSON.stringify(participantesAdicionados);
+    // AÇÃO
+    const acao: fromDocuments.Interacao = {
+      autorRef: {
+        code: this._authService.email,
+        description: this._authService.nomeUsuario,
+      },
+      dataCriacao: new Date(agora),
+      tipoInteracao: fromDocuments.TipoInteracao.ACAO,
+      id: '' + new Date(agora).getTime(),
+      role: Funcoes.ADMINISTRADOR.funcaoSistema,
+      historicoInteracoes: [
+        {
+          data: new Date(agora),
+          tipoAcao: fromDocuments.TipoAcao.ALTERA_RESPONSAVEIS,
+          auditoriaAcao: {valorAntigo, valorCorrente},
+        },
+      ],
+    };
+
+    evento.interacoes.push(acao);
 
     return observableOf(JSON.parse(JSON.stringify(evento)));
   }
@@ -794,7 +843,7 @@ export class EventoRestService {
     const rotulosRemovidos: fromDocuments.RotuloDoEvento[] = [];
     rotulosRemovidosIds.forEach((id: string) => {
       const index = evento.rotulos.findIndex(
-          (p: fromDocuments.RotuloDoEvento) => p.id === id);
+          (p: fromDocuments.RotuloDoEvento) => p && p.id === id);
       if (index > -1) {
         rotulosRemovidos.push(evento.rotulos[index]);
         evento.rotulos.splice(index, 1);
@@ -882,10 +931,10 @@ class TutoriaUtils {
     termToFilter = termToFilter.toUpperCase();
 
     return evt.responsaveis.some(
-        (r) => !!r &&
-               (r.email.toUpperCase().includes(termToFilter) ||
-                (!!r.nomeResponsavel &&
-                 r.nomeResponsavel.toUpperCase().includes(termToFilter))));
+        (r) =>
+            !!r && (r.email.toUpperCase().includes(termToFilter) ||
+                    (!!r.nomeResponsavel &&
+                     r.nomeResponsavel.toUpperCase().includes(termToFilter))));
   }
 
   private static _tutorContem(evt: fromDocuments.Evento,
