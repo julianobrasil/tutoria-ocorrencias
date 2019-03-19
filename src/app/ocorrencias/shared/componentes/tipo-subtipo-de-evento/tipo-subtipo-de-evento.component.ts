@@ -16,7 +16,7 @@ import {
 import {combineLatest, Subject} from 'rxjs';
 import {filter, map, takeUntil} from 'rxjs/operators';
 
-import {SubTipoEvento, TipoEvento} from '../../../../model/transport-objects/';
+import {SubTipoEvento, TipoEvento} from '@model-objects';
 
 import {enterFormAnimation} from '../../../animations';
 

@@ -1,0 +1,18 @@
+<app-search-bar-botao-filtro (clicked)="popover.open($event)"
+                             (cleared)="_limpaFiltro($event)"
+                             [mostraBotaoLimparFiltro]="cursosDaUltimaSelecao?.length"
+                             [satPopoverAnchorFor]="popover">
+  <ng-content></ng-content>
+</app-search-bar-botao-filtro>
+
+<sat-popover #popover
+             (afterClose)="_monitoraAberturaFechamentoDoPopover(false)"
+             (afterOpen)="_monitoraAberturaFechamentoDoPopover(true)"
+             hasBackdrop
+             horizontalAlign="end"
+             verticalAlign="below">
+  <div class="search-bar-filtro-curso-popover mat-elevation-z8">
+    <app-selecao-de-cursos [cursosEscolhidos]="cursosDaUltimaSelecao">
+    </app-selecao-de-cursos>
+  </div>
+</sat-popover>

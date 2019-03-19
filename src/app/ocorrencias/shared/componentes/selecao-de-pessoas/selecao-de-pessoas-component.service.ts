@@ -1,12 +1,11 @@
 import {Injectable} from '@angular/core';
 
-import {ObjectReference} from '../../../../model/transport-objects';
+import {ObjectReference} from '@model-objects';
 
 @Injectable({providedIn: 'root'})
 export class SelecaoDePessoasComponentService {
   /**
-   * Adiciona, no início do vetor pessoas, as pessoasEscolhidas, no início do
-   * vetor e em ordem alfabética.
+   * Adiciona, no início do vetor pessoas, as pessoasEscolhidas, ordem alfabética.
    *
    * @param {ObjectReference[]} pessoas
    * @param {ObjectReference[]} pessoasEscolhidas

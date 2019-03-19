@@ -30,8 +30,15 @@
 
         .ocorrencia-detalhes-actions {
           display: flex;
-          justify-content: flex-end;
+          justify-content: space-between;
+          align-items: center;
+
           margin-top: 15px;
+
+          .mat-slide-toggle {
+            margin-left: 60px;
+            font-size: 1rem;
+          }
         }
       }
 

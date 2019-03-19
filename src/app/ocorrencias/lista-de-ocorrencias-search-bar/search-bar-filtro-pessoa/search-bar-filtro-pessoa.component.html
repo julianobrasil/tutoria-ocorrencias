@@ -1,0 +1,20 @@
+<app-search-bar-botao-filtro (clicked)="popover.open($event)"
+                             (cleared)="_limpaFiltro($event)"
+                             [mostraBotaoLimparFiltro]="pessoasDaUltimaSelecao?.length"
+                             [satPopoverAnchorFor]="popover">
+  <ng-content></ng-content>
+</app-search-bar-botao-filtro>
+
+<sat-popover #popover
+             (afterClose)="_monitoraAberturaFechamentoDoPopover(false)"
+             (afterOpen)="_monitoraAberturaFechamentoDoPopover(true)"
+             hasBackdrop
+             horizontalAlign="end"
+             verticalAlign="below">
+  <div class="search-bar-filtro-pessoa-popover mat-elevation-z8">
+    <app-selecao-de-pessoas [matTooltipDisabled]="false"
+                            [multi]="multi"
+                            [usuariosEscolhidos]="pessoasDaUltimaSelecao">
+    </app-selecao-de-pessoas>
+  </div>
+</sat-popover>

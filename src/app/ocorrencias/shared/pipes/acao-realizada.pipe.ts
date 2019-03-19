@@ -6,7 +6,7 @@ import {
   TipoAcao,
   TipoVisibilidade,
   Visibilidade,
-} from '../../../model/transport-objects';
+} from '@model-objects';
 
 @Pipe({name: 'acaoRealizada'})
 export class AcaoRealizadaPipe implements PipeTransform {

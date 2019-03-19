@@ -16,7 +16,7 @@ import {
   Evento,
   TipoVisibilidade,
   Visibilidade,
-} from '../../../model/transport-objects';
+} from '@model-objects';
 import {
   OcorrenciaDadosDaGravacao,
   OcorrenciaStatusGravacaoService,

@@ -1,8 +1,7 @@
 import {Pipe, PipeTransform} from '@angular/core';
 
+import {Tutoria} from '@model-objects';
 import {TutoriaNome} from '../../../model/helper-objects/telas/tutoria-helper';
-import {Participante} from '../../../model/transport-objects';
-import {Tutoria} from '../../../model/transport-objects/';
 
 @Pipe({
   name: 'tutoriaTurmas',

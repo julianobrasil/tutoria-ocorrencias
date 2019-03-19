@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 
-import {Interacao} from '../../../../model/transport-objects';
+import {Interacao} from '@model-objects';
 
 @Component({
   selector: 'app-ocorrencia-bagde',

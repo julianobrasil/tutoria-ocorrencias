@@ -29,6 +29,11 @@ export const getTermoDeBusca = createSelector(
     fromEventoReducers.getTermoDeBusca,
 );
 
+export const getFiltrosDeBusca = createSelector(
+  getEventosState,
+  fromEventoReducers.getFiltrosDeBusca,
+);
+
 export const getEventoById = createSelector(
     getEventos,
     (eventos: Evento[], params) =>

@@ -14,12 +14,13 @@ import {MatPaginatorIntl, PageEvent} from '@angular/material';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
-import {Evento} from '../../model/transport-objects';
+// tslint:disable-next-line: no-implicit-dependencies
+import {Evento} from '@model-objects';
+import {IssueTrackerPagination} from '../classes-and-interfaces';
 import {
   MatPaginatorIntlListaDeOcorrenciasPtBr,
 } from '../i18n/mat-paginator-intl-lista-de-ocorrencias-pt-br';
 import {IssueTrackerConfiguration} from '../model/issue-tracker-configuration';
-import {IssueTrackerPagination} from '../ocorrencia-facade.service';
 import {
   OcorrenciaFormularioComponentTipo,
 } from '../ocorrencia-formulario/ocorrencia-formulario-component.service';

@@ -1,6 +1,7 @@
 import {AfterViewInit, ChangeDetectorRef, Component, Input} from '@angular/core';
 
-import {Evento} from '../../../model/transport-objects';
+// tslint:disable-next-line: no-implicit-dependencies
+import {Evento} from '@model-objects';
 
 @Component({
   selector: 'app-ocorrencia-resumo',

@@ -129,7 +129,6 @@ export const valorTutoriaBySemestreDeTrabalhoPOSTPath =
 
 export const loginPath = '/login';
 
-
 export const SERVER_PAGINATION_PAGE_INDEX = 'page';
 export const SERVER_PAGINATION_PAGE_SIZE = 'size';
 export const SERVER_PAGINATION_PAGE_SORT = 'sort';

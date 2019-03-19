@@ -71,6 +71,11 @@
         </app-ocorrencia-comentario>
 
         <section class="ocorrencia-detalhes-actions">
+          <mat-slide-toggle (change)="_isNovoComentarioPrivado = $event?.checked"
+                            [checked]="_isNovoComentarioPrivado">
+            Comentário privado
+          </mat-slide-toggle>
+
           <app-acoes-ligadas-a-novo-comentario (comentar)="_comenta($event)"
                                                (encerrarEvento)="_encerraEvento($event)"
                                                (reabrirEvento)="_reabreEvento($event)"

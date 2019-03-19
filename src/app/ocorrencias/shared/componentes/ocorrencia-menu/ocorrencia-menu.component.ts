@@ -18,7 +18,7 @@ import {
   Evento,
   Interacao,
   TipoVisibilidade,
-} from '../../../../model/transport-objects';
+} from '@model-objects';
 // tslint:enable: max-line-length
 
 @Component({
@@ -81,7 +81,8 @@ export class OcorrenciaMenuComponent implements AfterViewInit,
 
   /** mostra o botão de esconder */
   get _mostraBotaoDeEsconder(): boolean {
-    return (this.ocorrencia && this.ocorrencia.visibilidade &&
+    return (!this.comentario && this.ocorrencia &&
+            this.ocorrencia.visibilidade &&
             this.ocorrencia.visibilidade.tipo === TipoVisibilidade.TODOS) ||
            (!!this.comentario && !!this.comentario.visibilidade &&
             this.comentario.visibilidade.tipo === TipoVisibilidade.TODOS);
@@ -89,7 +90,8 @@ export class OcorrenciaMenuComponent implements AfterViewInit,
 
   /** mostra o botão de mostrar */
   get _mostraBotaoDeMostrar(): boolean {
-    return (this.ocorrencia && this.ocorrencia.visibilidade &&
+    return (!this.comentario && this.ocorrencia &&
+            this.ocorrencia.visibilidade &&
             this.ocorrencia.visibilidade.tipo !== TipoVisibilidade.TODOS) ||
            (!!this.comentario && !!this.comentario.visibilidade &&
             this.comentario.visibilidade.tipo !== TipoVisibilidade.TODOS);

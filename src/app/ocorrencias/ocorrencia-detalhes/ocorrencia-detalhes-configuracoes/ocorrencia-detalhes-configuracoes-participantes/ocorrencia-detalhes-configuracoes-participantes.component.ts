@@ -16,7 +16,7 @@ import {
   OcorrenciaDetalhesComponentService,
 } from '../../ocorrencia-detalhes-component.service';
 
-import {ObjectReference, Participante} from '../../../../model/transport-objects';
+import {ObjectReference, Participante} from '@model-objects';
 
 import {ArrayUtils, DifferenceArrays, SelecaoDePessoasComponent} from '../../../shared';
 
@@ -79,6 +79,10 @@ export class OcorrenciaDetalhesConfiguracoesParticipantesComponent
     if (this._destroy$ && !this._destroy$.closed) {
       this._destroy$.next();
       this._destroy$.complete();
+    }
+
+    if (this._participantesAlterados$ && !this._participantesAlterados$.closed) {
+      this._participantesAlterados$.complete();
     }
   }
 

@@ -5,6 +5,12 @@
                           [config]="_config$ | async"
                           [eventos]="_eventos$ | async"
                           [paginacao]="_paginacao$ | async">
+  <!-- BARRA DE FILTRAGEM-->
+  <app-lista-de-ocorrencias-search-bar (filtroChange)="_trataAlteracaoNoFiltro($event)"
+                                       [filtrosDeBusca]="_filtrosDeBusca$ | async | filtrosDeBuscaToListaDeOcorrenciasSearchBarComponentChange"
+                                       [numeroDeOcorrencias]="(_eventos$ | async)?.length"
+                                       issueSearchBar>
+  </app-lista-de-ocorrencias-search-bar>
 </app-lista-de-ocorrencias>
 
 <ng-template #novaOcorrencia>

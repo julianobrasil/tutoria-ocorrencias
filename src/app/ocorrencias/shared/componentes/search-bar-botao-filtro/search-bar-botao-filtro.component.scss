@@ -1,0 +1,43 @@
+.ocorrencia-botao-container {
+  display: flex;
+  align-items: center;
+
+  box-sizing: content-box;
+
+  padding: 15px 10px 16px;
+
+  cursor: pointer;
+
+  &:hover,
+  &:focus {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .mat-icon-button {
+    margin-right: 5px;
+  }
+
+  .mat-icon-button,
+  .mat-icon-button .mat-icon {
+    line-height: 1;
+
+    height: 15px;
+    width: 15px;
+
+    font-size: 15px;
+  }
+}
+
+// credits to @mmalerba
+// https://github.com/angular/material2/blob/c8ddaa80e7bd622ee43573e23d0eea0ad112b797/src/lib/select/select.scss#L77-L84
+$mat-select-arrow-size: 5px !default;
+$mat-select-arrow-margin: 4px !default;
+
+.app-mat-select-arrow {
+  width: 0;
+  height: 0;
+  border-left: $mat-select-arrow-size solid transparent;
+  border-right: $mat-select-arrow-size solid transparent;
+  border-top: $mat-select-arrow-size solid;
+  margin: 0 $mat-select-arrow-margin;
+}

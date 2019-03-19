@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 
-import {Evento, Interacao} from '../../../../model/transport-objects';
+import {Evento, Interacao} from '@model-objects';
 
 @Injectable({
   providedIn: 'root',

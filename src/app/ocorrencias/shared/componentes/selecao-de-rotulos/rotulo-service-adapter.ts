@@ -2,7 +2,7 @@ import {InjectionToken} from '@angular/core';
 
 import {Observable} from 'rxjs';
 
-import {RotuloDoEvento} from '../../../../model/transport-objects';
+import {RotuloDoEvento} from '@model-objects';
 
 /** Token para injetar o serviço de obtenção de pessoas */
 export const ROTULOS_SERVICE_ADAPTER: InjectionToken<RotuloServiceAdapter> = new InjectionToken<

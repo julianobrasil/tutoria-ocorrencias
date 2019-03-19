@@ -1,0 +1,21 @@
+.usuario-detalhes-popover-container {
+  background-color: white;
+  border-radius: 4px;
+  padding: 10px 20px;
+  margin-bottom: 10px;
+
+  font-size: 12px;
+
+  .usuario-detalhes-popover-usuario {
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+}
+
+.usuario-login {
+  &:hover {
+    text-decoration: underline;
+
+    cursor: pointer;
+  }
+}

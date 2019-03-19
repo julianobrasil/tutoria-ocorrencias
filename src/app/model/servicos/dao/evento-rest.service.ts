@@ -1,3 +1,4 @@
+// tslint:disable: max-line-length
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable, of as observableOf, throwError} from 'rxjs';
@@ -7,11 +8,16 @@ import {ROTULOS_EXISTENTES} from '../../../../data/rotulos-dos-eventos';
 import {TIPOS_EVENTOS_DISPONIVEIS} from '../../../../data/tipos_eventos';
 import {TUTORIAS_EXISTENTES} from '../../../../data/tutorias';
 import {AuthService} from '../../../auth/auth.service';
+import {FiltrosDeBusca} from '../../../ocorrencias/classes-and-interfaces';
+import {
+  TipoSubtipoInfo,
+} from '../../../ocorrencias/shared/componentes/selecao-de-tipos-de-ocorrencias/tipos-de-ocorrencia-service-adapter';
 import {
   FormatadorDeTextoService,
 } from '../../../ocorrencias/shared/utilitarios/formatador-de-texto.service';
 import {Funcoes} from '../../helper-objects/funcoes-sistema';
 import * as fromDocuments from '../../transport-objects';
+// tslint:enable: max-line-length
 
 @Injectable({providedIn: 'root'})
 export class EventoRestService {
@@ -64,8 +70,8 @@ export class EventoRestService {
     let classificacaoEvento: fromDocuments.ClassificacaoEvento = null;
     let rotuloAplicacao: fromDocuments.RotuloDoEvento;
     if (tutoria) {
-      const tutorAtual: fromDocuments.Tutor =
-          tutoria.historicoTutores.find((t: fromDocuments.Tutor) => !t.dataFim);
+      const tutorAtual: fromDocuments.Tutor = tutoria.historicoTutores.find(
+          (t: fromDocuments.Tutor) => !t.dataFim);
       classificacaoEvento =
           tutorAtual && tutorAtual.email === this._authService.email ?
               fromDocuments.ClassificacaoEvento.TUTORIA_TUTOR :
@@ -333,12 +339,12 @@ export class EventoRestService {
    * @returns {Observable<fromDocuments.EventoPaginado>}
    * @memberof TutoriaService
    */
-  findEventosByUsuarioLogado(termToFilter?: string, page?: number,
-                             pageSize?: number):
+  findEventosByUsuarioLogado(filtros: FiltrosDeBusca, termToFilter?: string,
+                             page?: number, pageSize?: number):
       Observable<fromDocuments.EventoPaginado> {
     let eventos: fromDocuments.Evento[] =
         // tslint:disable-next-line: no-use-before-declare
-        TutoriaUtils.filtraEventos(termToFilter);
+        TutoriaUtils.filtraEventos(termToFilter, filtros);
 
     eventos.sort((a, b) => new Date(b.dataRegistro).getTime() -
                            new Date(a.dataRegistro).getTime());
@@ -526,14 +532,14 @@ export class EventoRestService {
 
     evento.interacoes.push(comentario);
 
-    if (!evento.participantes.some((p: fromDocuments.Participante) =>
-                                       p.usuarioRef.code ===
-                                       this._authService.email)) {
+    if (!evento.participantes.some(
+            (p: fromDocuments.Participante) =>
+                p.usuarioRef.code === this._authService.email)) {
       // no servidor é preciso verificar o real papel do participante antes de
       // colocá-lo como convidado
       const participante: fromDocuments.Participante = {
         isAutor: false,
-        tipoParticipacao: fromDocuments.TipoParticipacao.CONVIDADO,
+        tipoParticipacao: fromDocuments.TipoParticipacao.GERAL,
         usuarioRef: {
           code: this._authService.email,
           description: this._authService.nomeUsuario,
@@ -883,34 +889,55 @@ export class EventoRestService {
  * PROJETO, POIS A LÓGICA ABAIXO SERÁ FEITA NO SERVIDOR
  */
 class TutoriaUtils {
-  static filtraEventos(termToFilter: string): fromDocuments.Evento[] {
-    if (!termToFilter) {
-      return EVENTOS_EXISTENTES;
-    }
-
+  static filtraEventos(termToFilter: string,
+                       filtros: FiltrosDeBusca): fromDocuments.Evento[] {
+    console.log(filtros);
+    console.log({termToFilter});
     return EVENTOS_EXISTENTES.filter(
         (evt: fromDocuments.Evento) =>
-            TutoriaUtils._tutorContem(evt, termToFilter) ||
-            TutoriaUtils._responsavelContem(evt, termToFilter) ||
-            TutoriaUtils._observacaoContem(evt, termToFilter) ||
-            TutoriaUtils._ocorrenciaContem(evt, termToFilter) ||
-            TutoriaUtils._comentarioContem(evt, termToFilter));
+            // Rótulo de aplicativo...
+        TutoriaUtils._rotuloContem(evt, filtros.rotulosAplicativosIds) &&
+        // Rótulos que não são de aplicativos...
+        TutoriaUtils._rotuloContem(evt, filtros.rotulosIds) &&
+        TutoriaUtils._tipoSubtipoContem(evt, filtros.tiposDeOcorrenciasInfo) &&
+        TutoriaUtils._cursoContem(evt, filtros.cursosRef) &&
+        TutoriaUtils._autorContem(evt, filtros.autorRef) &&
+        TutoriaUtils._responsavelContem(evt, filtros.responsaveisRef) &&
+        (filtros.isAberta && filtros.isFechada ?
+             true :
+             (evt.isEncerrado === !filtros.isAberta &&
+              evt.isEncerrado === filtros.isFechada)) &&
+        (TutoriaUtils._observacaoContem(evt, termToFilter) ||
+         TutoriaUtils._ocorrenciaContem(evt, termToFilter) ||
+         TutoriaUtils._comentarioContem(evt, termToFilter)));
   }
 
   private static _observacaoContem(evt: fromDocuments.Evento,
                                    termToFilter: string): boolean {
+    if (!termToFilter) {
+      return true;
+    }
+
     return evt.observacao &&
            evt.observacao.toUpperCase().includes(termToFilter.toUpperCase());
   }
 
   private static _ocorrenciaContem(evt: fromDocuments.Evento,
                                    termToFilter: string): boolean {
-    return evt.parecer &&
-           evt.parecer.toUpperCase().includes(termToFilter.toUpperCase());
+    if (!termToFilter) {
+      return true;
+    }
+
+    return (!!evt.textoFormatado.semFormatacao &&
+            evt.parecer.toUpperCase().includes(termToFilter.toUpperCase()));
   }
 
   private static _comentarioContem(evt: fromDocuments.Evento,
                                    termToFilter: string): boolean {
+    if (!termToFilter) {
+      return true;
+    }
+
     if (!evt.interacoes || !evt.interacoes.length) {
       return false;
     }
@@ -920,21 +947,93 @@ class TutoriaUtils {
 
       c.historicoInteracoes.sort((a, b) => new Date(a.data).getTime() -
                                            new Date(b.data).getTime());
-      return c.historicoInteracoes[0]
-          .texto.semFormatacao.toUpperCase()
-          .includes(termToFilter);
+      return (
+          !!c.historicoInteracoes && !!c.historicoInteracoes.length &&
+          !!c.historicoInteracoes[0] && !!c.historicoInteracoes[0].texto &&
+          !!c.historicoInteracoes[0].texto.semFormatacao &&
+          c.historicoInteracoes[0].texto.semFormatacao.toUpperCase().includes(
+              termToFilter));
     });
   }
 
-  private static _responsavelContem(evt: fromDocuments.Evento,
-                                    termToFilter: string): boolean {
-    termToFilter = termToFilter.toUpperCase();
+  private static _rotuloContem(evt: fromDocuments.Evento,
+                               rotulosIds: string[]): boolean {
+    if (!(rotulosIds && rotulosIds.length)) {
+      return true;
+    }
 
-    return evt.responsaveis.some(
-        (r) =>
-            !!r && (r.email.toUpperCase().includes(termToFilter) ||
-                    (!!r.nomeResponsavel &&
-                     r.nomeResponsavel.toUpperCase().includes(termToFilter))));
+    if (!evt.rotulos || !evt.rotulos.length) {
+      return false;
+    }
+
+    return evt.rotulos.some((r: fromDocuments.RotuloDoEvento) =>
+                                r && rotulosIds.includes(r.id));
+  }
+
+  private static _tipoSubtipoContem(evt: fromDocuments.Evento,
+                                    tiposDeOcorrenciasInfo:
+                                        TipoSubtipoInfo[]): boolean {
+    if (!(tiposDeOcorrenciasInfo && tiposDeOcorrenciasInfo.length)) {
+      return true;
+    }
+
+    return tiposDeOcorrenciasInfo.some(
+        (t: TipoSubtipoInfo) =>
+            t.descricaoTipo === evt.descricaoTipoEvento &&
+            t.descricaoSubtipo === evt.descricaoSubTipoEvento);
+  }
+
+  private static _cursoContem(evt: fromDocuments.Evento,
+                              cursosRefs: fromDocuments.ObjectReference[]):
+      boolean {
+    if (!(cursosRefs && cursosRefs.length)) {
+      return true;
+    }
+
+    if (!evt || !evt.tutoria) {
+      return true;
+    }
+
+    return (
+        evt.tutoria.turmas && evt.tutoria.turmas.length &&
+        evt.tutoria.turmas.some(
+            (t: fromDocuments.Turma) =>
+                t.cursoNome &&
+                cursosRefs.some(
+                    (c: fromDocuments.ObjectReference) =>
+                        t.centroDeCusto.unidade === c.extra.split('::')[0] &&
+                        t.centroDeCusto.turno === c.extra.split('::')[1] &&
+                        t.cursoNome.toUpperCase().includes(
+                            c.description.toUpperCase()))));
+  }
+
+  private static _autorContem(evt: fromDocuments.Evento,
+                              autorRef: fromDocuments.ObjectReference):
+      boolean {
+    if (!autorRef) {
+      return true;
+    }
+
+    return evt.autorEvento.code === autorRef.code;
+  }
+
+  private static _responsavelContem(
+      evt: fromDocuments.Evento,
+      responsaveis: fromDocuments.ObjectReference[]): boolean {
+    if (!(responsaveis && responsaveis.length)) {
+      return true;
+    }
+
+    if (!evt.participantes || !evt.participantes.length) {
+      return false;
+    }
+
+    return evt.participantes.some(
+        (p: fromDocuments.Participante) =>
+            p &&
+            p.tipoParticipacao === fromDocuments.TipoParticipacao.RESPONSAVEL &&
+            responsaveis.some((r: fromDocuments.ObjectReference) =>
+                                  r.code === p.usuarioRef.code));
   }
 
   private static _tutorContem(evt: fromDocuments.Evento,

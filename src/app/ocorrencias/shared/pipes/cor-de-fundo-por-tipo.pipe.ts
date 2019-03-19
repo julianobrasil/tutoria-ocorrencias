@@ -2,7 +2,7 @@ import {Pipe, PipeTransform} from '@angular/core';
 
 import memo from 'memo-decorator';
 
-import {ClassificacaoEvento} from '../../../model/transport-objects';
+import {ClassificacaoEvento} from '@model-objects';
 
 @Pipe({name: 'corDeFundoPorTipo'})
 export class CorDeFundoPorTipoPipe implements PipeTransform {

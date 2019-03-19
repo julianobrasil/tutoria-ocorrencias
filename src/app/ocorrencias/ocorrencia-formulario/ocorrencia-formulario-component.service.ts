@@ -1,11 +1,13 @@
 import {Injectable} from '@angular/core';
+
 import {MatSnackBar} from '@angular/material';
+
 import {select, Store} from '@ngrx/store';
+import * as fromStore from '../../../store';
+
 import {Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 
-import * as fromStore from '../../../store';
-import {ImodbService} from '../../model/servicos/imodb.service';
 import {
   Evento,
   SubTipoEvento,
@@ -14,7 +16,8 @@ import {
   Tutoria,
   Unidade,
   Visibilidade,
-} from '../../model/transport-objects/';
+} from '@model-objects';
+import {ImodbService} from '../../model/servicos/imodb.service';
 
 export enum OcorrenciaFormularioComponentTipo {
   TUTORIA = 'TUTORIA',

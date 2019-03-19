@@ -1,10 +1,13 @@
 import {Injectable} from '@angular/core';
-import {select, Store} from '@ngrx/store';
+
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 
+import {select, Store} from '@ngrx/store';
+
 import * as fromStore from '../../../../../../store';
-import {Unidade} from '../../../../../model/transport-objects/';
+
+import {Unidade} from '@model-objects';
 
 @Injectable({
   providedIn: 'root',

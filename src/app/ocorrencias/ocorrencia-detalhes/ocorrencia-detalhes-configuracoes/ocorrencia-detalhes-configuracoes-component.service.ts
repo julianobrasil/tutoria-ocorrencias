@@ -8,7 +8,7 @@ import {
   Evento,
   ObjectReference,
   Responsavel,
-} from '../../../model/transport-objects';
+} from '@model-objects';
 
 export interface CorDoParticipante {
   usuarioRef: ObjectReference;

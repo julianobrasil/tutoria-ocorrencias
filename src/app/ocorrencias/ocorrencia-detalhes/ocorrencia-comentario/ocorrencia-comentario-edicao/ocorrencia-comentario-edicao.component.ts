@@ -14,7 +14,7 @@ import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import {merge, Subject} from 'rxjs';
 import {debounceTime, takeUntil} from 'rxjs/operators';
 
-import {Evento, Interacao} from '../../../../model/transport-objects';
+import {Evento, Interacao} from '@model-objects';
 import {
   OcorrenciaDadosDaGravacao,
   OcorrenciaStatusGravacaoService,

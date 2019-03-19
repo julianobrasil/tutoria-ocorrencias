@@ -2,7 +2,7 @@
   <!-- RESPONSAVEIS ADICIONADOS -->
   <section *ngIf="_responsaveisAdicionados?.length"
            class="ocorrencia-acao-linha-alteracao-responsaveis">
-    <div>adicionou&nbsp;</div>
+    <div>atribuiu a responsabilidade a&nbsp;</div>
     <ng-container *ngFor="let userInfo of _responsaveisAdicionados; last as isLast, first as isFirst">
       <span *ngIf="!isFirst"
             [ngClass]="_getConectivoClass(isLast)">{{isLast ? 'e' : ','}}</span>
@@ -25,7 +25,7 @@
   <!-- RESPONSAVEIS REMOVIDOS -->
   <section *ngIf="_responsaveisRemovidos?.length"
            class="ocorrencia-acao-linha-alteracao-responsaveis">
-    <div>removeu&nbsp;</div>
+    <div>{{!_responsaveisAdicionados?.length ? 'removeu a responsabilidade de' : 'removeu de'}}&nbsp;</div>
 
     <ng-container *ngFor="let userInfo of _responsaveisRemovidos; last as isLast, first as isFirst">
       <span *ngIf="!isFirst"
@@ -34,7 +34,7 @@
             (mouseenter)="_mostraPopover(userInfo,popoverAnchor)"
             (mouseleave)="_escondePopover(popoverAnchor)"
             [satPopoverAnchorFor]="popover"
-            class="user-login">
+            class="usuario-login">
         <strong>{{userInfo?.login}}</strong>
       </span>
     </ng-container>

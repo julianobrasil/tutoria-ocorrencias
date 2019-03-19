@@ -1,6 +1,6 @@
 import {Pipe, PipeTransform} from '@angular/core';
 
-import {HistoricoInteracao} from '../../../model/transport-objects';
+import {HistoricoInteracao} from '@model-objects';
 
 @Pipe({name: 'interacaoMaisRecente'})
 export class InteracaoMaisRecentePipe implements PipeTransform {

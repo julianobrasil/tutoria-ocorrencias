@@ -30,7 +30,7 @@ import {
   tap,
 } from 'rxjs/operators';
 
-import {ObjectReference} from '../../../../model/transport-objects';
+import {ObjectReference} from '@model-objects';
 import {
   PESSOAS_SERVICE_ADAPTER,
   PessoaServiceAdapter,
@@ -54,9 +54,11 @@ export class SelecaoDePessoasComponent implements OnDestroy,
     return this._usuariosEscolhidos;
   }
   set usuariosEscolhidos(value: ObjectReference[]) {
-    this._usuariosEscolhidos = value;
+    this._usuariosEscolhidos =
+        value && value.length !== undefined && value !== null ? [...value] :
+                                                                value;
 
-    this._usuariosEscolhidos$.next(value);
+    this._usuariosEscolhidos$.next(this._usuariosEscolhidos);
   }
   private _usuariosEscolhidos: ObjectReference[] = [];
   private _usuariosEscolhidos$: Subject<ObjectReference[]> =
@@ -72,6 +74,9 @@ export class SelecaoDePessoasComponent implements OnDestroy,
 
   /** habilita o mat tooltip */
   @Input() matTooltipDisabled = true;
+
+  /** Informa se é permitida a marcação de mais de um usuário */
+  @Input() multi = false;
 
   /**
    * Máximo de usuários que podem ser escolhidos (valores negativos significam
@@ -119,6 +124,17 @@ export class SelecaoDePessoasComponent implements OnDestroy,
   _alteracaoNaListaEscolhida(change: MatSelectionListChange) {
     const usuario = change.option.value as ObjectReference;
 
+    if (!this.multi) {
+      if (change.option.selected) {
+        change.source.options.forEach((item: MatListOption) => {
+          if (item.selected && item.value.code !== usuario.code) {
+            item.toggle();
+          }
+        });
+        this._cd.markForCheck();
+      }
+    }
+
     if ((this.usuariosImexiveis &&
          this.usuariosImexiveis.some((u: ObjectReference) =>
                                          u.code === usuario.code))) {
@@ -132,11 +148,16 @@ export class SelecaoDePessoasComponent implements OnDestroy,
 
       this._snakbar.open(
           'Máximo de usuários atingido', '',
-          {horizontalPosition: 'end', verticalPosition: 'top',  duration: 3000});
+          {horizontalPosition: 'end', verticalPosition: 'top', duration: 3000});
       return;
     }
 
     if (change.option.selected) {
+      // Se não for modo multisseleção, limpa o vetor de usuários escolhidos...
+      if (!this.multi) {
+        this._usuariosEscolhidos.splice(0, 1);
+      }
+
       // Algum U=usuário foi selecionado...
       if (!this._usuariosEscolhidos.some(
               (u: ObjectReference) => u.code === change.option.value.code)) {
@@ -160,7 +181,7 @@ export class SelecaoDePessoasComponent implements OnDestroy,
 
   /** monitora o que o usuário está digitando */
   private _setupFiltroDePessoas() {
-    combineLatest(this._filtroCtrl.valueChanges,
+    combineLatest(this._filtroCtrl.valueChanges.pipe(startWith('')),
                   this._usuariosEscolhidos$.pipe(startWith([])))
         .pipe(startWith(['', []]), debounceTime(300),
               map(([valor, _]) => valor),

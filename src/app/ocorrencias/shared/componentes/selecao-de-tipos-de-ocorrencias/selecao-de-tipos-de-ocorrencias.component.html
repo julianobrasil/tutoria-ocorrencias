@@ -1,0 +1,33 @@
+<section class="selecao-de-tipos-de-ocorrencias-container">
+  <!-- COMPONENTE DE SELEÇÃO DE TIPOS E SUBTIPOS (AUTOCOMPLETAR) -->
+  <section class="selecao-de-tipos-de-ocorrencias-input">
+    <mat-form-field appearance="fill">
+      <input [formControl]="_filtroCtrl"
+             matInput
+             placeholder="FILTRAR TIPOS E SUBTIPOS...">
+    </mat-form-field>
+  </section>
+
+  <section class="selecao-de-tipos-de-ocorrencias-lista">
+    <mat-chip-list></mat-chip-list>
+    <mat-selection-list (selectionChange)="_alteracaoNaListaEscolhida($event)">
+      <mat-list-option *ngFor="let tipo of _tiposDisponiveis"
+                       [value]="tipo">
+        <div class="selecao-de-tipos-de-ocorrencias-lista-item">
+          <!-- NOME DO CURSO -->
+          <section [innerHTML]="tipo?.descricaoSubtipo | negritaOcorrencias: _filtroCtrl?.value | safeHtml"
+                   class="selecao-de-tipos-de-ocorrencias-lista-item-descricao"></section>
+
+          <!-- UNIDADE -->
+          <section class="selecao-de-tipos-de-ocorrencias-lista-item-chips">
+            <mat-chip color="accent"
+                      selected>
+              <span [innerHTML]="tipo?.descricaoTipo | negritaOcorrencias: _filtroCtrl?.value | safeHtml"></span>
+            </mat-chip>
+          </section>
+        </div>
+      </mat-list-option>
+    </mat-selection-list>
+  </section>
+
+</section>

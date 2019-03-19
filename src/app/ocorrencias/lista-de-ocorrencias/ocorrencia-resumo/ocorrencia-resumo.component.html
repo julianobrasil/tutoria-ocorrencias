@@ -15,10 +15,6 @@
     <section class="ocorrencia-resumo-texto-titulo">
       <a [routerLink]="evento?.id">{{evento?.titulo}}</a>
 
-      <app-ocorrencia-rotulo [corDeFundo]="evento?.classificacaoEvento | corDeFundoPorTipo"
-                             [rotulo]="evento?.classificacaoEvento | labelPorTipo">
-      </app-ocorrencia-rotulo>
-
       <app-ocorrencia-rotulo *ngFor="let rotulo of evento?.rotulos | ordenaRotulos"
                              [corDeFundo]="rotulo?.corHexa"
                              [rotulo]="rotulo?.texto">
@@ -27,8 +23,11 @@
 
     <div>
       aberta
-      <span [matTooltip]="evento?.dataRegistro | date:'dd/MM/y HH\'H\'mm'">{{evento?.dataRegistro | tempoDecorrido}}</span>
-      por {{evento?.autorEvento?.code}}
+      <app-tempo-decorrido [data]="evento?.dataRegistro"></app-tempo-decorrido>
+      por&nbsp;
+      <app-usuario-detalhes [usuarioRef]="evento?.autorEvento"
+                            link="nome">
+      </app-usuario-detalhes>
     </div>
   </div>
 

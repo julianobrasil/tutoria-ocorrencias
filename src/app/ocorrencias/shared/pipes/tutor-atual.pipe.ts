@@ -1,6 +1,6 @@
 import {Pipe, PipeTransform} from '@angular/core';
 
-import {Participante} from '../../../model/transport-objects';
+import {Participante} from '@model-objects';
 
 @Pipe({
   name: 'tutorAtual',

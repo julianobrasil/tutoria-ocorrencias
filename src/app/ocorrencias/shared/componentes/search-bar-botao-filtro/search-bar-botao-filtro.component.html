@@ -1,0 +1,18 @@
+<div tabindex="-1"
+     (click)="clicked.emit($event)"
+     class="ocorrencia-botao-container">
+  <button *ngIf="mostraBotaoLimparFiltro"
+          (click)="_clearClicked($event)"
+          mat-icon-button>
+    <mat-icon>
+      clear
+    </mat-icon>
+  </button>
+  <span>
+    <ng-content></ng-content>
+  </span>
+
+  <div class="ocorrencia-botao-arrow">
+    <div class="app-mat-select-arrow"></div>
+  </div>
+</div>

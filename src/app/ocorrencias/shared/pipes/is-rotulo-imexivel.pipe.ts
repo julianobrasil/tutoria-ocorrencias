@@ -1,6 +1,6 @@
 import {Pipe, PipeTransform} from '@angular/core';
 
-import {RotuloDoEvento} from '../../../model/transport-objects';
+import {RotuloDoEvento} from '@model-objects';
 
 @Pipe({name: 'isRotuloImexivel'})
 export class IsRotuloImexivelPipe implements PipeTransform {

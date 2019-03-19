@@ -9,11 +9,13 @@ import {
 
 import {merge, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
-import {Evento} from '../../../model/transport-objects';
+
 import {
   OcorrenciaDadosDaGravacao,
   OcorrenciaStatusGravacaoService,
 } from '../../ocorrencia-status-gravacao.service';
+
+import {Evento} from '@model-objects';
 
 @Component({
   selector: 'app-acoes-ligadas-a-novo-comentario',

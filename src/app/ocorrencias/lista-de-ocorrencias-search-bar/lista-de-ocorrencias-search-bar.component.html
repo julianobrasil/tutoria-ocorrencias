@@ -1,0 +1,92 @@
+<section *ngIf="filtrosDeBusca | barraDeFilragemFiltroAtivado"
+         class="lista-de-ocorrencias-search-bar-limpa-filtros">
+  <button (click)="_limpaTodosOsFiltros()"
+          mat-icon-button
+          type="button">
+    <svg style="width:24px;height:24px"
+         viewBox="0 0 24 24">
+      <path fill="#000000"
+            d="M19,3H16.3H7.7H5A2,2 0 0,0 3,5V7.7V16.4V19A2,2 0 0,0 5,
+              21H7.7H16.4H19A2,2 0 0,0 21,19V16.3V7.7V5A2,2 0 0,0 19,
+              3M15.6,17L12,13.4L8.4,17L7,15.6L10.6,12L7,8.4L8.4,7L12,
+              10.6L15.6,7L17,8.4L13.4,12L17,15.6L15.6,17Z" />
+    </svg>
+  </button>
+
+  <div>Limpar todos os filtros</div>
+</section>
+
+<section class="lista-de-ocorrencias-search-bar-container"
+         [class.lista-de-ocorrencias-search-bar-container-border-bottom]="!numeroDeOcorrencias">
+  <section class="lista-de-ocorrencias-search-bar-open-close-filter">
+    <mat-slide-toggle (change)="_abertasSelecionadas($event)"
+                      [checked]="filtrosDeBusca?.isAberta">Abertas</mat-slide-toggle>
+
+    <mat-slide-toggle (change)="_fechadasSelecionadas($event)"
+                      [checked]="filtrosDeBusca?.isFechada">Fechadas</mat-slide-toggle>
+  </section>
+
+  <section class="lista-de-ocorrencias-search-bar-open-other-field-filters">
+    <app-search-bar-filtro-rotulo (rotulosSelecionadosChange)="_aplicativosSelecionados($event)"
+                                  [reservados]="true"
+                                  [rotulosDaUltimaSelecao]="filtrosDeBusca?.rotulosAplicativos">
+      App
+    </app-search-bar-filtro-rotulo>
+
+    <app-search-bar-filtro-curso *ngIf="_isTutoriaSelecionada"
+                                 (cursosSelecionadosChange)="_cursosSelecionados($event)"
+                                 [cursosDaUltimaSelecao]="filtrosDeBusca?.cursosRef">
+      Curso
+    </app-search-bar-filtro-curso>
+
+    <app-search-bar-filtro-pessoa (pessoasSelecionadasChange)="_responsaveisSelecionados($event)"
+                                  [pessoasDaUltimaSelecao]="filtrosDeBusca?.responsaveisRef">
+      Responsáveis
+    </app-search-bar-filtro-pessoa>
+
+    <app-search-bar-filtro-rotulo (rotulosSelecionadosChange)="_rotulosSelecionados($event)"
+                                  [rotulosDaUltimaSelecao]="filtrosDeBusca?.rotulos">
+      Rótulos
+    </app-search-bar-filtro-rotulo>
+
+    <app-search-bar-filtro-tipos-de-ocorrencias (tiposDeOcorrenciasSelecionadosChange)="_tiposDeOcorrenciasSelecionados($event)"
+                                                [tiposDeOcorrenciasDaUltimaSelecao]="filtrosDeBusca?.tiposDeOcorrenciasInfo">
+      Tipo/Subtipo
+    </app-search-bar-filtro-tipos-de-ocorrencias>
+
+    <app-search-bar-filtro-pessoa (pessoasSelecionadasChange)="_autorSelecionado($event)"
+                                  [pessoasDaUltimaSelecao]="filtrosDeBusca?.autorRef?[filtrosDeBusca?.autorRef]:[]"
+                                  [multi]="false">
+      Autor
+    </app-search-bar-filtro-pessoa>
+  </section>
+</section>
+
+<section *ngIf="!numeroDeOcorrencias"
+         class="lista-de-ocorrencias-nenhuma-ocorrencia">
+  <section class="lista-de-ocorrencias-nenhuma-ocorrencia-mensagem">
+    Não existe nenhuma ocorrência
+  </section>
+
+  <section class="lista-de-ocorrencias-nenhuma-ocorrencia-alerta-filtros-ativos">
+    Existem filtros ativos e esse pode ser o motivo de não haver ocorrências.
+  </section>
+
+  <section *ngIf="filtrosDeBusca | barraDeFilragemFiltroAtivado"
+           class="lista-de-ocorrencias-search-bar-limpa-filtros">
+    <button (click)="_limpaTodosOsFiltros()"
+            mat-icon-button
+            type="button">
+      <svg style="width:24px;height:24px"
+           viewBox="0 0 24 24">
+        <path fill="#000000"
+              d="M19,3H16.3H7.7H5A2,2 0 0,0 3,5V7.7V16.4V19A2,2 0 0,0 5,
+              21H7.7H16.4H19A2,2 0 0,0 21,19V16.3V7.7V5A2,2 0 0,0 19,
+              3M15.6,17L12,13.4L8.4,17L7,15.6L10.6,12L7,8.4L8.4,7L12,
+              10.6L15.6,7L17,8.4L13.4,12L17,15.6L15.6,17Z" />
+      </svg>
+    </button>
+
+    <div>Limpar todos os filtros</div>
+  </section>
+</section>

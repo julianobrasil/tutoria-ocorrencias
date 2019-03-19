@@ -1,6 +1,6 @@
 import {Pipe, PipeTransform} from '@angular/core';
 
-import {ObjectReference, Participante} from '../../../model/transport-objects';
+import {ObjectReference, Participante} from '@model-objects';
 
 @Pipe({
   name: 'usuariosImexiveis',

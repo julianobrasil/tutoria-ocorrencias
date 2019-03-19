@@ -14,30 +14,30 @@ import {
 import {environment} from '../../../environments/environment';
 import * as fromDiarioDeTutoriaStore from '../../../store/diario-de-tutoria';
 import * as fromGeralStore from '../../../store/geral';
+
 import {AuthService} from '../../auth/auth.service';
 import {Funcoes} from '../../model/helper-objects/funcoes-sistema';
 import {ImodbService} from '../../model/servicos/imodb.service';
-import {
-  Interacao,
-  Participante,
-  TextoFormatado,
-  TipoInteracao,
-  TipoParticipacao,
-  Visibilidade,
-} from '../../model/transport-objects';
-import {
-  Coordenador,
-  Evento,
-  ObjectReference,
-  Responsavel,
-  Tutor,
-} from '../../model/transport-objects/';
 import {
   FormatadorDeTextoService,
 } from '../shared/utilitarios/formatador-de-texto.service';
 import {
   GeradorDeCoresService,
 } from '../shared/utilitarios/gerador-de-cores.service';
+
+import {
+  Coordenador,
+  Evento,
+  Interacao,
+  ObjectReference,
+  Participante,
+  Responsavel,
+  TextoFormatado,
+  TipoInteracao,
+  TipoParticipacao,
+  Tutor,
+  Visibilidade,
+} from '@model-objects';
 
 import {OcorrenciaChangeType} from '../public_api';
 
@@ -142,9 +142,8 @@ export class OcorrenciaDetalhesComponentService implements OnDestroy {
     // Descobre quais são as cores já usadas
     const coresUsadas: Set<string> =
         coresAtuaisDosParticipantes ?
-            new Set<string>(
-                coresAtuaisDosParticipantes.map((c: CorDoParticipante) =>
-                                                    c.codigoCorHexadecimal)) :
+            new Set<string>(coresAtuaisDosParticipantes.map(
+                (c: CorDoParticipante) => c.codigoCorHexadecimal)) :
             new Set<string>();
 
     // Descobre quais os participantes ainda não tem cores...
@@ -450,23 +449,22 @@ export class OcorrenciaDetalhesComponentService implements OnDestroy {
 
   /** verifica se ou usuário logado é tutor */
   private _isTutor(historicoTutores: Tutor[]): boolean {
-    return historicoTutores.some(
-        (tutor: Tutor) =>
-            !tutor.dataFim && tutor.email === this._authService.email);
+    return historicoTutores.some((tutor: Tutor) =>
+                                     !tutor.dataFim &&
+                                     tutor.email === this._authService.email);
   }
 
   /** verifica se ou usuário logado é coordenador */
   private _isCoordenador(coordenadores: Coordenador[]): boolean {
-    return coordenadores.some(
-        (coordenador: Coordenador) =>
-            coordenador.email === this._authService.email);
+    return coordenadores.some((coordenador: Coordenador) =>
+                                  coordenador.email ===
+                                  this._authService.email);
   }
 
   /** verifica se ou usuário logado é responsável */
   private _isResponsavel(responsaveis: Responsavel[]): boolean {
-    return responsaveis.some(
-        (responsavel: Responsavel) =>
-            responsavel.email === this._authService.email);
+    return responsaveis.some((responsavel: Responsavel) =>
+                                 responsavel.email === this._authService.email);
   }
 
   /** verifica se ou usuário logado é da qualidade */

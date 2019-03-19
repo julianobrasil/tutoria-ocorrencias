@@ -3,11 +3,11 @@ import {ObjectReference} from './object-reference';
 import {TipoInteracao} from './tipo-interacao';
 
 export enum TipoVisibilidade {
-  PARTICIPANTES_ESPECIFICOS,
-  SOMENTE_AUTOR,
-  SOMENTE_GESTORES,
-  SOMENTE_PARTICIPANTES,
-  TODOS,
+  PARTICIPANTES_ESPECIFICOS = 'PARTICIPANTES_ESPECIFICOS',
+  SOMENTE_AUTOR = 'SOMENTE_AUTOR',
+  SOMENTE_GESTORES = 'SOMENTE_GESTORES',
+  SOMENTE_PARTICIPANTES = 'SOMENTE_PARTICIPANTES',
+  TODOS = 'TODOS',
 }
 
 export interface Visibilidade {

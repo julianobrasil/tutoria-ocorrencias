@@ -12,32 +12,24 @@ import {
   ViewChild,
 } from '@angular/core';
 import {FormControl} from '@angular/forms';
-
-import {
-  MatListOption,
-  MatSelectionList,
-  MatSelectionListChange,
-} from '@angular/material';
-
-import {Subject} from 'rxjs';
+import {MatListOption, MatSelectionList, MatSelectionListChange} from '@angular/material';
+import {BehaviorSubject, combineLatest, Subject} from 'rxjs';
 import {
   concatMapTo,
   debounceTime,
+  map,
   startWith,
   switchMap,
+  switchMapTo,
   takeUntil,
   tap,
 } from 'rxjs/operators';
 
-import {
-  SelecaoDeRotulosComponentService,
-} from './selecao-de-rotulos-component.service';
+import {RotuloDoEvento} from '@model-objects';
 
-import {RotuloDoEvento} from '../../../../model/transport-objects';
-import {
-  ROTULOS_SERVICE_ADAPTER,
-  RotuloServiceAdapter,
-} from './rotulo-service-adapter';
+import {ROTULOS_SERVICE_ADAPTER, RotuloServiceAdapter} from './rotulo-service-adapter';
+import {SelecaoDeRotulosComponentService} from './selecao-de-rotulos-component.service';
+
 // tslint:enable: max-line-length
 
 @Component({
@@ -47,31 +39,38 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   exportAs: 'selecaoDeRotulosComponent',
 })
-export class SelecaoDeRotulosComponent implements OnDestroy,
-    AfterViewInit {
+export class SelecaoDeRotulosComponent implements OnDestroy, AfterViewInit {
   /** rótulos escolhidos */
   @Input()
   get rotulosEscolhidos(): RotuloDoEvento[] {
     return this._rotulosEscolhidos;
   }
   set rotulosEscolhidos(value: RotuloDoEvento[]) {
-    this._rotulosEscolhidos = value;
-
-    if (this._rotulosEscolhidos) {
-      this._rotulosEscolhidos =
-          this._rotulosEscolhidos.filter((r: RotuloDoEvento) => !r.isReservado);
-    }
-
     this._rotulosEscolhidos$.next(value);
   }
   private _rotulosEscolhidos: RotuloDoEvento[] = [];
-  private _rotulosEscolhidos$: Subject<RotuloDoEvento[]> =
-      new Subject<RotuloDoEvento[]>();
+  private _rotulosEscolhidos$: BehaviorSubject<RotuloDoEvento[]> = new BehaviorSubject<
+    RotuloDoEvento[]
+  >([]);
+
+  /**
+   * Quando true, mostra somente os rótulos reservados. Quando false, somente
+   * os não reservados
+   */
+  @Input()
+  get reservados(): boolean {
+    return this._reservados;
+  }
+  set reservados(value: boolean) {
+    this._reservados = value;
+    this._reservados$.next(value);
+  }
+  private _reservados = false;
+  private _reservados$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
 
   /** emite quando há alteração dos rótulos escolhidos */
   @Output()
-  rotulosEscolhidosChange: EventEmitter<RotuloDoEvento[]> =
-      new EventEmitter<RotuloDoEvento[]>();
+  rotulosEscolhidosChange: EventEmitter<RotuloDoEvento[]> = new EventEmitter<RotuloDoEvento[]>();
 
   /** lista de escolhas */
   @ViewChild(MatSelectionList) _matSelectionList: MatSelectionList;
@@ -85,13 +84,16 @@ export class SelecaoDeRotulosComponent implements OnDestroy,
   /** destrói todas as assinaturas em observables */
   private _destroy$: Subject<void> = new Subject<void>();
 
-  constructor(@Inject(ROTULOS_SERVICE_ADAPTER)
-              private _selecaoDeRotulosAdapterService: RotuloServiceAdapter,
-              private _selecaoDeRotulosComponentService:
-                  SelecaoDeRotulosComponentService,
-              private _cd: ChangeDetectorRef) {}
+  constructor(
+    @Inject(ROTULOS_SERVICE_ADAPTER)
+    private _selecaoDeRotulosAdapterService: RotuloServiceAdapter,
+    private _selecaoDeRotulosComponentService: SelecaoDeRotulosComponentService,
+    private _cd: ChangeDetectorRef,
+  ) {}
 
-  ngAfterViewInit() { this._setupFiltroDeRotulos(); }
+  ngAfterViewInit() {
+    this._setupFiltroDeRotulos();
+  }
 
   ngOnDestroy() {
     if (this._destroy$ && !this._destroy$.closed) {
@@ -109,16 +111,15 @@ export class SelecaoDeRotulosComponent implements OnDestroy,
   _alteracaoNaListaEscolhida(change: MatSelectionListChange) {
     if (change.option.selected) {
       // Algum U=rótulo foi selecionado...
-      if (!this._rotulosEscolhidos.some((u: RotuloDoEvento) =>
-                                            u.id === change.option.value.id)) {
+      if (!this._rotulosEscolhidos.some((u: RotuloDoEvento) => u.id === change.option.value.id)) {
         // O rótulo selecionado não estava na lista de escolhidos ainda (sei lá
         // por quê)...
         this._rotulosEscolhidos.push(change.option.value);
       }
     } else {
-      // Algum rótulo teve sua seleção cancelada...
       const index = this._rotulosEscolhidos.findIndex(
-          (u: RotuloDoEvento) => u.id === change.option.value.id);
+        (u: RotuloDoEvento) => u.id === change.option.value.id,
+      );
 
       if (index > -1) {
         // Se o rótulo for encontrado na lista dos escolhidos...
@@ -131,21 +132,50 @@ export class SelecaoDeRotulosComponent implements OnDestroy,
 
   /** monitora o que o rótulo está digitando */
   private _setupFiltroDeRotulos() {
-    this._filtroCtrl.valueChanges
-        .pipe(startWith(''), debounceTime(300),
-              switchMap(
-                  (valor: string) =>
-                      this._selecaoDeRotulosAdapterService.obtemRotulos(valor)),
-              tap((rotulos: RotuloDoEvento[]) => {
-                this._selecaoDeRotulosComponentService
-                    ._adicionaRotulosSeNaoExistir(rotulos,
-                                                  this._rotulosEscolhidos);
-                this._rotulosDisponiveis = rotulos;
-                this._cd.markForCheck();
-              }),
-              concatMapTo(this._matSelectionList.options.changes),
-              takeUntil(this._destroy$))
-        .subscribe((_) => this._selecionaUsuariosJaEscolhidos());
+    // Garante que os rótulos escolhidos já foram escolhidos...
+    combineLatest(this._rotulosEscolhidos$, this._reservados$)
+      .pipe(
+        debounceTime(300),
+        map(([rotulos, _reservado]) => rotulos),
+
+        // Inicializa os rótulos escolhidos...
+        tap((value: RotuloDoEvento[]) => {
+          this._rotulosEscolhidos = value;
+          if (this._rotulosEscolhidos) {
+            this._rotulosEscolhidos = this._rotulosEscolhidos.filter(
+              (r: RotuloDoEvento) => this._reservados === r.isReservado,
+            );
+          }
+        }),
+
+        // Depois que os rótulos escolhidos já foram configurados, observa
+        // se tem algo digitado filtro....
+        switchMapTo(this._filtroCtrl.valueChanges.pipe(startWith(''))),
+
+        // Busca o conteúdo do filtro...
+        switchMap((valor: string) =>
+          this._selecaoDeRotulosAdapterService
+            .obtemRotulos(valor)
+            .pipe(
+              map((rotulos: RotuloDoEvento[]) =>
+                rotulos.filter((r: RotuloDoEvento) => this._reservados === r.isReservado),
+              ),
+            ),
+        ),
+
+        // Atualiza a seleção de rótulos escolhidos (this._rotulosDisponiveis)...
+        tap((rotulos: RotuloDoEvento[]) => {
+          this._selecaoDeRotulosComponentService._adicionaRotulosSeNaoExistir(
+            rotulos,
+            this._rotulosEscolhidos,
+          );
+          this._rotulosDisponiveis = rotulos;
+          this._cd.markForCheck();
+        }),
+        concatMapTo(this._matSelectionList.options.changes),
+        takeUntil(this._destroy$),
+      )
+      .subscribe((_) => this._selecionaRotulosJaEscolhidos());
   }
 
   /**
@@ -155,11 +185,10 @@ export class SelecaoDeRotulosComponent implements OnDestroy,
    * @private
    * @memberof SelecaoDeRotulosComponent
    */
-  private _selecionaUsuariosJaEscolhidos() {
+  private _selecionaRotulosJaEscolhidos() {
     if (this._rotulosEscolhidos) {
       this._matSelectionList.options.forEach((item: MatListOption) => {
-        if (this._rotulosEscolhidos.some((u: RotuloDoEvento) =>
-                                             u.id === item.value.id)) {
+        if (this._rotulosEscolhidos.some((u: RotuloDoEvento) => u.id === item.value.id)) {
           // Usuário deveria estar selecionado...
           if (!item.selected) {
             // Seleciona se não estiver...

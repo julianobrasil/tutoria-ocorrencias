@@ -1,6 +1,6 @@
 <div *ngIf="ocorrencia"
      class="acoes-ligadas-a-novo-comentario-container">
-  <button *ngIf="ocorrencia?.isResolvido"
+  <button *ngIf="ocorrencia?.isEncerrado"
           (click)="_reabreEvento()"
           [disabled]="_isAcessandoBanco"
           mat-raised-button
@@ -8,7 +8,7 @@
     {{_textoBotaoReabrir}}
   </button>
 
-  <button *ngIf="!ocorrencia?.isResolvido"
+  <button *ngIf="!ocorrencia?.isEncerrado"
           (click)="_encerraEvento()"
           [disabled]="_isAcessandoBanco"
           mat-raised-button

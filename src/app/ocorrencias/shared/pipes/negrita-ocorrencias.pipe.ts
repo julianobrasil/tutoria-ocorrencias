@@ -4,7 +4,7 @@ import {Pipe, PipeTransform} from '@angular/core';
   name: 'negritaOcorrencias',
 })
 export class NegritaOcorrenciasPipe implements PipeTransform {
-  transform(str: any, args?: any): any {
+  transform(str: any, args?: any): string {
     if (typeof args !== 'string' || !str || !args) {
       return str;
     }

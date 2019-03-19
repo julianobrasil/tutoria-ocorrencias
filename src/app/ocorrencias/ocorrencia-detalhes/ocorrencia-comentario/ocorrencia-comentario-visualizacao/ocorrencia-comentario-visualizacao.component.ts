@@ -15,7 +15,7 @@ import {
   Evento,
   Interacao,
   TipoVisibilidade,
-} from '../../../../model/transport-objects';
+} from '@model-objects';
 import {
   OcorrenciaDetalhesComponentService,
 } from '../../ocorrencia-detalhes-component.service';

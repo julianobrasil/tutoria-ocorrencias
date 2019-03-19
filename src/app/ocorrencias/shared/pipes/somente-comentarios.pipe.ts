@@ -1,6 +1,6 @@
 import {Pipe, PipeTransform} from '@angular/core';
 
-import {Interacao, TipoInteracao} from '../../../model/transport-objects';
+import {Interacao, TipoInteracao} from '@model-objects';
 
 @Pipe({name: 'somenteComentarios'})
 export class SomenteComentariosPipe implements PipeTransform {

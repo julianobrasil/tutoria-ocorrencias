@@ -1,6 +1,6 @@
 import {Pipe, PipeTransform} from '@angular/core';
 
-import {Interacao} from '../../../model/transport-objects';
+import {Interacao} from '@model-objects';
 
 @Pipe({
   name: 'interacoesPorOrdemCronologica',

@@ -8,6 +8,7 @@
     "deprecation": {
       "severity": "warn"
     },
+    "no-implicit-dependencies": false,
     "interface-name": false,
     "max-classes-per-file": false,
     "forin": true,

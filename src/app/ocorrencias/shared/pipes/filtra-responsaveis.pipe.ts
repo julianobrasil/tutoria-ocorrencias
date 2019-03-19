@@ -1,6 +1,6 @@
 import {Pipe, PipeTransform} from '@angular/core';
 
-import {Participante, TipoParticipacao} from '../../../model/transport-objects';
+import {Participante, TipoParticipacao} from '@model-objects';
 
 @Pipe({
   name: 'filtraResponsaveis',

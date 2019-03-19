@@ -1,6 +1,6 @@
 import {Pipe, PipeTransform} from '@angular/core';
 
-import {Evento} from '../../../model/transport-objects';
+import {Evento} from '@model-objects';
 
 @Pipe({name: 'lastDividerClasses'})
 export class LastDividerClassesPipe implements PipeTransform {

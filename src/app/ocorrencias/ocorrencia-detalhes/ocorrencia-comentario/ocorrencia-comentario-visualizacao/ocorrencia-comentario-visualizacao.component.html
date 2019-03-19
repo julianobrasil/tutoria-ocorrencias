@@ -7,19 +7,19 @@
 
       <!-- NOME DO AUTOR E DATA DO COMENTÁRIO -->
       <section class="comentario-visualizacao-titulo-autoria">
-        <strong>{{comentario?.autorRef?.description}}</strong>
+        <app-usuario-detalhes [usuarioRef]="comentario?.autorRef">
+        </app-usuario-detalhes>
 
         <span>
-          comentou
+          &nbsp;comentou
           <app-tempo-decorrido [data]="(comentario?.historicoInteracoes | interacaoMaisRecente)?.data"></app-tempo-decorrido>
         </span>
-
-        <div *ngIf="_isVisibilidadeLimitada"
-             class="icone-de-visibilidade-limitada"
-             matTooltip="Este comentário não está visível para todos">
-          <mat-icon>visibility_off</mat-icon>
-        </div>
       </section>
+
+      <div class="icone-de-visibilidade-limitada"
+           matTooltip="Este comentário não está visível para todos">
+        <mat-icon *ngIf="_isVisibilidadeLimitada">visibility_off</mat-icon>
+      </div>
 
       <section *ngIf="comentario?.role">
         <app-ocorrencia-bagde [comentario]="comentario">

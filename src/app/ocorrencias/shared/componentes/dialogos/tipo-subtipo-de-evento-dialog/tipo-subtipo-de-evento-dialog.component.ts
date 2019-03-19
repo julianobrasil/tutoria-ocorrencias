@@ -4,7 +4,7 @@ import {FormControl} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {Observable} from 'rxjs';
 
-import {TipoEvento} from '../../../../../model/transport-objects/';
+import {TipoEvento} from '@model-objects';
 import {
   TipoSubtipoDeEventoComponentData,
 } from '../../tipo-subtipo-de-evento/tipo-subtipo-de-evento.component';

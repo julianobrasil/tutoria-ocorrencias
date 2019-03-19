@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import {MatDialog} from '@angular/material';
 
-import {Evento} from '../../../model/transport-objects';
+import {Evento} from '@model-objects';
 import {
   OcorrenciaFormularioComponentTipo,
 } from '../../ocorrencia-formulario/ocorrencia-formulario-component.service';

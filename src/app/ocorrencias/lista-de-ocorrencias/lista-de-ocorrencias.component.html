@@ -13,6 +13,10 @@
     </section>
   </div>
 
+  <section>
+    <ng-content select="[issueSearchBar]"></ng-content>
+  </section>
+
   <ng-container *ngFor="let evento of eventos; first as isFirst">
     <app-ocorrencia-resumo *ngIf="evento | extraiVisibilidadeEvento: config.usuarioLogado"
                            [evento]="evento"

@@ -10,7 +10,7 @@ import {
 import {combineLatest, Subject} from 'rxjs';
 import {debounceTime, filter, map, takeUntil} from 'rxjs/operators';
 
-import {Evento, Interacao, Visibilidade} from '../../../model/transport-objects';
+import {Evento, Interacao, Visibilidade} from '@model-objects';
 import {
   OcorrenciaDadosDaGravacao,
   OcorrenciaStatusGravacaoService,

@@ -25,7 +25,7 @@ import {
   ClassificacaoEvento,
   Evento,
   RotuloDoEvento,
-} from '../../../../model/transport-objects';
+} from '@model-objects';
 import {ArrayUtils, DifferenceArrays} from '../../../shared';
 
 // tslint:enable: max-line-length
@@ -78,7 +78,7 @@ export class OcorrenciaDetalhesConfiguracoesRotulosComponent implements
   _selecaoDeRotulosComponent: SelecaoDeRotulosComponent;
 
   /** emite quando há alteração de rótulos para ser gravado no banco */
-  _rotulosAlterados$: ReplaySubject<DifferenceArrays<RotuloDoEvento>> =
+  private _rotulosAlterados$: ReplaySubject<DifferenceArrays<RotuloDoEvento>> =
       new ReplaySubject<DifferenceArrays<RotuloDoEvento>>(1);
 
   /** destrói todas as assinaturas em observables */
@@ -94,6 +94,10 @@ export class OcorrenciaDetalhesConfiguracoesRotulosComponent implements
     if (this._destroy$ && !this._destroy$.closed) {
       this._destroy$.next();
       this._destroy$.complete();
+    }
+
+    if (this._rotulosAlterados$ && !this._rotulosAlterados$.closed) {
+      this._rotulosAlterados$.complete();
     }
   }
 

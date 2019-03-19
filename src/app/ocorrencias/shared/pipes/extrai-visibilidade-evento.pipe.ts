@@ -5,7 +5,7 @@ import {
   ObjectReference,
   Participante,
   TipoVisibilidade,
-} from '../../../model/transport-objects';
+} from '@model-objects';
 
 @Pipe({name: 'extraiVisibilidadeEvento'})
 export class ExtraiVisibilidadeEventoPipe implements PipeTransform {

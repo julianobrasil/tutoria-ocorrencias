@@ -8,7 +8,7 @@ import {
   ObjectReference,
   TextoFormatado,
   Visibilidade,
-} from '../../model/transport-objects';
+} from '@model-objects';
 
 export enum OcorrenciaChangeType {
   ALTERA_LOCAL,

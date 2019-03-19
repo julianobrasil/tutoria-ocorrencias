@@ -1,26 +1,31 @@
 import {Evento} from '../../../app/model/transport-objects';
 import {
+  FiltrosDeBusca,
   IssueTrackerPagination,
-} from '../../../app/ocorrencias/ocorrencia-facade.service';
+} from '../../../app/ocorrencias/classes-and-interfaces';
 import * as fromActions from '../actions';
 
 export interface EventoState {
+  eventoPorIdErro: boolean;
   eventos: Evento[];
+  filtrosDeBusca: FiltrosDeBusca;
   paginacao: IssueTrackerPagination;
   termoDeBusca: string;
-  eventoPorIdErro: boolean;
 }
 
 export const initialState: EventoState = {
+  eventoPorIdErro: false,
   eventos: [],
+  filtrosDeBusca: new FiltrosDeBusca(),
   paginacao: null,
   termoDeBusca: '',
-  eventoPorIdErro: false,
 };
 
-export function reducer(state: EventoState = initialState,
-                        action: fromActions.EVENTO.EventoAction): EventoState {
-  state = _configraDadosDePaginacao(state, action);
+export function reducer(
+  state: EventoState = initialState,
+  action: fromActions.EVENTO.EventoAction,
+): EventoState {
+  state = _configuraDadosDePaginacao(state, action);
   state = _listaEventos(state, action);
   state = _obtemEventoPorId(state, action);
   state = _reabreEncerraEvento(state, action);
@@ -30,9 +35,10 @@ export function reducer(state: EventoState = initialState,
   return state;
 }
 
-function _configraDadosDePaginacao(
-    state: EventoState = initialState,
-    action: fromActions.EVENTO.EventoAction): EventoState {
+function _configuraDadosDePaginacao(
+  state: EventoState = initialState,
+  action: fromActions.EVENTO.EventoAction,
+): EventoState {
   switch (action.type) {
     case fromActions.EVENTO.CONFIGURA_DADOS_PAGINACAO.RUN: {
       return {
@@ -45,19 +51,23 @@ function _configraDadosDePaginacao(
   return state;
 }
 
-function _listaEventos(state: EventoState = initialState,
-                       action: fromActions.EVENTO.EventoAction): EventoState {
+function _listaEventos(
+  state: EventoState = initialState,
+  action: fromActions.EVENTO.EventoAction,
+): EventoState {
   switch (action.type) {
     case fromActions.EVENTO.OBTEM_EVENTOS_PAGINADOS.RUN: {
       return {
         ...state,
         eventoPorIdErro: false,
         termoDeBusca: action.payload.termoDeBusca,
-        paginacao: action.payload.paginacao ? action.payload.paginacao :
-                                              {
-                                                page: 0,
-                                                pageSize: 10,
-                                              },
+        paginacao: action.payload.paginacao
+          ? action.payload.paginacao
+          : {
+              page: 0,
+              pageSize: 10,
+            },
+        filtrosDeBusca: {...action.payload.filtros},
       };
     }
 
@@ -77,19 +87,18 @@ function _listaEventos(state: EventoState = initialState,
 }
 
 function _obtemEventoPorId(
-    state: EventoState = initialState,
-    action: fromActions.EVENTO.EventoAction): EventoState {
+  state: EventoState = initialState,
+  action: fromActions.EVENTO.EventoAction,
+): EventoState {
   switch (action.type) {
     case fromActions.EVENTO.OBTEM_EVENTO_POR_ID.RUN: {
       return {...state, eventoPorIdErro: false};
     }
 
     case fromActions.EVENTO.OBTEM_EVENTO_POR_ID.FAIL: {
-      const index: number | null =
-          action.payload.eventoId ?
-              state.eventos.findIndex((evt: Evento) =>
-                                          evt.id === action.payload.eventoId) :
-              null;
+      const index: number | null = action.payload.eventoId
+        ? state.eventos.findIndex((evt: Evento) => evt.id === action.payload.eventoId)
+        : null;
       const eventos = [...state.eventos];
 
       if (index !== null && index > -1) {
@@ -104,13 +113,14 @@ function _obtemEventoPorId(
 }
 
 function _reabreEncerraEvento(
-    state: EventoState = initialState,
-    action: fromActions.EVENTO.EventoAction): EventoState {
+  state: EventoState = initialState,
+  action: fromActions.EVENTO.EventoAction,
+): EventoState {
   switch (action.type) {
     case fromActions.EVENTO.ENCERRA_EVENTO.RUN:
     case fromActions.EVENTO.REABRE_EVENTO.RUN: {
       return {
-          ...state,
+        ...state,
       };
     }
   }
@@ -118,8 +128,10 @@ function _reabreEncerraEvento(
   return state;
 }
 
-function _criaEvento(state: EventoState = initialState,
-                     action: fromActions.EVENTO.EventoAction): EventoState {
+function _criaEvento(
+  state: EventoState = initialState,
+  action: fromActions.EVENTO.EventoAction,
+): EventoState {
   switch (action.type) {
     case fromActions.EVENTO.CRIA_EVENTO.SUCCESS: {
       const eventos: Evento[] = [...state.eventos, action.payload.evento];
@@ -132,8 +144,9 @@ function _criaEvento(state: EventoState = initialState,
 }
 
 function _acoesQueAtualizamUmEvento(
-    state: EventoState = initialState,
-    action: fromActions.EVENTO.EventoAction): EventoState {
+  state: EventoState = initialState,
+  action: fromActions.EVENTO.EventoAction,
+): EventoState {
   switch (action.type) {
     case fromActions.EVENTO.ALTERA_LOCAL_DO_EVENTO.SUCCESS:
     case fromActions.EVENTO.ALTERA_PARECER_DO_EVENTO.SUCCESS:
@@ -151,11 +164,9 @@ function _acoesQueAtualizamUmEvento(
     case fromActions.EVENTO.INSERE_COMENTARIO_EVENTO.SUCCESS:
     case fromActions.EVENTO.OBTEM_EVENTO_POR_ID.SUCCESS:
     case fromActions.EVENTO.REABRE_EVENTO.SUCCESS: {
-      const index: number | null =
-          action.payload.evento ?
-              state.eventos.findIndex((evt: Evento) =>
-                                          evt.id === action.payload.evento.id) :
-              null;
+      const index: number | null = action.payload.evento
+        ? state.eventos.findIndex((evt: Evento) => evt.id === action.payload.evento.id)
+        : null;
 
       if (index !== null) {
         const eventos = [...state.eventos];
@@ -163,13 +174,15 @@ function _acoesQueAtualizamUmEvento(
           eventos.splice(index, 1, action.payload.evento);
 
           return {
-              ...state, eventos,
+            ...state,
+            eventos,
           };
         } else {
           eventos.push(action.payload.evento);
 
           return {
-              ...state, eventos,
+            ...state,
+            eventos,
           };
         }
       }
@@ -179,11 +192,8 @@ function _acoesQueAtualizamUmEvento(
   return state;
 }
 
-export const getEvetoByIdErro = (state: EventoState) =>
-    state ? state.eventoPorIdErro : true;
-export const getEventos = (state: EventoState) =>
-    (state && state.eventos ? state.eventos : []);
-export const getPaginacao = (state: EventoState) =>
-    (state ? state.paginacao : null);
-export const getTermoDeBusca = (state: EventoState) =>
-    (state ? state.termoDeBusca : '');
+export const getEvetoByIdErro = (state: EventoState) => (state ? state.eventoPorIdErro : true);
+export const getEventos = (state: EventoState) => (state && state.eventos ? state.eventos : []);
+export const getPaginacao = (state: EventoState) => (state ? state.paginacao : null);
+export const getTermoDeBusca = (state: EventoState) => (state ? state.termoDeBusca : '');
+export const getFiltrosDeBusca = (state: EventoState) => (state ? state.filtrosDeBusca : '');

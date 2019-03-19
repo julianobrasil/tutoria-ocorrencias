@@ -10,16 +10,16 @@
       <!-- ÍCONE (COLUNA DA ESQUERDA-->
       <div [ngClass]="_iconClass">
         <div>
-          <mat-icon *ngIf="ocorrencia?.isResolvido">
+          <mat-icon *ngIf="ocorrencia?.isEncerrado">
             check_circle_outline
           </mat-icon>
 
-          <mat-icon *ngIf="!ocorrencia?.isResolvido">
+          <mat-icon *ngIf="!ocorrencia?.isEncerrado">
             error_outline
           </mat-icon>
         </div>
         <div>
-          <span *ngIf="ocorrencia?.isResolvido; else ocorrenciaFechada">
+          <span *ngIf="ocorrencia?.isEncerrado; else ocorrenciaFechada">
             Fechada
           </span>
           <ng-template #ocorrenciaFechada>
@@ -32,7 +32,9 @@
 
       <!-- AUTOR E DATA (À DIREITA DO BOTÃO NO TÍTULO)-->
       <div>
-        <strong>{{ocorrencia?.autorEvento?.description}}</strong>
+        <app-usuario-detalhes [usuarioRef]="ocorrencia?.autorEvento"
+                              link="nome">
+        </app-usuario-detalhes>
         criou esta ocorrência <app-tempo-decorrido [data]="ocorrencia?.dataRegistro"></app-tempo-decorrido>
       </div>
     </section>

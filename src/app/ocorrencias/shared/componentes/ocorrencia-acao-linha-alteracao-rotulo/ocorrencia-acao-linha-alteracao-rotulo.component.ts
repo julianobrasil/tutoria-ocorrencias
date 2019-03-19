@@ -2,7 +2,7 @@ import {Component, Input} from '@angular/core';
 import {
   HistoricoInteracao,
   RotuloDoEvento,
-} from '../../../../model/transport-objects';
+} from '@model-objects';
 
 @Component({
   selector: 'app-ocorrencia-acao-linha-alteracao-rotulo',

@@ -1,6 +1,6 @@
 import {Pipe, PipeTransform} from '@angular/core';
 
-import {HistoricoInteracao, Interacao} from '../../../model/transport-objects';
+import {HistoricoInteracao, Interacao} from '@model-objects';
 
 @Pipe({name: 'obtemHistoricoComentarioMaisRecente'})
 export class ObtemHistoricoComentarioMaisRecentePipe implements PipeTransform {

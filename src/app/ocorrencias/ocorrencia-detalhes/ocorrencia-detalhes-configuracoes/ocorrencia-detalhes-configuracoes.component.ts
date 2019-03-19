@@ -4,7 +4,7 @@ import {MatDialog} from '@angular/material';
 import {combineLatest, Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
 
-import {Evento, TipoParticipacao} from '../../../model/transport-objects';
+import {Evento, TipoParticipacao} from '@model-objects';
 import {
   ConfirmationDialogComponent,
   ConfirmationDialogComponentData,

@@ -1,6 +1,6 @@
 import {Component, Input, ViewEncapsulation} from '@angular/core';
 
-import {Interacao, TipoAcao} from '../../../model/transport-objects';
+import {Interacao, TipoAcao} from '@model-objects';
 import {CorDoParticipante} from '../ocorrencia-detalhes-component.service';
 
 @Component({

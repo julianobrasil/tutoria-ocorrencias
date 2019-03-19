@@ -12,12 +12,14 @@
     <section [class.darker]="_isVisibilidadeLimitada"
              class="formulario-somente-leitura-titulo">
       <section class="formulario-somente-leitura-tipo-subtipo">
-        <div><strong>{{ocorrencia?.descricaoTipoEvento}}:</strong> {{ocorrencia?.descricaoSubTipoEvento}}</div>
-
-        <div *ngIf="_isVisibilidadeLimitada"
-             class="icone-de-visibilidade-limitada"
+        <div class="icone-de-visibilidade-limitada"
              matTooltip="Esta ocorrência só pode ser vista pelos participantes">
-          <mat-icon>visibility_off</mat-icon>
+          <mat-icon *ngIf="_isVisibilidadeLimitada">visibility_off</mat-icon>
+        </div>
+
+        <div>
+          <strong>{{ocorrencia?.descricaoTipoEvento}}:</strong>
+          {{ocorrencia?.descricaoSubTipoEvento}}
         </div>
       </section>
 

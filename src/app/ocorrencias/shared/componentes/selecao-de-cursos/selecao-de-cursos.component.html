@@ -1,0 +1,33 @@
+<section class="selecao-de-cursos-container">
+  <!-- COMPONENTE DE SELEÇÃO DE CURSOS (AUTOCOMPLETAR) -->
+  <section class="selecao-de-cursos-input">
+    <mat-form-field appearance="fill">
+      <input [formControl]="_filtroCtrl"
+             matInput
+             placeholder="FILTRAR CURSOS...">
+    </mat-form-field>
+  </section>
+
+  <section class="selecao-de-cursos-lista">
+    <mat-chip-list></mat-chip-list>
+    <mat-selection-list (selectionChange)="_alteracaoNaListaEscolhida($event)">
+      <mat-list-option *ngFor="let curso of _cursosDisponiveis"
+                       [value]="curso">
+        <div class="selecao-de-cursos-lista-item">
+          <!-- NOME DO CURSO -->
+          <section class="selecao-de-cursos-lista-item-descricao">{{curso?.description}}</section>
+
+          <!-- UNIDADE -->
+          <section class="selecao-de-cursos-lista-item-chips">
+            <mat-chip *ngFor="let str of curso?.extra.split('::')"
+                      color="accent"
+                      selected>
+              {{str}}
+            </mat-chip>
+          </section>
+        </div>
+      </mat-list-option>
+    </mat-selection-list>
+  </section>
+
+</section>

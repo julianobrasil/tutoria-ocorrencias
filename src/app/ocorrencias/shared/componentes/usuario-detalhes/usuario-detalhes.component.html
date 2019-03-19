@@ -1,0 +1,27 @@
+<span #popoverAnchor="satPopoverAnchor"
+      (mouseenter)="_popoverAction$.next(true)"
+      (mouseleave)="_popoverAction$.next(false)"
+      [satPopoverAnchorFor]="popover"
+      class="usuario-login">
+  <ng-container [ngSwitch]="link">
+    <strong *ngSwitchCase="'e-mail'">{{_usuarioPopoverInfo?.usuarioRef?.code}}</strong>
+    <strong *ngSwitchCase="'nome'">{{_usuarioPopoverInfo?.usuarioRef?.description}}</strong>
+    <strong *ngSwitchDefault>{{_usuarioPopoverInfo?.login}}</strong>
+  </ng-container>
+</span>
+
+<sat-popover #popover
+             horizontalAlign="center"
+             verticalAlign="above">
+  <section (mouseenter)="_popoverAction$.next(true)"
+           (mouseleave)="_popoverAction$.next(false)"
+           class="usuario-detalhes-popover-container mat-elevation-z8">
+    <section class="usuario-detalhes-popover-usuario">
+      {{_usuarioPopoverInfo?.usuarioRef?.description}}
+    </section>
+
+    <section class="usuario-detalhes-popover-email">
+      {{_usuarioPopoverInfo?.usuarioRef?.code}}
+    </section>
+  </section>
+</sat-popover>

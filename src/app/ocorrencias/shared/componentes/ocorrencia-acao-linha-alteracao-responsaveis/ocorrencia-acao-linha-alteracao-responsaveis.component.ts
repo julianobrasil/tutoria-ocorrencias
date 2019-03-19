@@ -4,6 +4,7 @@ import {
   Input,
   OnDestroy,
   OnInit,
+  Optional,
 } from '@angular/core';
 
 import {Subject} from 'rxjs';
@@ -18,7 +19,7 @@ import {
 import {
   HistoricoInteracao,
   ObjectReference,
-} from '../../../../model/transport-objects';
+} from '@model-objects';
 
 interface UsuarioPopoverInfo {
   login: string;
@@ -66,7 +67,7 @@ export class OcorrenciaAcaoLinhaAlteracaoResponsaveisComponent implements
   /** dispara ação apra abrir e fechar o popover */
   _popoverAction$: Subject<PopoverAction> = new Subject<PopoverAction>();
 
-  constructor(private _ocorrenciaDetalhesComponentService:
+  constructor(@Optional() private _ocorrenciaDetalhesComponentService:
                   OcorrenciaDetalhesComponentService) {}
 
   ngOnInit() {
@@ -77,12 +78,16 @@ export class OcorrenciaAcaoLinhaAlteracaoResponsaveisComponent implements
     this._popoverAction$.pipe(debounceTime(300))
         .subscribe((action: PopoverAction) => {
           if (action.open) {
-            this._ocorrenciaDetalhesComponentService
-                .interrompeAtualizacaoPeriodica(true);
+            if (this._ocorrenciaDetalhesComponentService) {
+              this._ocorrenciaDetalhesComponentService
+                  .interrompeAtualizacaoPeriodica(true);
+            }
             action.anchor.openPopover();
           } else {
-            this._ocorrenciaDetalhesComponentService
-                .interrompeAtualizacaoPeriodica(false);
+            if (this._ocorrenciaDetalhesComponentService) {
+              this._ocorrenciaDetalhesComponentService
+                  .interrompeAtualizacaoPeriodica(false);
+            }
             action.anchor.closePopover();
           }
         });

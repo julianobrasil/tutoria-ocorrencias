@@ -12,12 +12,12 @@
     </app-ocorrencia-avatar>
 
     <section class="ocorrencia-acao-texto-descricao">
-      <section class="autor texto-normal-negrito">{{acao?.autorRef?.description}}&nbsp;</section>
+      <app-usuario-detalhes [usuarioRef]="acao?.autorRef"></app-usuario-detalhes>&nbsp;
 
       <ng-container [ngSwitch]="acao?.historicoInteracoes[0]?.tipoAcao">
         <span *ngSwitchDefault
               [innerHTML]="acao | acaoRealizada"
-              class="acao-default m-right-5px"></span>
+              class="acao-default"></span>
 
         <app-ocorrencia-acao-linha-alteracao-rotulo *ngSwitchCase="_tipoAcao.ALTERA_ROTULO"
                                                     [historicoInteracao]="acao?.historicoInteracoes[0]">

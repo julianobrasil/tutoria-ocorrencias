@@ -8,6 +8,11 @@ import * as fromStore from '../../store/diario-de-tutoria';
 import {effects} from '../../store/diario-de-tutoria/effects';
 import {SharedModule} from '../shared/shared.module';
 
+import {ListaDeOcorrenciasSearchBarComponent} from './lista-de-ocorrencias-search-bar/lista-de-ocorrencias-search-bar.component';
+import {SearchBarFiltroCursoComponent} from './lista-de-ocorrencias-search-bar/search-bar-filtro-curso/search-bar-filtro-curso.component';
+import {SearchBarFiltroPessoaComponent} from './lista-de-ocorrencias-search-bar/search-bar-filtro-pessoa/search-bar-filtro-pessoa.component';
+import {SearchBarFiltroRotuloComponent} from './lista-de-ocorrencias-search-bar/search-bar-filtro-rotulo/search-bar-filtro-rotulo.component';
+import {SearchBarFiltroTiposDeOcorrenciasComponent} from './lista-de-ocorrencias-search-bar/search-bar-filtro-tipos-de-ocorrencias/search-bar-filtro-tipos-de-ocorrencias.component';
 import {FiltroDeOcorrenciasComponent} from './lista-de-ocorrencias/filtro-de-ocorrencias/filtro-de-ocorrencias.component';
 import {ListaDeOcorrenciasComponent} from './lista-de-ocorrencias/lista-de-ocorrencias.component';
 import {OcorrenciaResumoComponent} from './lista-de-ocorrencias/ocorrencia-resumo/ocorrencia-resumo.component';
@@ -39,16 +44,23 @@ import {OcorrenciaBagdeComponent} from './shared/componentes/ocorrencia-bagde/oc
 import {OcorrenciaMenuComponent} from './shared/componentes/ocorrencia-menu/ocorrencia-menu.component';
 import {OcorrenciaPopoverDeEscolhaComponent} from './shared/componentes/ocorrencia-popover-de-escolha/ocorrencia-popover-de-escolha.component';
 import {OcorrenciaRotuloComponent} from './shared/componentes/ocorrencia-rotulo/ocorrencia-rotulo.component';
+import {SearchBarBotaoFiltroComponent} from './shared/componentes/search-bar-botao-filtro/search-bar-botao-filtro.component';
+import {SelecaoDeCursosComponent} from './shared/componentes/selecao-de-cursos/selecao-de-cursos.component';
 import {SelecaoDePessoasComponent} from './shared/componentes/selecao-de-pessoas/selecao-de-pessoas.component';
 import {SelecaoDeRotulosComponent} from './shared/componentes/selecao-de-rotulos/selecao-de-rotulos.component';
+import {SelecaoDeTiposDeOcorrenciasComponent} from './shared/componentes/selecao-de-tipos-de-ocorrencias/selecao-de-tipos-de-ocorrencias.component';
 import {TempoDecorridoComponent} from './shared/componentes/tempo-decorrido/tempo-decorrido.component';
 import {TipoSubtipoDeEventoComponent} from './shared/componentes/tipo-subtipo-de-evento/tipo-subtipo-de-evento.component';
+import {UsuarioDetalhesComponent} from './shared/componentes/usuario-detalhes/usuario-detalhes.component';
+
 import {AcaoRealizadaPipe} from './shared/pipes/acao-realizada.pipe';
+import {BarraDeFilragemFiltroAtivadoPipe} from './shared/pipes/barra-de-filragem-filtro-ativado.pipe';
 import {CompilaMarkdownPipe} from './shared/pipes/compila-markdown.pipe';
 import {CorDeFundoPorTipoPipe} from './shared/pipes/cor-de-fundo-por-tipo.pipe';
 import {ExtraiVisibilidadeEventoPipe} from './shared/pipes/extrai-visibilidade-evento.pipe';
 import {FiltraParticipantesRepetidosPipe} from './shared/pipes/filtra-participantes-repetidos.pipe';
 import {FiltraResponsaveisPipe} from './shared/pipes/filtra-responsaveis.pipe';
+import {FiltrosDeBuscaToListaDeOcorrenciasSearchBarComponentChangePipe} from './shared/pipes/filtros-de-busca-to-lista-de-ocorrencias-search-bar-component-change.pipe';
 import {InteracaoMaisRecentePipe} from './shared/pipes/interacao-mais-recente.pipe';
 import {InteracoesPorOrdemCronologicaPipe} from './shared/pipes/interacoes-por-ordem-cronologica.pipe';
 import {IsRotuloImexivelPipe} from './shared/pipes/is-rotulo-imexivel.pipe';
@@ -63,6 +75,7 @@ import {ObtemCorDoAvatarPipe} from './shared/pipes/obtem-cor-do-avatar.pipe';
 import {ObtemHistoricoComentarioMaisRecentePipe} from './shared/pipes/obtem-historico-comentario-mais-recente.pipe';
 import {OrdenaRotulosPipe} from './shared/pipes/ordena-rotulos.pipe';
 import {ParticipantesToObjectReferencesPipe} from './shared/pipes/participantes-to-object-references.pipe';
+import {SafeHtmlPipe} from './shared/pipes/safe-html.pipe';
 import {SomenteComentariosPipe} from './shared/pipes/somente-comentarios.pipe';
 import {TemaDoRotuloPipe} from './shared/pipes/tema-do-rotulo.pipe';
 import {TempoDecorridoPipe} from './shared/pipes/tempo-decorrido.pipe';
@@ -77,6 +90,7 @@ import {UsuariosImexiveisPipe} from './shared/pipes/usuarios-imexiveis.pipe';
     AcoesLigadasANovoComentarioComponent,
     FiltroDeOcorrenciasComponent,
     ListaDeOcorrenciasComponent,
+    ListaDeOcorrenciasSearchBarComponent,
     OcorrenciaAcaoComponent,
     OcorrenciaAcaoLinhaAlteracaoResponsaveisComponent,
     OcorrenciaAcaoLinhaAlteracaoRotuloComponent,
@@ -100,11 +114,19 @@ import {UsuariosImexiveisPipe} from './shared/pipes/usuarios-imexiveis.pipe';
     OcorrenciaRotuloComponent,
     OcorrenciasComponent,
     OcorrenciasRoutingComponent,
+    SearchBarBotaoFiltroComponent,
+    SearchBarFiltroCursoComponent,
+    SearchBarFiltroPessoaComponent,
+    SearchBarFiltroRotuloComponent,
+    SearchBarFiltroTiposDeOcorrenciasComponent,
+    SelecaoDeCursosComponent,
     SelecaoDePessoasComponent,
     SelecaoDeRotulosComponent,
+    SelecaoDeTiposDeOcorrenciasComponent,
     TempoDecorridoComponent,
     TipoSubtipoDeEventoComponent,
     UnidadeDialogComponent,
+    UsuarioDetalhesComponent,
 
     /** COMPONENTES - DIALOGOS */
     LocalDialogComponent,
@@ -113,11 +135,13 @@ import {UsuariosImexiveisPipe} from './shared/pipes/usuarios-imexiveis.pipe';
 
     /** PIPES */
     AcaoRealizadaPipe,
+    BarraDeFilragemFiltroAtivadoPipe,
     CompilaMarkdownPipe,
     CorDeFundoPorTipoPipe,
     ExtraiVisibilidadeEventoPipe,
     FiltraParticipantesRepetidosPipe,
     FiltraResponsaveisPipe,
+    FiltrosDeBuscaToListaDeOcorrenciasSearchBarComponentChangePipe,
     InteracaoMaisRecentePipe,
     InteracoesPorOrdemCronologicaPipe,
     IsRotuloImexivelPipe,
@@ -132,6 +156,7 @@ import {UsuariosImexiveisPipe} from './shared/pipes/usuarios-imexiveis.pipe';
     ObtemHistoricoComentarioMaisRecentePipe,
     OrdenaRotulosPipe,
     ParticipantesToObjectReferencesPipe,
+    SafeHtmlPipe,
     SomenteComentariosPipe,
     TemaDoRotuloPipe,
     TempoDecorridoPipe,
@@ -157,5 +182,4 @@ import {UsuariosImexiveisPipe} from './shared/pipes/usuarios-imexiveis.pipe';
   ],
   exports: [OcorrenciaDetalhesComponent, OcorrenciaFormularioComponent],
 })
-export class OcorrenciasModule {
-}
+export class OcorrenciasModule {}

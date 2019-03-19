@@ -41,13 +41,14 @@ export class EventoEffects {
       switchMap(
           (action: fromActions.ObtemEventosPaginadosRun) =>
               this._eventoService.findEventosByUsuarioLogado(
+                                     action.payload.filtros,
                                      action.payload.termoDeBusca,
                                      action.payload.paginacao &&
-                                         action.payload.paginacao.page?
-                                         action.payload.paginacao.page: 0,
+                                         action.payload.paginacao.page ?
+                                         action.payload.paginacao.page : 0,
                                      action.payload.paginacao &&
-                                         action.payload.paginacao.pageSize?
-                                         action.payload.paginacao.pageSize: 10)
+                                         action.payload.paginacao.pageSize ?
+                                         action.payload.paginacao.pageSize : 10)
                   .pipe(catchError(
                       () => observableOf({content: [], totalElements: 0})))),
       map((pagina: | EventoPaginado |
@@ -74,8 +75,8 @@ export class EventoEffects {
                         .pipe(catchError((e) => observableOf(e)))),
       map((evento: Evento | string) =>
               typeof evento ===
-              'string'? new fromActions.ObtemEventoPorIdFail(
-                                           {error: '', eventoId: evento}):
+              'string' ? new fromActions.ObtemEventoPorIdFail(
+                                           {error: '', eventoId: evento}) :
                   new fromActions.ObtemEventoPorIdSuccess({evento})));
 
   @Effect()
@@ -102,8 +103,8 @@ export class EventoEffects {
       switchMap(
           (action: fromActions.ReabreEventoRun) =>
               this._eventoService.reabreEvento(
-                  action.payload.eventoId, action.payload.textoComentario?
-                                           action.payload.textoComentario: '')),
+                  action.payload.eventoId, action.payload.textoComentario ?
+                                           action.payload.textoComentario : '')),
       tap((evento: Evento) =>
               this._ocorrenciaStatusGravacaoService.statusGravacao$.next({
                 sucesso: true,
@@ -117,8 +118,8 @@ export class EventoEffects {
       switchMap(
           (action: fromActions.EncerraEventoRun) =>
               this._eventoService.encerraEvento(
-                  action.payload.eventoId, action.payload.textoComentario?
-                                           action.payload.textoComentario: '')),
+                  action.payload.eventoId, action.payload.textoComentario ?
+                                           action.payload.textoComentario : '')),
       tap((evento: Evento) =>
               this._ocorrenciaStatusGravacaoService.statusGravacao$.next({
                 sucesso: true,
@@ -143,13 +144,13 @@ export class EventoEffects {
                     return observableOf(null);
                   }))),
       tap((evento: Evento | null) =>
-              evento?
+              evento ?
               this._ocorrenciaStatusGravacaoService.statusGravacao$.next({
                 sucesso: true,
                 operacaoExecutada: OcorrenciaChangeType.COMENTA,
-              }): null),
+              }) : null),
       map((evento: Evento | null) =>
-              evento? new fromActions.InsereComentarioSuccess({evento}):
+              evento ? new fromActions.InsereComentarioSuccess({evento}) :
                   new fromActions.InsereComentarioFail({error: null})));
 
   @Effect()
@@ -167,13 +168,13 @@ export class EventoEffects {
                     return observableOf(null);
                   }))),
       tap((evento: Evento | null) =>
-              evento?
+              evento ?
               this._ocorrenciaStatusGravacaoService.statusGravacao$.next({
                 sucesso: true,
                 operacaoExecutada: OcorrenciaChangeType.EXCLUI_COMENTARIO,
-              }): null),
+              }) : null),
       map((evento: Evento | null) =>
-              evento? new fromActions.ExcluiInteracaoDoEventoSuccess({evento}):
+              evento ? new fromActions.ExcluiInteracaoDoEventoSuccess({evento}) :
                   new fromActions.ExcluiInteracaoDoEventoFail({error: null})));
 
   @Effect()
@@ -185,20 +186,20 @@ export class EventoEffects {
                   .pipe(catchError((error: NovoEventoRequest) =>
                                        observableOf(error)))),
       tap((item: Evento | NovoEventoRequest) =>
-              item.hasOwnProperty('tipoEventoId')?
+              item.hasOwnProperty('tipoEventoId') ?
               this._ocorrenciaStatusGravacaoService.statusGravacao$
                   .next({
                     sucesso: false,
                     operacaoExecutada: OcorrenciaChangeType.NOVO_EVENTO,
-                  }): this._ocorrenciaStatusGravacaoService.statusGravacao$
+                  }) : this._ocorrenciaStatusGravacaoService.statusGravacao$
                   .next({
                     sucesso: true,
                     operacaoExecutada: OcorrenciaChangeType.NOVO_EVENTO,
                     evento: item as Evento,
                   })),
       map((item: Evento | NovoEventoRequest) =>
-              item.hasOwnProperty('tipoEventoId')?
-              new fromActions.CriaEventoFail({error: item}):
+              item.hasOwnProperty('tipoEventoId') ?
+              new fromActions.CriaEventoFail({error: item}) :
                   new fromActions.CriaEventoSuccess({evento: item as Evento})));
 
   @Effect()
@@ -211,11 +212,11 @@ export class EventoEffects {
                   .pipe(catchError((e) => observableOf('erro')))),
       tap((item: Evento | string) =>
               typeof item ===
-              'string'? this._ocorrenciaStatusGravacaoService.statusGravacao$
+              'string' ? this._ocorrenciaStatusGravacaoService.statusGravacao$
                   .next({
                     sucesso: false,
                     operacaoExecutada: OcorrenciaChangeType.ALTERA_LOCAL,
-                  }): this._ocorrenciaStatusGravacaoService.statusGravacao$
+                  }) : this._ocorrenciaStatusGravacaoService.statusGravacao$
                   .next({
                     sucesso: true,
                     operacaoExecutada: OcorrenciaChangeType.ALTERA_LOCAL,
@@ -234,11 +235,11 @@ export class EventoEffects {
                   .pipe(catchError((e) => observableOf('erro')))),
       tap((item: Evento | string) =>
               typeof item ===
-              'string'? this._ocorrenciaStatusGravacaoService.statusGravacao$
+              'string' ? this._ocorrenciaStatusGravacaoService.statusGravacao$
                   .next({
                     sucesso: false,
                     operacaoExecutada: OcorrenciaChangeType.ALTERA_UNIDADE,
-                  }): this._ocorrenciaStatusGravacaoService.statusGravacao$
+                  }) : this._ocorrenciaStatusGravacaoService.statusGravacao$
                   .next({
                     sucesso: true,
                     operacaoExecutada: OcorrenciaChangeType.ALTERA_UNIDADE,
@@ -257,11 +258,11 @@ export class EventoEffects {
                   .pipe(catchError((e) => observableOf('erro')))),
       tap((item: Evento | string) =>
               typeof item ===
-              'string'? this._ocorrenciaStatusGravacaoService.statusGravacao$
+              'string' ? this._ocorrenciaStatusGravacaoService.statusGravacao$
                   .next({
                     sucesso: false,
                     operacaoExecutada: OcorrenciaChangeType.ALTERA_TITULO,
-                  }): this._ocorrenciaStatusGravacaoService.statusGravacao$
+                  }) : this._ocorrenciaStatusGravacaoService.statusGravacao$
                   .next({
                     sucesso: true,
                     operacaoExecutada: OcorrenciaChangeType.ALTERA_TITULO,
@@ -281,12 +282,12 @@ export class EventoEffects {
                         .pipe(catchError((e) => observableOf('erro')))),
       tap((item: Evento | string) =>
               typeof item ===
-              'string'? this._ocorrenciaStatusGravacaoService.statusGravacao$
+              'string' ? this._ocorrenciaStatusGravacaoService.statusGravacao$
                   .next({
                     sucesso: false,
                     operacaoExecutada:
                         OcorrenciaChangeType.VISIBILIDADE_COMENTARIO,
-                  }): this._ocorrenciaStatusGravacaoService.statusGravacao$
+                  }) : this._ocorrenciaStatusGravacaoService.statusGravacao$
                   .next({
                     sucesso: true,
                     operacaoExecutada:
@@ -306,11 +307,11 @@ export class EventoEffects {
                         .pipe(catchError((e) => observableOf('erro')))),
       tap((item: Evento | string) =>
               typeof item ===
-              'string'? this._ocorrenciaStatusGravacaoService.statusGravacao$
+              'string' ? this._ocorrenciaStatusGravacaoService.statusGravacao$
                   .next({
                     sucesso: false,
                     operacaoExecutada: OcorrenciaChangeType.VISIBILIDADE_EVENTO,
-                  }): this._ocorrenciaStatusGravacaoService.statusGravacao$
+                  }) : this._ocorrenciaStatusGravacaoService.statusGravacao$
                   .next({
                     sucesso: true,
                     operacaoExecutada: OcorrenciaChangeType.VISIBILIDADE_EVENTO,
@@ -330,11 +331,11 @@ export class EventoEffects {
                         .pipe(catchError((e) => observableOf('erro')))),
       tap((item: Evento | string) =>
               typeof item ===
-              'string'? this._ocorrenciaStatusGravacaoService.statusGravacao$
+              'string' ? this._ocorrenciaStatusGravacaoService.statusGravacao$
                   .next({
                     sucesso: false,
                     operacaoExecutada: OcorrenciaChangeType.TEXTO_COMENTARIO,
-                  }): this._ocorrenciaStatusGravacaoService.statusGravacao$
+                  }) : this._ocorrenciaStatusGravacaoService.statusGravacao$
                   .next({
                     sucesso: true,
                     operacaoExecutada: OcorrenciaChangeType.TEXTO_COMENTARIO,
@@ -353,11 +354,11 @@ export class EventoEffects {
                         .pipe(catchError((e) => observableOf('erro')))),
       tap((item: Evento | string) =>
               typeof item ===
-              'string'? this._ocorrenciaStatusGravacaoService.statusGravacao$
+              'string' ? this._ocorrenciaStatusGravacaoService.statusGravacao$
                   .next({
                     sucesso: false,
                     operacaoExecutada: OcorrenciaChangeType.ALTERA_PARECER,
-                  }): this._ocorrenciaStatusGravacaoService.statusGravacao$
+                  }) : this._ocorrenciaStatusGravacaoService.statusGravacao$
                   .next({
                     sucesso: true,
                     operacaoExecutada: OcorrenciaChangeType.ALTERA_PARECER,
@@ -378,12 +379,12 @@ export class EventoEffects {
                   .pipe(catchError((e) => observableOf('erro')))),
       tap((item: Evento | string) =>
               typeof item ===
-              'string'? this._ocorrenciaStatusGravacaoService.statusGravacao$
+              'string' ? this._ocorrenciaStatusGravacaoService.statusGravacao$
                   .next({
                     sucesso: false,
                     operacaoExecutada:
                         OcorrenciaChangeType.ALTERA_PARTICIPANTES,
-                  }): this._ocorrenciaStatusGravacaoService.statusGravacao$
+                  }) : this._ocorrenciaStatusGravacaoService.statusGravacao$
                   .next({
                     sucesso: true,
                     operacaoExecutada:
@@ -405,11 +406,11 @@ export class EventoEffects {
                   .pipe(catchError((e) => observableOf('erro')))),
       tap((item: Evento | string) =>
               typeof item ===
-              'string'? this._ocorrenciaStatusGravacaoService.statusGravacao$
+              'string' ? this._ocorrenciaStatusGravacaoService.statusGravacao$
                   .next({
                     sucesso: false,
                     operacaoExecutada: OcorrenciaChangeType.ALTERA_RESPONSAVEIS,
-                  }): this._ocorrenciaStatusGravacaoService.statusGravacao$
+                  }) : this._ocorrenciaStatusGravacaoService.statusGravacao$
                   .next({
                     sucesso: true,
                     operacaoExecutada: OcorrenciaChangeType.ALTERA_RESPONSAVEIS,
@@ -430,11 +431,11 @@ export class EventoEffects {
                   .pipe(catchError((e) => observableOf('erro')))),
       tap((item: Evento | string) =>
               typeof item ===
-              'string'? this._ocorrenciaStatusGravacaoService.statusGravacao$
+              'string' ? this._ocorrenciaStatusGravacaoService.statusGravacao$
                   .next({
                     sucesso: false,
                     operacaoExecutada: OcorrenciaChangeType.ALTERA_ROTULOS,
-                  }): this._ocorrenciaStatusGravacaoService.statusGravacao$
+                  }) : this._ocorrenciaStatusGravacaoService.statusGravacao$
                   .next({
                     sucesso: true,
                     operacaoExecutada: OcorrenciaChangeType.ALTERA_ROTULOS,

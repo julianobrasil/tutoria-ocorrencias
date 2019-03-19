@@ -1,8 +1,9 @@
+// tslint:disable-next-line: no-implicit-dependencies
+import {ObjectReference} from '@model-objects';
 import {
   FuncaoDoUsuario,
   Funcoes,
 } from '../../model/helper-objects/funcoes-sistema';
-import {ObjectReference} from '../../model/transport-objects';
 
 export class IssueTrackerConfiguration {
   usuarioLogado?: {

@@ -1,3 +1,4 @@
+// tslint:disable: max-line-length
 import {HttpClientModule} from '@angular/common/http';
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
@@ -25,14 +26,19 @@ import {
 import {ServicosModule} from './model/servicos/servicos.module';
 import * as fromDocuments from './model/transport-objects';
 
+import {OcorrenciasCursosAdapterService} from './ocorrencias-cursos.service';
 import {OcorrenciasPessoasAdapterService} from './ocorrencias-pessoas.service';
 import {OcorrenciasRotulosAdapterService} from './ocorrencias-rotulos.service';
+import {OcorrenciasTiposAdapterService} from './ocorrencias-tipos.service';
 import {
   PESSOAS_SERVICE_ADAPTER,
   ROTULOS_SERVICE_ADAPTER,
 } from './ocorrencias/public_api';
-import {RouterExtraService} from './shared/services/router-extra';
 
+import {CURSO_SERVICE_ADAPTER} from './ocorrencias/shared/componentes/selecao-de-cursos/curso-service-adapter';
+import {TIPO_DE_OCORRENCIA_SERVICE_ADAPTER} from './ocorrencias/shared/componentes/selecao-de-tipos-de-ocorrencias/tipos-de-ocorrencia-service-adapter';
+import {RouterExtraService} from './shared/services/router-extra';
+// tslint:enable: max-line-length
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -61,6 +67,14 @@ import {RouterExtraService} from './shared/services/router-extra';
     {
       provide: ROTULOS_SERVICE_ADAPTER,
       useExisting: OcorrenciasRotulosAdapterService,
+    },
+    {
+      provide: CURSO_SERVICE_ADAPTER,
+      useExisting: OcorrenciasCursosAdapterService,
+    },
+    {
+      provide: TIPO_DE_OCORRENCIA_SERVICE_ADAPTER,
+      useExisting: OcorrenciasTiposAdapterService,
     },
   ],
   bootstrap: [AppComponent],

@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Subject} from 'rxjs';
 import {filter} from 'rxjs/operators';
 
-import {Evento} from '../model/transport-objects';
+import {Evento} from '@model-objects';
 
 import {OcorrenciaChangeType} from './public_api';
 
