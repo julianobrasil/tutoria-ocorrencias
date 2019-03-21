@@ -1,5 +1,9 @@
 <div *ngIf="rotulo"
+     [matTooltip]="tooltip"
      [ngStyle]="corDeFundo | temaDoRotulo"
      class="ocorrencia-rotulo">
-  {{rotulo}}
+  <span>{{rotulo}}</span>
+
+  <mat-icon *ngIf="icone">{{icone}}</mat-icon>
+
 </div>

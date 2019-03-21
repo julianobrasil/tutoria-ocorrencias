@@ -6,9 +6,15 @@ import {Component, Input} from '@angular/core';
   styleUrls: ['./ocorrencia-rotulo.component.scss'],
 })
 export class OcorrenciaRotuloComponent {
-  /** texto do rótulo */
+  /** Texto do rótulo */
   @Input() rotulo: string;
 
-  /** cor a ser aplicado ao componente */
+  /** Cor a ser aplicado ao componente */
   @Input() corDeFundo: string;
+
+  /** Ícone a ser mostrado no rótulo */
+  @Input() icone: string;
+
+  /** Dica para ser mostrada no rótulo */
+  @Input() tooltip: string;
 }

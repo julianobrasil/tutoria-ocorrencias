@@ -35,8 +35,14 @@ import {
   ROTULOS_SERVICE_ADAPTER,
 } from './ocorrencias/public_api';
 
-import {CURSO_SERVICE_ADAPTER} from './ocorrencias/shared/componentes/selecao-de-cursos/curso-service-adapter';
-import {TIPO_DE_OCORRENCIA_SERVICE_ADAPTER} from './ocorrencias/shared/componentes/selecao-de-tipos-de-ocorrencias/tipos-de-ocorrencia-service-adapter';
+import {TipoRotulo} from '@model-objects';
+import {Funcoes} from './model/helper-objects/funcoes-sistema';
+import {
+  CURSO_SERVICE_ADAPTER,
+} from './ocorrencias/shared/componentes/selecao-de-cursos/curso-service-adapter';
+import {
+  TIPO_DE_OCORRENCIA_SERVICE_ADAPTER,
+} from './ocorrencias/shared/componentes/selecao-de-tipos-de-ocorrencias/tipos-de-ocorrencia-service-adapter';
 import {RouterExtraService} from './shared/services/router-extra';
 // tslint:enable: max-line-length
 @NgModule({
@@ -126,11 +132,63 @@ export class AppModule {
 
       evt.isEncerrado = evt.isEncerrado;
 
+      const rotulosFluxo =
+          evt.etapas.length ?
+              evt.etapas.filter((etapa: fromDocuments.Etapa) =>
+                                    etapa.tipoEtapa ===
+                                        Funcoes.COORDENACAO.funcaoSistema ||
+                                    etapa.tipoEtapa ===
+                                        Funcoes.RESPONSAVEL.funcaoSistema ||
+                                    etapa.tipoEtapa ===
+                                        Funcoes.QUALIDADE.funcaoSistema ||
+                                    etapa.tipoEtapa ===
+                                        Funcoes.DIRETOR.funcaoSistema)
+                  .map((value: fromDocuments.Etapa) => {
+                    switch (value.tipoEtapa) {
+                      case Funcoes.COORDENACAO.funcaoSistema: {
+                        return ROTULOS_EXISTENTES.find(
+                            (r) =>
+                                r.texto === 'coordenação' &&
+                                r.tipos.includes(
+                                    TipoRotulo
+                                        .PARECER_TUTORIA_PARTICIPANTE_CIENTE));
+                      }
+
+                      case Funcoes.QUALIDADE.funcaoSistema: {
+                        return ROTULOS_EXISTENTES.find(
+                            (r) =>
+                                r.texto === 'qualidade' &&
+                                r.tipos.includes(
+                                    TipoRotulo
+                                        .PARECER_TUTORIA_PARTICIPANTE_CIENTE));
+                      }
+
+                      case Funcoes.DIRETOR.funcaoSistema: {
+                        return ROTULOS_EXISTENTES.find(
+                            (r) =>
+                                r.texto === 'diretor' &&
+                                r.tipos.includes(
+                                    TipoRotulo
+                                        .PARECER_TUTORIA_PARTICIPANTE_CIENTE));
+                      }
+
+                      case Funcoes.RESPONSAVEL.funcaoSistema: {
+                        return ROTULOS_EXISTENTES.find(
+                            (r) =>
+                                r.texto === 'responsável' &&
+                                r.tipos.includes(
+                                    TipoRotulo
+                                        .PARECER_TUTORIA_PARTICIPANTE_CIENTE));
+                      }
+                    }
+                  }) :
+              [];
       evt.rotulos = [
         evt.isEncerrado ?
             ROTULOS_EXISTENTES.find((r) => r.texto === 'resolvido') :
             ROTULOS_EXISTENTES.find((r) => r.texto === 'não resolvido'),
         rotuloTutoria,
+        ...rotulosFluxo,
       ];
 
       evt.cidadeUnidade =

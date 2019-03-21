@@ -17,7 +17,9 @@
 
       <app-ocorrencia-rotulo *ngFor="let rotulo of evento?.rotulos | ordenaRotulos"
                              [corDeFundo]="rotulo?.corHexa"
-                             [rotulo]="rotulo?.texto">
+                             [icone]="rotulo?.icone"
+                             [rotulo]="rotulo?.texto"
+                             [tooltip]="rotulo?.descricao">
       </app-ocorrencia-rotulo>
     </section>
 

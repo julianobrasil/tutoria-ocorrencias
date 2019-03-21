@@ -13,11 +13,13 @@
   <section class="selecao-de-rotulos-lista">
     <mat-selection-list (selectionChange)="_alteracaoNaListaEscolhida($event)">
       <mat-list-option *ngFor="let rotulo of _rotulosDisponiveis"
-                       [value]="rotulo"
-                       matTooltipPosition="left">
-        <div class="selecao-de-rotulos-lista-item">
+                       [value]="rotulo">
+        <div [matTooltip]="rotulo?.descricao"
+             class="selecao-de-rotulos-lista-item"
+             matTooltipPosition="left">
           <div [ngStyle]="{'background-color': rotulo?.corHexa}"
                class="selecao-de-rotulos-lista-item-rotulo-avatar"></div>
+          <mat-icon *ngIf="rotulo?.icone">{{rotulo?.icone}}</mat-icon>
           <div>{{rotulo?.texto}}</div>
         </div>
       </mat-list-option>

@@ -42,5 +42,6 @@ export * from './tipo-acao';
 export * from './tipo-interacao';
 export * from './object-reference';
 export * from './rotulo-do-evento';
+export * from './tipo-rotulo';
 
 export * from './evento-dto/';
